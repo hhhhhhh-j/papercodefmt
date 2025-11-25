@@ -26,15 +26,33 @@ class DM_env(gym.Env):
         # 定义观测空间：
         '''
         智能体坐标(x,y)
+        目标点坐标(x_goal,y_goal)
         map(uncertainty map)二维数组展平
         map(occupancy grid map)二维数组展平
         '''
-        self.observation_space = spaces.Box(
-            low=np.array([-np.inf, -np.inf]),
-            high=np.array([np.inf, np.inf]),
-            shape=(2,),
-            dtype=float
-        )
+        self.observation_space = spaces.Dict({
+            "map": spaces.Box(
+                low=0.0,
+                high=1.0,
+                shape=(2, self.local_size, self.local_size),
+                dtype=np.float32
+            ),
+
+            "pose": spaces.Box(
+                low=-1.0,
+                high=1.0,
+                shape=(4,),   # [x, y, gx, gy]
+                dtype=np.float32
+            )
+        })
+
+
+        # self.observation_space = spaces.Box(
+        #     low=np.array([-np.inf, -np.inf]),
+        #     high=np.array([np.inf, np.inf]),
+        #     shape=(2,),
+        #     dtype=float
+        # )
 
     def reset(self):
         # 重置环境状态

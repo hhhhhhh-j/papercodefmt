@@ -1,6 +1,6 @@
 import numpy as np
 import math
-
+import seaborn as sns
 import matplotlib.pyplot as plt
 from read_grid_map import ReadGridMap
 
@@ -16,6 +16,9 @@ class Lidar:
         (self.M, self.N) = np.shape(true_map)
         self.L0 = np.zeros((self.M, self.N))  # Prior log-odds
         self.L = np.zeros((self.M, self.N))
+
+        self.ms = []  # 存储每一帧的感知概率地图
+        self.m_uncertaintys = []  # 存储每一帧的不确定性地图
 
     def get_ranges(self, X):
         """
@@ -62,8 +65,8 @@ class Lidar:
         x_max = x_ind + self.rmax / self.reso
         y_max = y_ind + self.rmax / self.reso
         m = np.full((self.M, self.N), 0.5)
-        for i in range(int(x_ind), min(self.M, int(x_max)+1)):
-            for j in range((int(y_ind)), min(self.N, int(y_max)+1)):
+        for i in range(int(x_ind), min(self.M, int(x_max))):
+            for j in range((int(y_ind)), min(self.N, int(y_max))):
                 # Find range and bearing relative to the input state (x, y, theta).
                 r = math.sqrt((i - x_ind)**2 + (j - y_ind)**2)
                 phi = (math.atan2(j - y_ind, i - x_ind) - theta + math.pi) % (2 * math.pi) - math.pi
@@ -86,6 +89,28 @@ class Lidar:
                     m[i, j] = 0.3
                     
         return m
+    
+    def get_uncertainty_map(self, X):
+        """
+        生成不确定性地图
+        """
+        
+        x_ind, y_ind, theta = X[0]/self.reso, X[1]/self.reso, X[2]
+        x_max = min(self.M, x_ind + self.rmax / self.reso)
+        y_max = min(self.N, y_ind + self.rmax / self.reso)
+        x_min = max(0, x_ind - self.rmax / self.reso)
+        y_min = max(0, y_ind - self.rmax / self.reso)
+        m = self.generate_probability_map(X)
+        m = np.clip(m, 1e-6, 1 - 1e-6)  # 避免log(0)
+        m_uncertainty = np.zeros_like(m)
+
+        for i in range(int(x_min), int(x_max)):
+            for j in range((int(y_min)), int(y_max)):
+                m_uncertainty[i,j] = m[i,j] * np.log(m[i,j]) + (1 - m[i,j]) * np.log(1 - m[i,j]) # 计算不确定性(信息熵)
+        
+        self.m_uncertaintys.append(m_uncertainty) # 存储当前帧的不确定性地图
+
+        return -m_uncertainty
 
     def generate_probability_map(self, X):
         """
@@ -93,19 +118,19 @@ class Lidar:
         """
         meas_rs = []
         invmods = []
-        ms = []
         
         meas_r = self.get_ranges(X)
         meas_rs.append(meas_r)
         invmod = self.inverse_scanner(X,meas_r)
-        invmod = np.clip(invmod, 1e-6, 1 - 1e-6)
+        invmod = np.clip(invmod, 1e-6, 1 - 1e-6)  # 避免log(0)
         invmods.append(invmod)
         # Calculate and update the log odds of our occupancy grid, given our measured occupancy probabilities from the inverse model.
         self.L = np.log(np.divide(invmod, np.subtract(1, invmod))) + self.L - self.L0 # concernnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnn
         
         # Calculate a grid of probabilities from the log odds.
         m = np.divide(np.exp(self.L), np.add(1, np.exp(self.L)))
-        ms.append(m)
+
+        self.ms.append(m)
 
         return m
 
@@ -137,7 +162,29 @@ class Lidar:
         #     m = np.divide(np.exp(L), np.add(1, np.exp(L)))
         #     ms.append(m)
 
-if __name__ == "__main__":
+def GetPath():
+    '''
+    获取行动路径
+    '''
+    
+    pass
+
+
+
+def ToSacEnv_reset():
+    '''
+    与RL reset的接口
+    '''
+    pass
+
+def ToSacEnv_step():
+    '''
+    与RL step的接口
+    '''
+    pass
+
+
+def main():
     '''
     测试代码
     '''
@@ -151,8 +198,8 @@ if __name__ == "__main__":
     # map.add_rectangle_obstacle(3, 15, 5, 3)
 
     map_converter = ReadGridMap()
-    big_map,small_map = map_converter.convert("/home/fmt/decision_making/sb3_SAC/map/20220630.pgm")
-    lidar = Lidar(small_map)
+    big_map,small_map = map_converter.convert("/home/fmt/decision_making/sb3_SAC/map/map_basic.png")
+    lidar = Lidar(big_map)
 
     # action输入: 车辆/雷达状态 [x, y, theta]
     for x in range(1,20):
@@ -160,17 +207,41 @@ if __name__ == "__main__":
             for yaw in [math.pi/3]:
                 m = lidar.generate_probability_map([x,y,yaw])
 
+    # 计算不确定性地图
+    x,y,yaw = 50,50,math.pi/3
+    uncertainty_map = lidar.get_uncertainty_map([x,y,yaw])
+
     # 可视化
-    fig, axes = plt.subplots(1, 2, figsize=(12, 6))
+    fig, axes = plt.subplots(1, 3, figsize=(12, 6))
 
     img0 = axes[0].imshow(m, cmap='gray_r', origin='lower', vmin=0, vmax=1)
     fig.colorbar(img0, ax=axes[0], fraction=0.046, pad=0.04)
-    axes[0].set_title("Occupancy / Uncertainty map")
+    axes[0].set_title("Occupancy map")
 
-    img1 = axes[1].imshow(small_map, cmap='gray_r', origin='lower', vmin=0, vmax=1)
+    img1 = axes[1].imshow(big_map, cmap='gray_r', origin='lower', vmin=0, vmax=1)
     fig.colorbar(img1, ax=axes[1], fraction=0.046, pad=0.04)
     axes[1].set_title("Original grid map")
+
+    # 风格2 
+    img2 = axes[2].imshow(uncertainty_map, cmap='jet', origin='lower', vmin=0, vmax=1)
+    fig.colorbar(img2, ax=axes[2], fraction=0.046, pad=0.04)
+    axes[2].set_title("Uncertainty map")
+
+    # sns.heatmap(
+    #     uncertainty_map,
+    #     ax=axes[2],
+    #     cmap='YlOrRd',
+    #     square=True,
+    #     cbar_kws={"shrink": 0.8},
+    #     linewidths=0.0
+    # )
+    print("uncertainty_map:", uncertainty_map.shape)
+    print("map:", m.shape)
+    print("small_map:", small_map.shape)
+    print("big_map:", big_map.shape)
 
     plt.tight_layout()
     plt.show()
 
+if __name__ == "__main__":
+    main()
