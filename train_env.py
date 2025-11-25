@@ -4,6 +4,42 @@ import seaborn as sns
 import matplotlib.pyplot as plt
 from read_grid_map import ReadGridMap
 
+class interface2RL:
+    def __init__(self):
+        pass
+
+    def GetPath():
+        '''
+        获取行动路径
+        '''
+    pass
+
+    def get_local_occupy_map():
+        '''
+        获取局部地图
+        '''
+        pass
+
+    def get_local_uncertainty_map():
+        '''
+        获取局部不确定性地图
+        '''
+        pass
+
+    def ToSacEnv_reset():
+        '''
+        与RL reset的接口
+        '''
+        pass
+
+    def ToSacEnv_step():
+        '''
+        与RL step的接口
+        '''
+        pass
+
+
+
 class Lidar:
     def __init__(self, true_map, reso=1):
         self.true_map = true_map
@@ -162,41 +198,19 @@ class Lidar:
         #     m = np.divide(np.exp(L), np.add(1, np.exp(L)))
         #     ms.append(m)
 
-def GetPath():
-    '''
-    获取行动路径
-    '''
-    
-    pass
-
-
-
-def ToSacEnv_reset():
-    '''
-    与RL reset的接口
-    '''
-    pass
-
-def ToSacEnv_step():
-    '''
-    与RL step的接口
-    '''
-    pass
-
-
 def main():
     '''
     测试代码
     '''
 
-    # 读取/生成地图
-
+    # 生成地图
     # map = Map(50,50)
     # test_map = map.create_map()
     # map.add_rectangle_obstacle(8, 5, 4, 8)
     # map.add_circle_obstacle(15, 5, 2)
     # map.add_rectangle_obstacle(3, 15, 5, 3)
 
+    # 读取地图
     map_converter = ReadGridMap()
     big_map,small_map = map_converter.convert("/home/fmt/decision_making/sb3_SAC/map/map_basic.png")
     lidar = Lidar(big_map)
