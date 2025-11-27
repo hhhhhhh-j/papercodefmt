@@ -3,41 +3,163 @@ import math
 import seaborn as sns
 import matplotlib.pyplot as plt
 from read_grid_map import ReadGridMap
+from HybridAstarPlanner import Hybrid_Astar as planning 
+import time
+
+class param:
+    # Hybrid A* 参数
+    XY_RESO = 1.0                   # 网格地图分辨率
+    YAW_RESO = np.deg2rad(15.0)     # 航向角分辨率
+    WB = 3.5                        # 车辆的轴距 (WheelBase)
+    MOVE_STEP = 0.4                 # 插值分辨率，表示在路径中每个节点之间的距离
+    # 局部地图尺寸
+    local_size_width = 64
+    local_size_height = 64
 
 class interface2RL:
-    def __init__(self):
-        pass
+    def __init__(self, global_map):
+        # 创建调用对象
+        self.global_map = global_map
+        self.lidar = Lidar(global_map)
 
-    def GetPath(sub_goal_x, sub_goal_y, sub_goal_yaw):
+        self.local_m = np.zeros((param.local_size_height, param.local_size_width))
+        self.local_m_uncertainty = np.zeros((param.local_size_height, param.local_size_width))
+
+    def get_local_map(self, global_map, X):
+        '''
+        获取局部map
+        '''
+        x = int(X[0])
+        y = int(X[1])
+
+        h = param.local_size_height
+        w = param.local_size_width
+
+        half_h = h // 2
+        half_w = w // 2
+
+        y_min = max(0, y - half_h)
+        y_max = min(global_map.shape[0], y + half_h)
+
+        x_min = max(0, x - half_w)
+        x_max = min(global_map.shape[1], x + half_w)
+
+        local_map = global_map[y_min:y_max, x_min:x_max]
+
+        # 如果大小不够，补齐（padding）
+        local_map = np.pad(
+            local_map,
+            ((0, h - local_map.shape[0]), (0, w - local_map.shape[1])),
+            mode='constant',
+            constant_values=1   # 未知区域给 1
+        )
+        
+        return local_map
+
+    def get_local_obs(self, local_map, threshold=0.6):
+        '''
+        获取局部地图中的障碍物坐标
+        '''
+        h, w = local_map.shape
+         # 原始障碍物点（概率大于阈值）
+        oy, ox = np.where(local_map > threshold)
+
+        # 上边界
+        top_x = np.arange(w)
+        top_y = np.zeros(w, dtype=int)
+
+        # 下边界
+        bottom_x = np.arange(w)
+        bottom_y = np.ones(w, dtype=int) * (h - 1)
+
+        # 左边界
+        left_x = np.zeros(h, dtype=int)
+        left_y = np.arange(h)
+
+        # 右边界
+        right_x = np.ones(h, dtype=int) * (w - 1)
+        right_y = np.arange(h)
+
+        # 合并所有坐标
+        all_x = np.concatenate([ox, top_x, bottom_x, left_x, right_x])
+        all_y = np.concatenate([oy, top_y, bottom_y, left_y, right_y])
+        return all_x.tolist(), all_y.tolist()
+
+    def GetPath(self, sx = 10.0, sy = 7.0, syaw0 = np.deg2rad(120.0), 
+                gx = 45.0, gy = 20.0, gyaw0 = np.deg2rad(90.0)): # , sx, sy, syaw0, gx, gy, gyaw0, ox, oy
         '''
         获取行动路径
         '''
-        
-    pass
+       
+        # 生成障碍物的坐标
+        ox, oy = self.get_local_obs(self.local_m)
+    
+        t0 = time.time()
+        # 使用Hybrid A*算法进行路径规划
+        path = planning.hybrid_astar_planning(sx, sy, syaw0, gx, gy, gyaw0,ox, oy, 
+                                              param.XY_RESO, param.YAW_RESO)
+        t1 = time.time()
+        print("running T: ", t1 - t0)
+    
+        if not path:
+            print("Searching failed!")
+            return
+    
+        # 提取路径的信息
+        x = path.x
+        y = path.y
+        yaw = path.yaw
+        direction = path.direction
+        # print(x)
+        # print(y)
+        # print(yaw)
+    
+        # 在每个时刻绘制车辆的轨迹和障碍物
+        # for k in range(len(x)):
+        #     plt.cla()         # 清空当前图形 
+        #     plt.plot(ox, oy, "sk")   # 绘制障碍物和规划路径
+        #     plt.plot(x, y, linewidth=1.5, color='r')
+    
+        #     # 计算当前时刻的方向和转向角
+        #     if k < len(x) - 2:
+        #         dy = (yaw[k + 1] - yaw[k]) / param.MOVE_STEP
+        #         steer = planning.rs.pi_2_pi(math.atan(-param.WB * dy / direction[k]))
+        #     else:
+        #         steer = 0.0
+    
+            # 绘制车辆
+            # planning.draw_car(gx, gy, gyaw0, 0.0, 'dimgray')   # 绘制目标点
+            # planning.draw_car(x[k], y[k], yaw[k], steer)       # 绘制当前车辆状态
+            # plt.title("Hybrid A*")
+            # plt.axis("equal")
+            # plt.pause(0.0001)
+    
+        # plt.show()
+        # print("Done!")
+        return x,y, yaw, direction
 
-    def get_local_occupy_map():
-        '''
-        获取局部地图
-        '''
-        pass
-
-    def get_local_uncertainty_map():
-        '''
-        获取局部不确定性地图
-        '''
-        pass
-
-    def ToSacEnv_reset():
+    def ToSAC_reset(self, X):
         '''
         与RL reset的接口
         '''
         pass
 
-    def ToSacEnv_step():
+    def ToSAC_step(self, map, X, action):
         '''
         与RL step的接口
         '''
-        pass
+        x,y,yaw,_ = self.GetPath()
+
+        for i in range(len(x)):
+            xi = x[i]
+            yi = y[i]
+            yawi = yaw[i]
+
+            m, m_uncertainty = self.lidar.update([xi, yi, yawi])
+        
+        self.local_m = self.get_local_map(m,车辆当前坐标)
+        self.local_m_uncertainty = self.get_local_map(m_uncertainty, 车辆当前坐标 )
+        return self.local_m, self.local_m_uncertainty
 
 
 
@@ -53,7 +175,9 @@ class Lidar:
         (self.M, self.N) = np.shape(true_map)
         self.L0 = np.zeros((self.M, self.N))  # Prior log-odds
         self.L = np.zeros((self.M, self.N))
+        self.m = np.full((self.M, self.N), 0.5)  # 初始化感知概率地图为0.5
         self.ms = []  # 存储每一帧的感知概率地图
+        self.m_uncertainty = np.full((self.M, self.N),1)  # 初始化不确定性地图
         self.m_uncertaintys = []  # 存储每一帧的不确定性地图
 
     def get_ranges(self, X):
@@ -79,12 +203,12 @@ class Lidar:
                 yi = int(round(y + r * math.sin(theta + self.meas_phi[i])))
                 
                 # If not in the map, set measurement there and stop going further.
-                if (xi <= 0 or xi >= self.M-1 or yi <= 0 or yi >= self.N-1):
+                if (xi <= 0 or xi >= self.N-1 or yi <= 0 or yi >= self.M-1):
                     meas_r[i] = r
                     break
                 # If in the map, but hitting an obstacle, set the measurement range
                 # and stop ray tracing.
-                elif self.true_map[int(round(xi)), int(round(yi))] == 1:
+                elif self.true_map[int(round(yi)), int(round(xi))] == 1:
                     meas_r[i] = r
                     break
                     
@@ -94,59 +218,74 @@ class Lidar:
     def inverse_scanner(self, X, meas_r):
         """
         返回 m(i,j) : 当前帧观测下，每个格子的“占用概率” (0.3/0.5/0.7)
-        alpha:
-        beta:
         """
         x_ind, y_ind, theta = X[0]/self.reso, X[1]/self.reso, X[2]
-        x_max = x_ind + self.rmax / self.reso
-        y_max = y_ind + self.rmax / self.reso
-        m = np.full((self.M, self.N), 0.5)
-        for i in range(int(x_ind), min(self.M, int(x_max))):
-            for j in range((int(y_ind)), min(self.N, int(y_max))):
-                # Find range and bearing relative to the input state (x, y, theta).
-                r = math.sqrt((i - x_ind)**2 + (j - y_ind)**2)
-                phi = (math.atan2(j - y_ind, i - x_ind) - theta + math.pi) % (2 * math.pi) - math.pi
-                
-                # Find the range measurement associated with the relative bearing.
-                k = np.argmin(np.abs(np.subtract(phi, self.meas_phi)))
-                
-                # If the range is greater than the maximum sensor range, or behind our range
-                # measurement, or is outside of the field of view of the sensor, then no
-                # new information is available.
-                if (r > min(self.rmax, meas_r[k] + self.alpha / 2.0)) or (abs(phi - self.meas_phi[k]) > self.beta / 2.0):
-                    m[i, j] = 0.5
-                
-                # If the range measurement lied within this cell, it is likely to be an object.
-                elif (meas_r[k] < self.rmax) and (abs(r - meas_r[k]) < self.alpha / 2.0):
-                    m[i, j] = 0.7
-                
-                # If the cell is in front of the range measurement, it is likely to be empty.
-                elif r < meas_r[k]:
-                    m[i, j] = 0.3
+        # x_max = x_ind + self.rmax / self.reso
+        # y_max = y_ind + self.rmax / self.reso
+
+        r_grid = int(self.rmax / self.reso)
+
+        x_min = max(0, int(x_ind - r_grid))
+        x_max = min(self.N, int(x_ind + r_grid)+1)
+        y_min = max(0, int(y_ind - r_grid))
+        y_max = min(self.M, int(y_ind + r_grid)+1)
+
+        # 构建 meshgrid
+        xs = np.arange(x_min, x_max)
+        ys = np.arange(y_min, y_max)
+        yy, xx= np.meshgrid(ys, xs, indexing='ij')
+
+        # 距离 r
+        r = np.sqrt((xx - x_ind)**2 + (yy - y_ind)**2)
+
+        # 角度 phi
+        phi = (np.arctan2(yy - y_ind, xx - x_ind) - theta + np.pi) % (2 * np.pi) - np.pi
+
+        # 初始化
+        m_local = np.full_like(r, 0.5, dtype=float)
+
+        # 对每条激光束判断
+        for k, angle in enumerate(self.meas_phi):
+
+            mask_angle = np.abs(phi - angle) <= self.beta / 2
+
+            mask_occ = mask_angle & (np.abs(r - meas_r[k]) <= self.alpha / 2)
+            mask_free = mask_angle & (r < meas_r[k])
+
+            m_local[mask_occ] = 0.7
+            m_local[mask_free] = 0.3
+
+        # 写回全局
+        h, w = m_local.shape
+        self.m[y_min:y_min+h, x_min:x_min+w] = m_local
                     
-        return m
+        return self.m
     
     def get_uncertainty_map(self, X):
         """
         生成不确定性地图
         """
         
-        x_ind, y_ind, theta = X[0]/self.reso, X[1]/self.reso, X[2]
-        x_max = min(self.M, x_ind + self.rmax / self.reso)
-        y_max = min(self.N, y_ind + self.rmax / self.reso)
-        x_min = max(0, x_ind - self.rmax / self.reso)
-        y_min = max(0, y_ind - self.rmax / self.reso)
-        m = self.generate_probability_map(X)
-        m = np.clip(m, 1e-6, 1 - 1e-6)  # 避免log(0)
-        m_uncertainty = np.zeros_like(m)
+        # x_ind, y_ind, theta = X[0]/self.reso, X[1]/self.reso, X[2]
+        # x_max = min(self.N, x_ind + self.rmax / self.reso)
+        # y_max = min(self.M, y_ind + self.rmax / self.reso)
+        # x_min = max(0, x_ind - self.rmax / self.reso)
+        # y_min = max(0, y_ind - self.rmax / self.reso)
 
-        for i in range(int(x_min), int(x_max)):
-            for j in range((int(y_min)), int(y_max)):
-                m_uncertainty[i,j] = m[i,j] * np.log(m[i,j]) + (1 - m[i,j]) * np.log(1 - m[i,j]) # 计算不确定性(信息熵)
+        # self.m = np.clip(self.m, 1e-6, 1 - 1e-6)  # 避免log(0)
+
+
+        # for i in range(int(y_min), int(y_max)):
+        #     for j in range((int(x_min)), int(x_max)):
+        #         self.m_uncertainty[i,j] = (-(self.m[i,j] * np.log(self.m[i,j]) + (1 - self.m[i,j]) * np.log(1 - self.m[i,j])))/np.log(2) # 计算不确定性(信息熵)
         
-        self.m_uncertaintys.append(m_uncertainty) # 存储当前帧的不确定性地图
+        m = np.clip(self.m, 1e-6, 1 - 1e-6)
+        self.m_uncertainty = -(m * np.log(m) + (1 - m) * np.log(1 - m))
+        self.m_uncertainty /= np.log(2)
 
-        return -m_uncertainty
+        self.m_uncertaintys.append(self.m_uncertainty) # 存储当前帧的不确定性地图
+
+        return self.m_uncertainty
 
     def generate_probability_map(self, X):
         """
@@ -164,11 +303,11 @@ class Lidar:
         self.L = np.log(np.divide(invmod, np.subtract(1, invmod))) + self.L - self.L0 # concernnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnn
         
         # Calculate a grid of probabilities from the log odds.
-        m = np.divide(np.exp(self.L), np.add(1, np.exp(self.L)))
+        self.m = np.divide(np.exp(self.L), np.add(1, np.exp(self.L)))
 
-        self.ms.append(m)
+        self.ms.append(self.m)
 
-        return m
+        return self.m
 
         # Main simulation loop.
         # for t in range(1, len(time_steps)):
@@ -198,17 +337,22 @@ class Lidar:
         #     m = np.divide(np.exp(L), np.add(1, np.exp(L)))
         #     ms.append(m)
 
+    def update(self, X):
+        """
+        更新感知概率地图和不确定性地图
+        """
+        if X[0]<0 or X[0]>=self.N*self.reso or X[1]<0 or X[1]>=self.M*self.reso:
+            print("Warning: Lidar position out of bounds.")
+            return None
+        m = self.generate_probability_map(X)
+        m_uncertainty = self.get_uncertainty_map(X)
+
+        return m, m_uncertainty
+    
 def main():
     '''
     测试代码
     '''
-
-    # 生成地图
-    # map = Map(50,50)
-    # test_map = map.create_map()
-    # map.add_rectangle_obstacle(8, 5, 4, 8)
-    # map.add_circle_obstacle(15, 5, 2)
-    # map.add_rectangle_obstacle(3, 15, 5, 3)
 
     # 读取地图
     map_converter = ReadGridMap()
@@ -216,10 +360,10 @@ def main():
     lidar = Lidar(big_map)
 
     # action输入: 车辆/雷达状态 [x, y, theta]
-    for x in range(1,20):
-        for y in range(1,20):
+    for x in range(1,10):
+        for y in range(1):
             for yaw in [math.pi/3]:
-                m = lidar.generate_probability_map([x,y,yaw])
+                m,m_uncertainty = lidar.update([x,y,yaw])
 
     # 计算不确定性地图
     x,y,yaw = 50,50,math.pi/3
@@ -258,4 +402,5 @@ def main():
     plt.show()
 
 if __name__ == "__main__":
-    main()
+    inte = interface2RL()
+    inte.GetPath()

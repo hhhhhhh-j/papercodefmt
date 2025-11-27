@@ -12,9 +12,9 @@ import scipy.spatial.kdtree as kd
 sys.path.append(os.path.dirname(os.path.abspath(__file__)) +
                 "/../../HybridAstarPlanner/")
  
-import astar as astar
-import draw as draw
-import reeds_shepp as rs
+from . import astar as astar
+from . import draw as draw
+from . import reeds_shepp as rs
  
 # 定义参数配置类 C；用于存储路径规划中使用的各种参数
 class C:  # Parameter config
