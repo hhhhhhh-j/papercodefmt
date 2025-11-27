@@ -8,10 +8,11 @@ class interface2RL:
     def __init__(self):
         pass
 
-    def GetPath():
+    def GetPath(sub_goal_x, sub_goal_y, sub_goal_yaw):
         '''
         获取行动路径
         '''
+        
     pass
 
     def get_local_occupy_map():
@@ -52,7 +53,6 @@ class Lidar:
         (self.M, self.N) = np.shape(true_map)
         self.L0 = np.zeros((self.M, self.N))  # Prior log-odds
         self.L = np.zeros((self.M, self.N))
-
         self.ms = []  # 存储每一帧的感知概率地图
         self.m_uncertaintys = []  # 存储每一帧的不确定性地图
 
