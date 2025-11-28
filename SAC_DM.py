@@ -8,15 +8,12 @@ from train_env import param
 from read_grid_map import ReadGridMap # 读取真实栅格地图
 from train_env import interface2RL
 
-
-
-
-
 class DM_env(gym.Env):
     def __init__(self):
         super(DM_env, self).__init__()
         # 环境参数
         self.step_count = 0
+        self.max_steps = 10000
         self.np_random, _ = seeding.np_random(None)
         self.agent_x = 0
         self.agent_y = 0
@@ -26,19 +23,14 @@ class DM_env(gym.Env):
         self.goal_yaw = 0
         self.width = 0
         self.height = 0
+
         # map
         self.global_map = np.zeros((self.height, self.width), dtype=np.uint8)
-        self.map_uncertainty_local
-        self.map_occupancy_local
+
         # 缩放系数
-        self.action_ratio # 动作缩放系数
-        self.observation_ratio_xy # 观测空间xy缩放系数
-        self.observation_ratio_yaw # 观测空间yaw缩放系数
-
-        # 创建调用对象
-        self.interface = interface2RL(self.map)
-        self.lidar = Lidar(self.map)
-
+        self.ratio_x = 16               # x缩放系数
+        self.ratio_y = 16               # y缩放系数
+        self.ratio_yaw = math.pi/4      # yaw缩放系数
 
         # 定义动作空间：
         '''
@@ -48,7 +40,7 @@ class DM_env(gym.Env):
             low=np.array([-1.0, -1.0, -1.0]), # sub_goal_x/100, sub_goal_y/100, yaw/2pi
             high=np.array([1.0, 1.0, 1.0]), # sub_goal_x/100, sub_goal_y/100, yaw/2pi
             shape=(3,),
-            dtype=float
+            dtype=np.float32
         ) 
 
         # 定义观测空间：
@@ -87,45 +79,52 @@ class DM_env(gym.Env):
         #     ])
         # }
 
-    def reset(self): # bugggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggg
+    def reset(self, *, seed=None, options=None):
         '''
         -重置环境状态
         -返回值
         observation	    初始观察
         info	        额外信息（一般空字典）
         '''
+        super().reset(seed=seed)
 
         self.step_count = 0
 
         # 随机生成地图
-        self.generate_random_map(seed = None) # 随机生成地图 -self.global_map
+        # self.generate_random_map(seed = seed) # 随机生成地图 -self.global_map
+        self.get_easy_map()
 
         # 随机生成智能体和目标点位置（注意要避开障碍物）
         self.agent_x,self.agent_y,self.agent_yaw = self.get_random_free_position() 
+        # while True:
+        #     self.goal_x,self.goal_y,self.goal_yaw = self.get_random_free_position()
+        #     if abs(self.goal_x - self.agent_x) + abs(self.goal_y - self.agent_y) > 30:
+        #         break
         self.goal_x,self.goal_y,self.goal_yaw = self.get_random_free_position() 
 
         # 获取初始观测值（map_uncertainty、map_occupancy）
-        lidar = interface2RL()
-        map_uncertainty_local = lidar.get_local_uncertainty_map() # buggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggg
-        map_occupancy_local = lidar.get_local_occupy_map() # bugggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggg
-
+        self.interface = interface2RL(self.global_map, 
+                                      [self.agent_x, self.agent_y, self.agent_yaw])
+        
+        local_m, local_m_uncertainty, _ = self.interface.ToSAC_reset()
+        
         # 写入观测值
         observation = {
-            "map": np.stack([map_occupancy_local, map_uncertainty_local], axis=0).astype(np.float32),
+            "map": np.stack([local_m, local_m_uncertainty], axis=0).astype(np.float32),
 
             "pose": np.array([
-                self.agent_x / self.width,
-                self.agent_y / self.height,
-                self.agent_yaw / (2 * math.pi),
-                self.goal_x / self.width,
-                self.goal_y / self.height,
-                self.goal_yaw / (2 * math.pi)
+                self.agent_x / self.ratio_x,
+                self.agent_y / self.ratio_y,
+                self.agent_yaw / self.ratio_yaw,
+                self.goal_x / self.ratio_x,
+                self.goal_y / self.ratio_y,
+                self.goal_yaw / self.ratio_yaw
             ], dtype=np.float32)
         }
         
         return observation, {}
 
-    def step(self, action): # bugggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggg
+    def step(self, action): 
         '''
         返回值
         observation	    observation	        下一时刻的观测
@@ -136,9 +135,112 @@ class DM_env(gym.Env):
         '''
         # 执行动作，更新环境状态
         self.step_count += 1
-        return observation, reward, done, False, info
-    
 
+        distance_MH = abs(self.agent_x - self.goal_x) + abs(self.agent_y - self.goal_y)
+        distance_Euclidean = math.sqrt((self.agent_x - self.goal_x)**2 + (self.agent_y - self.goal_y)**2)
+        yaw_diff = abs(self.agent_yaw - self.goal_yaw)
+        yaw_diff = min(yaw_diff, 2*math.pi - yaw_diff)
+
+        sub_x = np.clip(self.agent_x + action[0] * self.ratio_x, 0, param.local_size_width - 1)
+        sub_y = np.clip(self.agent_y + action[1] * self.ratio_y, 0, param.local_size_height - 1)
+        sub_yaw = self.agent_yaw + action[2] * self.ratio_yaw
+        sub_goal = [sub_x, sub_y, sub_yaw]
+        
+        local_m, local_m_uncertainty, current_pose, collision = self.interface.ToSAC_step(sub_goal)
+
+        self.agent_x = current_pose[0]
+        self.agent_y = current_pose[1]
+        self.agent_yaw = current_pose[2]
+        
+        # 填充observation
+        observation = {
+                    "map": np.stack([local_m, local_m_uncertainty], axis=0).astype(np.float32),
+
+                    "pose": np.array([
+                        self.agent_x / self.ratio_x,
+                        self.agent_y / self.ratio_y,
+                        self.agent_yaw / self.ratio_yaw,
+                        self.goal_x / self.ratio_x,
+                        self.goal_y / self.ratio_y,
+                        self.goal_yaw / self.ratio_yaw
+                    ], dtype=np.float32)
+                }
+        
+        # reward
+        '''
+        REACH_GOAL_REWARD = 100.0       # 到达目标奖励
+        COLLISION_PENALTY = -100.0      # 碰撞惩罚
+        STEP_PENALTY = -1.0             # 每步惩罚
+        DISTANCE_WEIGHT = 1.0          # 距离权重
+        YAW_WEIGHT = -0.5             # 航向角权重
+        '''
+        # 距离、角度增益
+        distance_MH_new = abs(self.agent_x - self.goal_x) + abs(self.agent_y - self.goal_y)
+        distance_Euclidean_new = math.sqrt((self.agent_x - self.goal_x)**2 + (self.agent_y - self.goal_y)**2)
+        yaw_diff_new = abs(self.agent_yaw - self.goal_yaw)
+        yaw_diff_new = min(yaw_diff_new, 2*math.pi - yaw_diff_new)
+
+        # 不确定性增益
+        uncertain_gain = np.mean(local_m_uncertainty)
+        # uncertain_gain = np.max(local_m_uncertainty)
+
+        reach = self.reach_goal()
+
+        # reward计算
+        distance_reward = param.DISTANCE_WEIGHT * (distance_Euclidean - distance_Euclidean_new)
+        yaw_reward = param.YAW_WEIGHT * (yaw_diff - yaw_diff_new)
+        collision_penalty = param.COLLISION_PENALTY if collision else 0.0
+        step_penalty = param.STEP_PENALTY
+        reach_goal_reward = param.REACH_GOAL_REWARD if reach else 0.0
+
+        # 是否存在通往目标的路径？
+        # path_exist = True
+        # try:
+        #     test_path = self.interface.GetPath(self.agent_x, self.agent_y, self.agent_yaw,
+        #                                     self.goal_x, self.goal_y, self.goal_yaw)
+        #     if test_path is None:
+        #         path_exist = False
+        # except:
+        #     path_exist = False
+        
+        explore_reward = (1.0 - uncertain_gain) * param.EXPLORE_GAIN
+        # if path_exist:
+        #     # 有路：以到达目标为主
+        #     explore_reward = 0
+        # else:
+        #     # 没路：奖励探索（鼓励去高不确定性区）
+        #     explore_reward = uncertain_gain * param.EXPLORE_GAIN
+
+        reward = (distance_reward + 
+                  yaw_reward + 
+                  collision_penalty + 
+                  step_penalty + 
+                  reach_goal_reward + 
+                  explore_reward)
+        reward = np.clip(reward, -200, 200)
+
+        # 设置done和truncated
+        done = True if (reach or collision) else False
+        truncated = True if self.step_count >= self.max_steps else False
+
+        if reach:
+            print("reachhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhh")
+
+        if collision:
+            print("collisionnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnn")
+        
+        print("current.pose:",self.agent_x,self.agent_y)
+
+        # 输出info
+        info = {
+            "reach_goal": reach,
+            "collision": collision,
+            "distance_to_goal": distance_Euclidean_new,
+            "uncertainty": np.mean(local_m_uncertainty)
+        }
+        print("one steppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppp")
+        return observation, reward, done, truncated, info
+    
     def render(self, mode='human'):
         '''
         渲染环境（可选）
@@ -161,6 +263,25 @@ class DM_env(gym.Env):
         random_matrix = self.np_random.random((height, width))
         self.global_map = (random_matrix < obstacle_ratio).astype(np.uint8)
 
+    def get_easy_map(self, width=256, height=256):
+        map_ = np.zeros((height, width), dtype=np.uint8)
+
+        # 1. 四周边框
+        map_[0, :] = 1
+        map_[-1, :] = 1
+        map_[:, 0] = 1
+        map_[:, -1] = 1
+
+        # 2. 中间横墙，高 8 像素，留左右两个大缺口
+        wall_y = height // 2
+        gap = width // 4          # 每个缺口宽度
+        left_gap_start = gap
+        right_gap_start = width - gap * 2
+
+        # 横墙主体
+        map_[wall_y - 4 : wall_y + 4, left_gap_start + gap : right_gap_start] = 1
+        self.global_map = map_
+
     def get_random_free_position(self):
         '''
         获取随机的空闲位置 (x, y, yaw)
@@ -171,8 +292,17 @@ class DM_env(gym.Env):
         yaw = self.np_random.uniform(-np.pi, np.pi)
 
         return x, y, yaw
-            
+    
+    def reach_goal(self):
+        distance = math.sqrt((self.agent_x - self.goal_x)**2 + (self.agent_y - self.goal_y)**2)
+        yaw_diff = abs(self.agent_yaw - self.goal_yaw)
+        yaw_diff = min(yaw_diff, 2*math.pi - yaw_diff)
 
+        if distance < 5.0 and yaw_diff < (15.0 * math.pi / 180.0):
+            return True
+        else:
+            return False
+            
 if __name__ == "__main__":
     pass
    

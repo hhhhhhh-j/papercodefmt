@@ -3,7 +3,7 @@ import math
 import seaborn as sns
 import matplotlib.pyplot as plt
 from read_grid_map import ReadGridMap
-from HybridAstarPlanner import Hybrid_Astar as planning 
+import HybridAstarPlanner.Hybrid_Astar as planning 
 import time
 
 class param:
@@ -15,15 +15,24 @@ class param:
     # 局部地图尺寸
     local_size_width = 64
     local_size_height = 64
+    # reward 参数
+    REACH_GOAL_REWARD = 100.0       # 到达目标奖励
+    COLLISION_PENALTY = -100.0      # 碰撞惩罚
+    STEP_PENALTY = -1.0             # 每步惩罚
+    DISTANCE_WEIGHT = 1.0           # 距离权重
+    YAW_WEIGHT = -0.5               # 航向角权重
+    EXPLORE_GAIN = 1.0              # 探索奖励增益
 
 class interface2RL:
-    def __init__(self, global_map):
+    def __init__(self, global_map, init_pose = [0.0, 0.0, 0.0]):
         # 创建调用对象
         self.global_map = global_map
         self.lidar = Lidar(global_map)
 
         self.local_m = np.zeros((param.local_size_height, param.local_size_width))
         self.local_m_uncertainty = np.zeros((param.local_size_height, param.local_size_width))
+
+        self.current_pose = np.array(init_pose, dtype=np.float32)  # 车辆当前坐标和航向
 
     def get_local_map(self, global_map, X):
         '''
@@ -92,7 +101,7 @@ class interface2RL:
         '''
        
         # 生成障碍物的坐标
-        ox, oy = self.get_local_obs(self.local_m)
+        ox, oy = self.get_local_obs(self.global_map)
     
         t0 = time.time()
         # 使用Hybrid A*算法进行路径规划
@@ -138,28 +147,86 @@ class interface2RL:
         # print("Done!")
         return x,y, yaw, direction
 
-    def ToSAC_reset(self, X):
+    def ToSAC_reset(self):
         '''
         与RL reset的接口
         '''
-        pass
+        # m, m_uncertainty = self.lidar.update([self.current_pose[0], 
+        #                                       self.current_pose[1], 
+        #                                       self.current_pose[2]])
+        res = self.lidar.update([self.current_pose[0], 
+                         self.current_pose[1], 
+                         self.current_pose[2]])
+        if res is None:
+            self.local_m = np.ones((param.local_size_height, param.local_size_width))
+            self.local_m_uncertainty = np.ones((param.local_size_height, param.local_size_width))
+        else:
+            m, m_uncertainty = res
+            self.local_m = self.get_local_map(m,self.current_pose )
+            self.local_m_uncertainty = self.get_local_map(m_uncertainty, self.current_pose )
+        
+        
+        
+        return self.local_m, self.local_m_uncertainty, self.current_pose
 
-    def ToSAC_step(self, map, X, action):
+    def is_collision(self, pose):
+        '''
+        检测碰撞
+        '''
+        x = int(pose[0])
+        y = int(pose[1])
+
+        if x < 0 or x >= self.global_map.shape[1] or y < 0 or y >= self.global_map.shape[0]:
+            return True  # 越界视为碰撞
+
+        if self.global_map[y, x] >= 0.6:  # 假设大于等于0.6的概率视为障碍物
+            return True
+        else:
+            return False
+
+    def ToSAC_step(self, sub_goal):
         '''
         与RL step的接口
         '''
-        x,y,yaw,_ = self.GetPath()
 
-        for i in range(len(x)):
-            xi = x[i]
-            yi = y[i]
-            yawi = yaw[i]
-
-            m, m_uncertainty = self.lidar.update([xi, yi, yawi])
+        # x,y,yaw,_ = self.GetPath(self.current_pose[0], self.current_pose[1], self.current_pose[2],
+        #                          sub_goal[0], sub_goal[1], sub_goal[2])
+        path_result = self.GetPath(self.current_pose[0], self.current_pose[1], self.current_pose[2],
+                                  sub_goal[0], sub_goal[1], sub_goal[2])
+        if path_result is None:
+            x_new, y_new, yaw_new = self.current_pose
+            collision = True  # 也可以改成 False，看你想怎么奖励
+        else:
+            x, y, yaw, _ = path_result
+            if len(x) < 2:
+                # 规划路径太短，相当于没动
+                x_new, y_new, yaw_new = self.current_pose
+            else:
+                # 只走一步
+                x_new = x[1]
+                y_new = y[1]
+                yaw_new = yaw[1]
         
-        self.local_m = self.get_local_map(m,车辆当前坐标)
-        self.local_m_uncertainty = self.get_local_map(m_uncertainty, 车辆当前坐标 )
-        return self.local_m, self.local_m_uncertainty
+
+        # # 只走一步，更新地图
+        # if x is None or len(x) < 2:
+        #     # 可以选：停在原地 / 给个惩罚 / done = True
+        #     x_new, y_new, yaw_new = self.current_pose
+        # else:
+        #     x_new = x[1]
+        #     y_new = y[1]
+        #     yaw_new = yaw[1]
+
+        m, m_uncertainty = self.lidar.update([x_new, y_new, yaw_new])
+        self.current_pose = np.array([x_new, y_new, yaw_new])
+        
+        self.local_m = self.get_local_map(m,self.current_pose )
+        self.local_m_uncertainty = self.get_local_map(m_uncertainty, self.current_pose )
+
+        # collision
+        collision = self.is_collision(self.current_pose)
+        
+        return self.local_m, self.local_m_uncertainty, self.current_pose, collision
 
 
 
