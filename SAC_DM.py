@@ -21,8 +21,8 @@ class DM_env(gym.Env):
         self.goal_x = 0
         self.goal_y = 0
         self.goal_yaw = 0
-        self.width = 0
-        self.height = 0
+        self.width = 256
+        self.height = 256
 
         # map
         self.global_map = np.zeros((self.height, self.width), dtype=np.uint8)
@@ -30,7 +30,7 @@ class DM_env(gym.Env):
         # 缩放系数
         self.ratio_x = 16               # x缩放系数
         self.ratio_y = 16               # y缩放系数
-        self.ratio_yaw = math.pi/4      # yaw缩放系数
+        self.ratio_yaw = math.pi      # yaw缩放系数
 
         # 定义动作空间：
         '''
@@ -113,11 +113,11 @@ class DM_env(gym.Env):
             "map": np.stack([local_m, local_m_uncertainty], axis=0).astype(np.float32),
 
             "pose": np.array([
-                self.agent_x / self.ratio_x,
-                self.agent_y / self.ratio_y,
+                self.agent_x / self.width,
+                self.agent_y / self.height,
                 self.agent_yaw / self.ratio_yaw,
-                self.goal_x / self.ratio_x,
-                self.goal_y / self.ratio_y,
+                self.goal_x / self.width,
+                self.goal_y / self.height,
                 self.goal_yaw / self.ratio_yaw
             ], dtype=np.float32)
         }
@@ -157,11 +157,11 @@ class DM_env(gym.Env):
                     "map": np.stack([local_m, local_m_uncertainty], axis=0).astype(np.float32),
 
                     "pose": np.array([
-                        self.agent_x / self.ratio_x,
-                        self.agent_y / self.ratio_y,
+                        self.agent_x / self.width,
+                        self.agent_y / self.height,
                         self.agent_yaw / self.ratio_yaw,
-                        self.goal_x / self.ratio_x,
-                        self.goal_y / self.ratio_y,
+                        self.goal_x / self.width,
+                        self.goal_y / self.height,
                         self.goal_yaw / self.ratio_yaw
                     ], dtype=np.float32)
                 }
@@ -223,6 +223,7 @@ class DM_env(gym.Env):
         done = True if (reach or collision) else False
         truncated = True if self.step_count >= self.max_steps else False
 
+        # 调试信息
         if reach:
             print("reachhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhh")
 
@@ -230,6 +231,8 @@ class DM_env(gym.Env):
             print("collisionnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnn")
         
         print("current.pose:",self.agent_x,self.agent_y)
+        print("goal:",self.goal_x,self.goal_y)
+        print("reward:",reward)
 
         # 输出info
         info = {
@@ -238,7 +241,7 @@ class DM_env(gym.Env):
             "distance_to_goal": distance_Euclidean_new,
             "uncertainty": np.mean(local_m_uncertainty)
         }
-        print("one steppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppp")
+        print("one step")
         return observation, reward, done, truncated, info
     
     def render(self, mode='human'):
