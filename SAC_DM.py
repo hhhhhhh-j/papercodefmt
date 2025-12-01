@@ -24,13 +24,15 @@ class DM_env(gym.Env):
         self.width = 256
         self.height = 256
 
+        self.timestep = 0
+
         # map
         self.global_map = np.zeros((self.height, self.width), dtype=np.uint8)
 
         # 缩放系数
-        self.ratio_x = 16               # x缩放系数
-        self.ratio_y = 16               # y缩放系数
-        self.ratio_yaw = math.pi      # yaw缩放系数
+        self.ratio_x = 5               # x缩放系数
+        self.ratio_y = 5               # y缩放系数
+        self.ratio_yaw = math.pi / 4      # yaw缩放系数
 
         # 定义动作空间：
         '''
@@ -115,10 +117,10 @@ class DM_env(gym.Env):
             "pose": np.array([
                 self.agent_x / self.width,
                 self.agent_y / self.height,
-                self.agent_yaw / self.ratio_yaw,
+                self.agent_yaw / math.pi,
                 self.goal_x / self.width,
                 self.goal_y / self.height,
-                self.goal_yaw / self.ratio_yaw
+                self.goal_yaw / math.pi
             ], dtype=np.float32)
         }
         
@@ -141,12 +143,15 @@ class DM_env(gym.Env):
         yaw_diff = abs(self.agent_yaw - self.goal_yaw)
         yaw_diff = min(yaw_diff, 2*math.pi - yaw_diff)
 
-        sub_x = np.clip(self.agent_x + action[0] * self.ratio_x, 0, param.local_size_width - 1)
-        sub_y = np.clip(self.agent_y + action[1] * self.ratio_y, 0, param.local_size_height - 1)
+        sub_x = np.clip(self.agent_x + action[0] * self.ratio_x, 0, param.global_size_width)
+        sub_y = np.clip(self.agent_y + action[1] * self.ratio_y, 0, param.global_size_height)
         sub_yaw = self.agent_yaw + action[2] * self.ratio_yaw
         sub_goal = [sub_x, sub_y, sub_yaw]
         
         local_m, local_m_uncertainty, current_pose, collision = self.interface.ToSAC_step(sub_goal)
+        # 就是这里 会导致NAN
+        # local_m_uncertainty = np.nan_to_num(local_m_uncertainty, nan=1.0, posinf=1.0, neginf=1.0)
+        # local_m = np.nan_to_num(local_m_uncertainty, nan=1.0, posinf=1.0, neginf=1.0)
 
         self.agent_x = current_pose[0]
         self.agent_y = current_pose[1]
@@ -159,10 +164,10 @@ class DM_env(gym.Env):
                     "pose": np.array([
                         self.agent_x / self.width,
                         self.agent_y / self.height,
-                        self.agent_yaw / self.ratio_yaw,
+                        self.agent_yaw / math.pi,
                         self.goal_x / self.width,
                         self.goal_y / self.height,
-                        self.goal_yaw / self.ratio_yaw
+                        self.goal_yaw / math.pi
                     ], dtype=np.float32)
                 }
         
@@ -192,6 +197,7 @@ class DM_env(gym.Env):
         collision_penalty = param.COLLISION_PENALTY if collision else 0.0
         step_penalty = param.STEP_PENALTY
         reach_goal_reward = param.REACH_GOAL_REWARD if reach else 0.0
+        move_reward = param.MOVE_STEP * np.linalg.norm(action[:2])
 
         # 是否存在通往目标的路径？
         # path_exist = True
@@ -203,7 +209,7 @@ class DM_env(gym.Env):
         # except:
         #     path_exist = False
         
-        explore_reward = (1.0 - uncertain_gain) * param.EXPLORE_GAIN
+        explore_reward = uncertain_gain * param.EXPLORE_GAIN
         # if path_exist:
         #     # 有路：以到达目标为主
         #     explore_reward = 0
@@ -211,12 +217,31 @@ class DM_env(gym.Env):
         #     # 没路：奖励探索（鼓励去高不确定性区）
         #     explore_reward = uncertain_gain * param.EXPLORE_GAIN
 
+        # 防止nan
+        # 1. 防止距离坐标溢出
+        distance_Euclidean = float(np.nan_to_num(distance_Euclidean, nan=500.0, posinf=500.0, neginf=500.0))
+        distance_Euclidean_new = float(np.nan_to_num(distance_Euclidean_new, nan=500.0, posinf=500.0, neginf=500.0))
+
+        # 2. 不确定性保证在 [0,1]
+        uncertain_gain = float(np.nan_to_num(uncertain_gain, nan=1.0, posinf=1.0, neginf=1.0))
+        uncertain_gain = max(0.0, min(1.0, uncertain_gain))
+
+        # 3. 航向差限制在合法范围
+        yaw_diff = float(np.nan_to_num(yaw_diff, nan=0.0))
+        yaw_diff_new = float(np.nan_to_num(yaw_diff_new, nan=0.0))
+
         reward = (distance_reward + 
                   yaw_reward + 
                   collision_penalty + 
                   step_penalty + 
                   reach_goal_reward + 
-                  explore_reward)
+                  explore_reward + 
+                  move_reward)
+        
+        # if not np.isfinite(reward):
+        #     print("reward NaN detected！")
+        #     reward = -10.0  # 给一个安全 penalty
+
         reward = np.clip(reward, -200, 200)
 
         # 设置done和truncated
@@ -241,7 +266,10 @@ class DM_env(gym.Env):
             "distance_to_goal": distance_Euclidean_new,
             "uncertainty": np.mean(local_m_uncertainty)
         }
-        print("one step")
+
+        self.timestep += 1
+        print("step:",self.timestep)
+        
         return observation, reward, done, truncated, info
     
     def render(self, mode='human'):
@@ -279,7 +307,7 @@ class DM_env(gym.Env):
         wall_y = height // 2
         gap = width // 4          # 每个缺口宽度
         left_gap_start = gap
-        right_gap_start = width - gap * 2
+        right_gap_start = width - gap
 
         # 横墙主体
         map_[wall_y - 4 : wall_y + 4, left_gap_start + gap : right_gap_start] = 1

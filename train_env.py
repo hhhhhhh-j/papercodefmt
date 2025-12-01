@@ -12,16 +12,19 @@ class param:
     YAW_RESO = np.deg2rad(15.0)     # 航向角分辨率
     WB = 3.5                        # 车辆的轴距 (WheelBase)
     MOVE_STEP = 0.4                 # 插值分辨率，表示在路径中每个节点之间的距离
-    # 局部地图尺寸
+    # 地图尺寸
     local_size_width = 64
     local_size_height = 64
+    global_size_width = 256
+    global_size_height = 256
     # reward 参数
     REACH_GOAL_REWARD = 100.0       # 到达目标奖励
     COLLISION_PENALTY = -100.0      # 碰撞惩罚
-    STEP_PENALTY = -1.0             # 每步惩罚
-    DISTANCE_WEIGHT = 1.0           # 距离权重
+    STEP_PENALTY = 0.0              # 每步惩罚
+    DISTANCE_WEIGHT = 2.0           # 距离权重
     YAW_WEIGHT = -0.5               # 航向角权重
-    EXPLORE_GAIN = 1.0              # 探索奖励增益
+    EXPLORE_GAIN = 10.0             # 探索奖励增益
+    MOVE_REWARD = 10000.0           # 防止局部塌缩
 
 class interface2RL:
     def __init__(self, global_map, init_pose = [0.0, 0.0, 0.0]):
@@ -189,25 +192,25 @@ class interface2RL:
         与RL step的接口
         '''
 
+        # 规划启用
         # x,y,yaw,_ = self.GetPath(self.current_pose[0], self.current_pose[1], self.current_pose[2],
         #                          sub_goal[0], sub_goal[1], sub_goal[2])
-        path_result = self.GetPath(self.current_pose[0], self.current_pose[1], self.current_pose[2],
-                                  sub_goal[0], sub_goal[1], sub_goal[2])
-        if path_result is None:
-            x_new, y_new, yaw_new = self.current_pose
-            collision = True  # 也可以改成 False，看你想怎么奖励
-        else:
-            x, y, yaw, _ = path_result
-            if len(x) < 2:
-                # 规划路径太短，相当于没动
-                x_new, y_new, yaw_new = self.current_pose
-            else:
-                # 只走一步
-                x_new = x[1]
-                y_new = y[1]
-                yaw_new = yaw[1]
+        # path_result = self.GetPath(self.current_pose[0], self.current_pose[1], self.current_pose[2],
+        #                           sub_goal[0], sub_goal[1], sub_goal[2])
+        # if path_result is None:
+        #     x_new, y_new, yaw_new = self.current_pose
+        #     collision = True  # 也可以改成 False，看你想怎么奖励
+        # else:
+        #     x, y, yaw, _ = path_result
+        #     if len(x) < 2:
+        #         # 规划路径太短，相当于没动
+        #         x_new, y_new, yaw_new = self.current_pose
+        #     else:
+        #         # 只走一步
+        #         x_new = x[1]
+        #         y_new = y[1]
+        #         yaw_new = yaw[1]
         
-
         # # 只走一步，更新地图
         # if x is None or len(x) < 2:
         #     # 可以选：停在原地 / 给个惩罚 / done = True
@@ -216,6 +219,10 @@ class interface2RL:
         #     x_new = x[1]
         #     y_new = y[1]
         #     yaw_new = yaw[1]
+
+        x_new = sub_goal[0]
+        y_new = sub_goal[1]
+        yaw_new = sub_goal[2]
 
         m, m_uncertainty = self.lidar.update([x_new, y_new, yaw_new])
         self.current_pose = np.array([x_new, y_new, yaw_new])
@@ -346,9 +353,9 @@ class Lidar:
         #     for j in range((int(x_min)), int(x_max)):
         #         self.m_uncertainty[i,j] = (-(self.m[i,j] * np.log(self.m[i,j]) + (1 - self.m[i,j]) * np.log(1 - self.m[i,j])))/np.log(2) # 计算不确定性(信息熵)
         
-        m = np.clip(self.m, 1e-6, 1 - 1e-6)
-        self.m_uncertainty = -(m * np.log(m) + (1 - m) * np.log(1 - m))
+        self.m_uncertainty = -(self.m * np.log(self.m) + (1 - self.m) * np.log(1 - self.m))
         self.m_uncertainty /= np.log(2)
+        self.m_uncertainty = np.clip(self.m_uncertainty, 1e-6, 1 - 1e-6)
 
         self.m_uncertaintys.append(self.m_uncertainty) # 存储当前帧的不确定性地图
 
@@ -364,13 +371,21 @@ class Lidar:
         meas_r = self.get_ranges(X)
         meas_rs.append(meas_r)
         invmod = self.inverse_scanner(X,meas_r)
-        invmod = np.clip(invmod, 1e-6, 1 - 1e-6)  # 避免log(0)
+        invmod = np.clip(invmod, 0.1, 0.99)  # 避免log(0)
         invmods.append(invmod)
         # Calculate and update the log odds of our occupancy grid, given our measured occupancy probabilities from the inverse model.
-        self.L = np.log(np.divide(invmod, np.subtract(1, invmod))) + self.L - self.L0 # concernnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnn
+        # self.L = np.log(invmod / (1 - invmod)) + self.L - self.L0 # concernnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnn
         
+        # 计算逆模型对应的 log-odds
+        inv_logodds = np.log(invmod / (1 - invmod))
+        # 更新
+        self.L = self.L + inv_logodds - self.L0
+        # Clamp 避免爆炸
+        self.L = np.clip(self.L, -20, 20)
+
         # Calculate a grid of probabilities from the log odds.
         self.m = np.divide(np.exp(self.L), np.add(1, np.exp(self.L)))
+        self.m = np.clip(self.m, 1e-6, 1 - 1e-6)
 
         self.ms.append(self.m)
 
@@ -408,11 +423,13 @@ class Lidar:
         """
         更新感知概率地图和不确定性地图
         """
-        if X[0]<0 or X[0]>=self.N*self.reso or X[1]<0 or X[1]>=self.M*self.reso:
-            print("Warning: Lidar position out of bounds.")
-            return None
-        m = self.generate_probability_map(X)
-        m_uncertainty = self.get_uncertainty_map(X)
+        X_clipped = np.array([
+            np.clip(X[0], 0, self.N * self.reso - 1),
+            np.clip(X[1], 0, self.M * self.reso - 1),
+            X[2]   # yaw 不需要 clip
+        ])
+        m = self.generate_probability_map(X_clipped)
+        m_uncertainty = self.get_uncertainty_map(X_clipped)
 
         return m, m_uncertainty
     
