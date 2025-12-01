@@ -3,7 +3,6 @@ import math
 import seaborn as sns
 import matplotlib.pyplot as plt
 from read_grid_map import ReadGridMap
-import HybridAstarPlanner.Hybrid_Astar as planning 
 import time
 
 class param:
@@ -17,7 +16,12 @@ class param:
     local_size_height = 64
     global_size_width = 256
     global_size_height = 256
-    # reward 参数
+    SEED = None                     # 随机地图种子
+    # action 缩放系数
+    RATIO_x = 5               # x缩放系数
+    RATIO_y = 5               # y缩放系数
+    RATIO_yaw = math.pi / 4      # yaw缩放系数
+    # reward 系数
     REACH_GOAL_REWARD = 100.0       # 到达目标奖励
     COLLISION_PENALTY = -100.0      # 碰撞惩罚
     STEP_PENALTY = 0.0              # 每步惩罚
@@ -25,17 +29,22 @@ class param:
     YAW_WEIGHT = -0.5               # 航向角权重
     EXPLORE_GAIN = 10.0             # 探索奖励增益
     MOVE_REWARD = 10000.0           # 防止局部塌缩
+    # lidar参数
+    RESO = 1
+    MEAS_PHI = np.arange(-0.4, 0.4, 0.05)
+    RMAX = 30 # Max beam range.
+    ALPHA = 1 # Width of an obstacle (distance about measurement to fill in).
+    BETA = 0.05 # Angular width of a beam.
 
 class interface2RL:
     def __init__(self, global_map, init_pose = [0.0, 0.0, 0.0]):
         # 创建调用对象
         self.global_map = global_map
         self.lidar = Lidar(global_map)
-
+        # 全局变量
         self.local_m = np.zeros((param.local_size_height, param.local_size_width))
         self.local_m_uncertainty = np.zeros((param.local_size_height, param.local_size_width))
-
-        self.current_pose = np.array(init_pose, dtype=np.float32)  # 车辆当前坐标和航向
+        self.current_pose = np.array(init_pose, dtype=np.float32) 
 
     def get_local_map(self, global_map, X):
         '''
@@ -107,6 +116,7 @@ class interface2RL:
         ox, oy = self.get_local_obs(self.global_map)
     
         t0 = time.time()
+
         # 使用Hybrid A*算法进行路径规划
         path = planning.hybrid_astar_planning(sx, sy, syaw0, gx, gy, gyaw0,ox, oy, 
                                               param.XY_RESO, param.YAW_RESO)
@@ -122,44 +132,17 @@ class interface2RL:
         y = path.y
         yaw = path.yaw
         direction = path.direction
-        # print(x)
-        # print(y)
-        # print(yaw)
-    
-        # 在每个时刻绘制车辆的轨迹和障碍物
-        # for k in range(len(x)):
-        #     plt.cla()         # 清空当前图形 
-        #     plt.plot(ox, oy, "sk")   # 绘制障碍物和规划路径
-        #     plt.plot(x, y, linewidth=1.5, color='r')
-    
-        #     # 计算当前时刻的方向和转向角
-        #     if k < len(x) - 2:
-        #         dy = (yaw[k + 1] - yaw[k]) / param.MOVE_STEP
-        #         steer = planning.rs.pi_2_pi(math.atan(-param.WB * dy / direction[k]))
-        #     else:
-        #         steer = 0.0
-    
-            # 绘制车辆
-            # planning.draw_car(gx, gy, gyaw0, 0.0, 'dimgray')   # 绘制目标点
-            # planning.draw_car(x[k], y[k], yaw[k], steer)       # 绘制当前车辆状态
-            # plt.title("Hybrid A*")
-            # plt.axis("equal")
-            # plt.pause(0.0001)
-    
-        # plt.show()
-        # print("Done!")
+
         return x,y, yaw, direction
 
     def ToSAC_reset(self):
         '''
         与RL reset的接口
         '''
-        # m, m_uncertainty = self.lidar.update([self.current_pose[0], 
-        #                                       self.current_pose[1], 
-        #                                       self.current_pose[2]])
         res = self.lidar.update([self.current_pose[0], 
                          self.current_pose[1], 
                          self.current_pose[2]])
+        # 防止map无效
         if res is None:
             self.local_m = np.ones((param.local_size_height, param.local_size_width))
             self.local_m_uncertainty = np.ones((param.local_size_height, param.local_size_width))
@@ -167,8 +150,6 @@ class interface2RL:
             m, m_uncertainty = res
             self.local_m = self.get_local_map(m,self.current_pose )
             self.local_m_uncertainty = self.get_local_map(m_uncertainty, self.current_pose )
-        
-        
         
         return self.local_m, self.local_m_uncertainty, self.current_pose
 
@@ -191,35 +172,6 @@ class interface2RL:
         '''
         与RL step的接口
         '''
-
-        # 规划启用
-        # x,y,yaw,_ = self.GetPath(self.current_pose[0], self.current_pose[1], self.current_pose[2],
-        #                          sub_goal[0], sub_goal[1], sub_goal[2])
-        # path_result = self.GetPath(self.current_pose[0], self.current_pose[1], self.current_pose[2],
-        #                           sub_goal[0], sub_goal[1], sub_goal[2])
-        # if path_result is None:
-        #     x_new, y_new, yaw_new = self.current_pose
-        #     collision = True  # 也可以改成 False，看你想怎么奖励
-        # else:
-        #     x, y, yaw, _ = path_result
-        #     if len(x) < 2:
-        #         # 规划路径太短，相当于没动
-        #         x_new, y_new, yaw_new = self.current_pose
-        #     else:
-        #         # 只走一步
-        #         x_new = x[1]
-        #         y_new = y[1]
-        #         yaw_new = yaw[1]
-        
-        # # 只走一步，更新地图
-        # if x is None or len(x) < 2:
-        #     # 可以选：停在原地 / 给个惩罚 / done = True
-        #     x_new, y_new, yaw_new = self.current_pose
-        # else:
-        #     x_new = x[1]
-        #     y_new = y[1]
-        #     yaw_new = yaw[1]
-
         x_new = sub_goal[0]
         y_new = sub_goal[1]
         yaw_new = sub_goal[2]
@@ -230,7 +182,7 @@ class interface2RL:
         self.local_m = self.get_local_map(m,self.current_pose )
         self.local_m_uncertainty = self.get_local_map(m_uncertainty, self.current_pose )
 
-        # collision
+        # 是否碰撞
         collision = self.is_collision(self.current_pose)
         
         return self.local_m, self.local_m_uncertainty, self.current_pose, collision
@@ -238,21 +190,22 @@ class interface2RL:
 
 
 class Lidar:
-    def __init__(self, true_map, reso=1):
+    def __init__(self, true_map):
         self.true_map = true_map
-        self.reso = reso
+        self.reso = param.RESO
         # Parameters for the sensor model.
-        self.meas_phi = np.arange(-0.4, 0.4, 0.05)
-        self.rmax = 30 # Max beam range.
-        self.alpha = 1 # Width of an obstacle (distance about measurement to fill in).
-        self.beta = 0.05 # Angular width of a beam.
+        self.meas_phi = param.MEAS_PHI
+        self.rmax = param.RMAX
+        self.alpha = param.ALPHA
+        self.beta = param.BETA
+        # lidar全局变量
         (self.M, self.N) = np.shape(true_map)
-        self.L0 = np.zeros((self.M, self.N))  # Prior log-odds
+        self.L0 = np.zeros((self.M, self.N))                # Prior log-odds
         self.L = np.zeros((self.M, self.N))
-        self.m = np.full((self.M, self.N), 0.5)  # 初始化感知概率地图为0.5
-        self.ms = []  # 存储每一帧的感知概率地图
-        self.m_uncertainty = np.full((self.M, self.N),1)  # 初始化不确定性地图
-        self.m_uncertaintys = []  # 存储每一帧的不确定性地图
+        self.m = np.full((self.M, self.N), 0.5)             # 初始化感知概率地图为0.5
+        self.ms = []                                        # 存储每一帧的感知概率地图
+        self.m_uncertainty = np.full((self.M, self.N),1)    # 初始化不确定性地图
+        self.m_uncertaintys = []                            # 存储每一帧的不确定性地图
 
     def get_ranges(self, X):
         """
@@ -262,7 +215,6 @@ class Lidar:
         rmax     : 最大量程
         返回值   : 每条激光束的量测距离数组 meas_r
         """
-        
         x = X[0] / self.reso
         y = X[1] / self.reso
         theta = X[2]
@@ -294,8 +246,6 @@ class Lidar:
         返回 m(i,j) : 当前帧观测下，每个格子的“占用概率” (0.3/0.5/0.7)
         """
         x_ind, y_ind, theta = X[0]/self.reso, X[1]/self.reso, X[2]
-        # x_max = x_ind + self.rmax / self.reso
-        # y_max = y_ind + self.rmax / self.reso
 
         r_grid = int(self.rmax / self.reso)
 
@@ -339,25 +289,11 @@ class Lidar:
         """
         生成不确定性地图
         """
-        
-        # x_ind, y_ind, theta = X[0]/self.reso, X[1]/self.reso, X[2]
-        # x_max = min(self.N, x_ind + self.rmax / self.reso)
-        # y_max = min(self.M, y_ind + self.rmax / self.reso)
-        # x_min = max(0, x_ind - self.rmax / self.reso)
-        # y_min = max(0, y_ind - self.rmax / self.reso)
-
-        # self.m = np.clip(self.m, 1e-6, 1 - 1e-6)  # 避免log(0)
-
-
-        # for i in range(int(y_min), int(y_max)):
-        #     for j in range((int(x_min)), int(x_max)):
-        #         self.m_uncertainty[i,j] = (-(self.m[i,j] * np.log(self.m[i,j]) + (1 - self.m[i,j]) * np.log(1 - self.m[i,j])))/np.log(2) # 计算不确定性(信息熵)
-        
         self.m_uncertainty = -(self.m * np.log(self.m) + (1 - self.m) * np.log(1 - self.m))
         self.m_uncertainty /= np.log(2)
         self.m_uncertainty = np.clip(self.m_uncertainty, 1e-6, 1 - 1e-6)
 
-        self.m_uncertaintys.append(self.m_uncertainty) # 存储当前帧的不确定性地图
+        self.m_uncertaintys.append(self.m_uncertainty)          
 
         return self.m_uncertainty
 
@@ -373,8 +309,6 @@ class Lidar:
         invmod = self.inverse_scanner(X,meas_r)
         invmod = np.clip(invmod, 0.1, 0.99)  # 避免log(0)
         invmods.append(invmod)
-        # Calculate and update the log odds of our occupancy grid, given our measured occupancy probabilities from the inverse model.
-        # self.L = np.log(invmod / (1 - invmod)) + self.L - self.L0 # concernnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnn
         
         # 计算逆模型对应的 log-odds
         inv_logodds = np.log(invmod / (1 - invmod))
@@ -391,34 +325,6 @@ class Lidar:
 
         return self.m
 
-        # Main simulation loop.
-        # for t in range(1, len(time_steps)):
-        #     # Perform robot motion.
-        #     move = np.add(x[0:2, t-1], u[:, u_i]) 
-        #     # If we hit the map boundaries, or a collision would occur, remain still.
-        #     if (move[0] >= M - 1) or (move[1] >= N - 1) or (move[0] &lt;= 0) or (move[1] &lt;= 0) or true_map[int(round(move[0])), int(round(move[1]))] == 1:
-        #         x[:, t] = x[:, t-1]
-        #         u_i = (u_i + 1) % 4
-        #     else:
-        #         x[0:2, t] = move
-        #     x[2, t] = (x[2, t-1] + w[t]) % (2 * math.pi)
-            
-        #     # Gather the measurement range data, which we will convert to occupancy probabilities
-        #     meas_r = get_ranges(true_map, x[:, t], meas_phi, rmax)
-        #     meas_rs.append(meas_r)
-            
-        #     # Given our range measurements and our robot location, apply inverse scanner model
-        #     invmod = inverse_scanner(M, N, x[0, t], x[1, t], x[2, t], meas_phi, meas_r, rmax, alpha, beta)
-        #     invmods.append(invmod)
-            
-        #     # Calculate and update the log odds of our occupancy grid, given our measured occupancy probabilities from the inverse model.
-        #     L = np.log(np.divide(invmod, np.subtract(1, invmod))) + L - L0
-            
-            
-        #     # Calculate a grid of probabilities from the log odds.
-        #     m = np.divide(np.exp(L), np.add(1, np.exp(L)))
-        #     ms.append(m)
-
     def update(self, X):
         """
         更新感知概率地图和不确定性地图
@@ -426,7 +332,7 @@ class Lidar:
         X_clipped = np.array([
             np.clip(X[0], 0, self.N * self.reso - 1),
             np.clip(X[1], 0, self.M * self.reso - 1),
-            X[2]   # yaw 不需要 clip
+            X[2]   
         ])
         m = self.generate_probability_map(X_clipped)
         m_uncertainty = self.get_uncertainty_map(X_clipped)
@@ -437,7 +343,6 @@ def main():
     '''
     测试代码
     '''
-
     # 读取地图
     map_converter = ReadGridMap()
     big_map,small_map = map_converter.convert("/home/fmt/decision_making/sb3_SAC/map/map_basic.png")
@@ -464,11 +369,12 @@ def main():
     fig.colorbar(img1, ax=axes[1], fraction=0.046, pad=0.04)
     axes[1].set_title("Original grid map")
 
-    # 风格2 
+    # 风格1 
     img2 = axes[2].imshow(uncertainty_map, cmap='jet', origin='lower', vmin=0, vmax=1)
     fig.colorbar(img2, ax=axes[2], fraction=0.046, pad=0.04)
     axes[2].set_title("Uncertainty map")
 
+    # 风格2
     # sns.heatmap(
     #     uncertainty_map,
     #     ax=axes[2],
@@ -486,5 +392,14 @@ def main():
     plt.show()
 
 if __name__ == "__main__":
-    inte = interface2RL()
-    inte.GetPath()
+    '''
+    目前仍存在的问题
+    1.环境是否太简单，如何让其更真实一些
+    2.感知不确定性如何衡量，现在用信息熵衡量能否满足要求
+    3.如何体现越野场景（地形起伏大，只用一个地图来代替是否可行）
+    4.传感器模型没有噪声，如何体现不确定性（针对当前技术，传感器噪声是否可以忽略，调研当前传感器
+        技术水平，评估lidar模型是否合理）
+    5.如何融合点云数据
+    6.保存环境数据进行可视化
+    '''
+    pass

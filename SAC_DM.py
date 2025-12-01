@@ -11,36 +11,34 @@ from train_env import interface2RL
 class DM_env(gym.Env):
     def __init__(self):
         super(DM_env, self).__init__()
-        # 环境参数
+        # 参数
         self.step_count = 0
         self.max_steps = 10000
-        self.np_random, _ = seeding.np_random(None)
+        self.seed = param.SEED
+        self.width = param.global_size_width
+        self.height = param.global_size_height
+        # action 缩放系数
+        self.ratio_x = param.RATIO_x
+        self.ratio_y = param.RATIO_y
+        self.ratio_yaw = param.RATIO_yaw
+        # 全局变量
+        self.np_random, _ = seeding.np_random(self.seed)
         self.agent_x = 0
         self.agent_y = 0
         self.agent_yaw = 0
         self.goal_x = 0
         self.goal_y = 0
         self.goal_yaw = 0
-        self.width = 256
-        self.height = 256
-
         self.timestep = 0
-
-        # map
         self.global_map = np.zeros((self.height, self.width), dtype=np.uint8)
-
-        # 缩放系数
-        self.ratio_x = 5               # x缩放系数
-        self.ratio_y = 5               # y缩放系数
-        self.ratio_yaw = math.pi / 4      # yaw缩放系数
 
         # 定义动作空间：
         '''
         子目标点(x,y)
         '''
         self.action_space = spaces.Box(
-            low=np.array([-1.0, -1.0, -1.0]), # sub_goal_x/100, sub_goal_y/100, yaw/2pi
-            high=np.array([1.0, 1.0, 1.0]), # sub_goal_x/100, sub_goal_y/100, yaw/2pi
+            low=np.array([-1.0, -1.0, -1.0]), 
+            high=np.array([1.0, 1.0, 1.0]), 
             shape=(3,),
             dtype=np.float32
         ) 
@@ -68,19 +66,6 @@ class DM_env(gym.Env):
             )
         })
 
-        # # 定义状态空间
-        # self.state = {
-        #     "map": self.global_map,
-        #     "pose": np.array([
-        #         self.agent_x,
-        #         self.agent_y,
-        #         self.agent_yaw,
-        #         self.goal_x,
-        #         self.goal_y,
-        #         self.goal_yaw
-        #     ])
-        # }
-
     def reset(self, *, seed=None, options=None):
         '''
         -重置环境状态
@@ -92,22 +77,19 @@ class DM_env(gym.Env):
 
         self.step_count = 0
 
-        # 随机生成地图
-        # self.generate_random_map(seed = seed) # 随机生成地图 -self.global_map
-        self.get_easy_map()
+        # 生成地图
+        # self.generate_random_map(seed = seed)     # 随机生成地图 
+        self.get_easy_map()                         # 生成简单测试地图
 
         # 随机生成智能体和目标点位置（注意要避开障碍物）
         self.agent_x,self.agent_y,self.agent_yaw = self.get_random_free_position() 
-        # while True:
-        #     self.goal_x,self.goal_y,self.goal_yaw = self.get_random_free_position()
-        #     if abs(self.goal_x - self.agent_x) + abs(self.goal_y - self.agent_y) > 30:
-        #         break
         self.goal_x,self.goal_y,self.goal_yaw = self.get_random_free_position() 
 
-        # 获取初始观测值（map_uncertainty、map_occupancy）
+        # 初始化创建接口对象
         self.interface = interface2RL(self.global_map, 
                                       [self.agent_x, self.agent_y, self.agent_yaw])
         
+        # 获取初始观测值（map_uncertainty、map_occupancy）
         local_m, local_m_uncertainty, _ = self.interface.ToSAC_reset()
         
         # 写入观测值
@@ -138,26 +120,26 @@ class DM_env(gym.Env):
         # 执行动作，更新环境状态
         self.step_count += 1
 
+        # 计算上一时刻与终点的distance和yaw
         distance_MH = abs(self.agent_x - self.goal_x) + abs(self.agent_y - self.goal_y)
         distance_Euclidean = math.sqrt((self.agent_x - self.goal_x)**2 + (self.agent_y - self.goal_y)**2)
         yaw_diff = abs(self.agent_yaw - self.goal_yaw)
         yaw_diff = min(yaw_diff, 2*math.pi - yaw_diff)
 
+        # 计算 action - sub goal
         sub_x = np.clip(self.agent_x + action[0] * self.ratio_x, 0, param.global_size_width)
         sub_y = np.clip(self.agent_y + action[1] * self.ratio_y, 0, param.global_size_height)
         sub_yaw = self.agent_yaw + action[2] * self.ratio_yaw
         sub_goal = [sub_x, sub_y, sub_yaw]
         
+        # 更新局部map与pose
         local_m, local_m_uncertainty, current_pose, collision = self.interface.ToSAC_step(sub_goal)
-        # 就是这里 会导致NAN
-        # local_m_uncertainty = np.nan_to_num(local_m_uncertainty, nan=1.0, posinf=1.0, neginf=1.0)
-        # local_m = np.nan_to_num(local_m_uncertainty, nan=1.0, posinf=1.0, neginf=1.0)
 
         self.agent_x = current_pose[0]
         self.agent_y = current_pose[1]
         self.agent_yaw = current_pose[2]
         
-        # 填充observation
+        # -----填充observation-----
         observation = {
                     "map": np.stack([local_m, local_m_uncertainty], axis=0).astype(np.float32),
 
@@ -171,21 +153,14 @@ class DM_env(gym.Env):
                     ], dtype=np.float32)
                 }
         
-        # reward
-        '''
-        REACH_GOAL_REWARD = 100.0       # 到达目标奖励
-        COLLISION_PENALTY = -100.0      # 碰撞惩罚
-        STEP_PENALTY = -1.0             # 每步惩罚
-        DISTANCE_WEIGHT = 1.0          # 距离权重
-        YAW_WEIGHT = -0.5             # 航向角权重
-        '''
-        # 距离、角度增益
+        # -----reward-----
+        # 计算当前时刻与终点的distance和yaw
         distance_MH_new = abs(self.agent_x - self.goal_x) + abs(self.agent_y - self.goal_y)
         distance_Euclidean_new = math.sqrt((self.agent_x - self.goal_x)**2 + (self.agent_y - self.goal_y)**2)
         yaw_diff_new = abs(self.agent_yaw - self.goal_yaw)
         yaw_diff_new = min(yaw_diff_new, 2*math.pi - yaw_diff_new)
 
-        # 不确定性增益
+        # 不确定性增益（两种可选，后续可优化这部分）
         uncertain_gain = np.mean(local_m_uncertainty)
         # uncertain_gain = np.max(local_m_uncertainty)
 
@@ -198,26 +173,9 @@ class DM_env(gym.Env):
         step_penalty = param.STEP_PENALTY
         reach_goal_reward = param.REACH_GOAL_REWARD if reach else 0.0
         move_reward = param.MOVE_STEP * np.linalg.norm(action[:2])
+        explore_reward = param.EXPLORE_GAIN * uncertain_gain
 
-        # 是否存在通往目标的路径？
-        # path_exist = True
-        # try:
-        #     test_path = self.interface.GetPath(self.agent_x, self.agent_y, self.agent_yaw,
-        #                                     self.goal_x, self.goal_y, self.goal_yaw)
-        #     if test_path is None:
-        #         path_exist = False
-        # except:
-        #     path_exist = False
-        
-        explore_reward = uncertain_gain * param.EXPLORE_GAIN
-        # if path_exist:
-        #     # 有路：以到达目标为主
-        #     explore_reward = 0
-        # else:
-        #     # 没路：奖励探索（鼓励去高不确定性区）
-        #     explore_reward = uncertain_gain * param.EXPLORE_GAIN
-
-        # 防止nan
+        # 防止程序崩溃
         # 1. 防止距离坐标溢出
         distance_Euclidean = float(np.nan_to_num(distance_Euclidean, nan=500.0, posinf=500.0, neginf=500.0))
         distance_Euclidean_new = float(np.nan_to_num(distance_Euclidean_new, nan=500.0, posinf=500.0, neginf=500.0))
@@ -237,29 +195,25 @@ class DM_env(gym.Env):
                   reach_goal_reward + 
                   explore_reward + 
                   move_reward)
-        
-        # if not np.isfinite(reward):
-        #     print("reward NaN detected！")
-        #     reward = -10.0  # 给一个安全 penalty
 
         reward = np.clip(reward, -200, 200)
 
-        # 设置done和truncated
+        # -----设置done和truncated-----
         done = True if (reach or collision) else False
         truncated = True if self.step_count >= self.max_steps else False
 
-        # 调试信息
+        # -----调试信息-----
         if reach:
             print("reachhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhh")
 
         if collision:
-            print("collisionnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnn")
+            print("collisionnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnn")
         
         print("current.pose:",self.agent_x,self.agent_y)
         print("goal:",self.goal_x,self.goal_y)
         print("reward:",reward)
 
-        # 输出info
+        # -----输出info-----
         info = {
             "reach_goal": reach,
             "collision": collision,
@@ -335,6 +289,16 @@ class DM_env(gym.Env):
             return False
             
 if __name__ == "__main__":
+    '''
+    待完善部分
+    1.动作空间是否可以直接设计为 throttle，yaw
+    2.地图：如何随机的生成合理（具备可行性，满足越野场景）的地图
+    3.奖励函数目前不完善，可能有错误
+    4.状态空间是否可以加入一些视觉的东西
+    5.是否要用开源数据集去跑
+    6.如何用render进行可视化
+    7.后续是否要用pybullet来跑
+    '''
     pass
    
 
