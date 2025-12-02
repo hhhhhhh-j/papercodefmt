@@ -2,6 +2,7 @@ import gymnasium as gym
 import register_env
 from stable_baselines3 import SAC
 from custom_cnn import CustomCNN
+from stable_baselines3.common.callbacks import BaseCallback
 
 print("Start Training")
 env = gym.make("DM-v0")

@@ -7,6 +7,8 @@ from train_env import Lidar
 from train_env import param
 from read_grid_map import ReadGridMap # 读取真实栅格地图
 from train_env import interface2RL
+import matplotlib.pyplot as plt
+from draw import draw_agent
 
 class DM_env(gym.Env):
     def __init__(self):
@@ -21,6 +23,9 @@ class DM_env(gym.Env):
         self.ratio_x = param.RATIO_x
         self.ratio_y = param.RATIO_y
         self.ratio_yaw = param.RATIO_yaw
+        # render可视化参数
+        plt.ion()
+        self.fig, self.ax = plt.subplots(1, 2, figsize=(8,4))
         # 全局变量
         self.np_random, _ = seeding.np_random(self.seed)
         self.agent_x = 0
@@ -31,6 +36,11 @@ class DM_env(gym.Env):
         self.goal_yaw = 0
         self.timestep = 0
         self.global_map = np.zeros((self.height, self.width), dtype=np.uint8)
+        self.local_m = np.ones((param.local_size_height, param.local_size_width), dtype=np.uint8)
+        self.local_m_uncertainty = np.ones((param.local_size_height, param.local_size_width), dtype=np.uint8)
+        self.path = 0
+        self.global_occupy_map = 0
+        self.global_uncertainty_map = 0
 
         # 定义动作空间：
         '''
@@ -91,6 +101,9 @@ class DM_env(gym.Env):
         
         # 获取初始观测值（map_uncertainty、map_occupancy）
         local_m, local_m_uncertainty, _ = self.interface.ToSAC_reset()
+
+        self.local_m = local_m
+        self.local_m_uncertainty = local_m_uncertainty
         
         # 写入观测值
         observation = {
@@ -138,6 +151,8 @@ class DM_env(gym.Env):
         self.agent_x = current_pose[0]
         self.agent_y = current_pose[1]
         self.agent_yaw = current_pose[2]
+        self.local_m = local_m
+        self.local_m_uncertainty = local_m_uncertainty
         
         # -----填充observation-----
         observation = {
@@ -233,7 +248,32 @@ class DM_env(gym.Env):
         'human'：渲染到屏幕
         'rgb_array'：返回RGB图像数组
         '''
-        pass    
+        self.ax[0].clear()
+        self.ax[1].clear()
+
+        x_min = self.agent_x - (param.local_size_width)/2
+        x_max = self.agent_x + (param.local_size_width)/2
+        y_min = self.agent_y - (param.local_size_height)/2
+        y_max = self.agent_y + (param.local_size_height)/2
+
+         # --- 左图：local map ---
+        self.ax[0].clear()
+        self.ax[0].imshow(self.local_m, cmap="gray_r", 
+                          extent=[ x_max, x_min, y_min, y_max])
+        self.ax[0].set_title("Local Map")
+
+        # --- 右图：uncertainty map ---
+        self.ax[1].clear()
+        self.ax[1].imshow(self.local_m_uncertainty, cmap="turbo", vmin=0, vmax=1,
+                          extent=[x_max, x_min, y_min, y_max], # interpolation="bilinear", 
+                          interpolation="bicubic")
+        self.ax[1].set_title("Uncertainty Map")
+
+        # draw agent
+        draw_agent(self.ax[0], self.agent_x, self.agent_y, self.agent_yaw)
+        draw_agent(self.ax[1], self.agent_x, self.agent_y, self.agent_yaw)
+
+        plt.pause(0.2)    
 
     def generate_random_map(self, obstacle_ratio=0.2, width=256, height=256, seed = None):
         """
@@ -288,6 +328,12 @@ class DM_env(gym.Env):
         else:
             return False
             
+    def update_global_occupy_map():
+        pass
+
+    def update_global_uncertainty_map():
+        pass
+
 if __name__ == "__main__":
     '''
     待完善部分
@@ -297,8 +343,17 @@ if __name__ == "__main__":
     4.状态空间是否可以加入一些视觉的东西
     5.是否要用开源数据集去跑
     6.如何用render进行可视化
+        ok，已完成
     7.后续是否要用pybullet来跑
+        应该是不用了，采用carla或者gazebo
+    8.应该加一个倒车惩罚
     '''
-    pass
+    env = DM_env()   # 假如你环境叫这个名字
+    obs, info = env.reset()
+
+    for _ in range(200):
+        a = env.action_space.sample()
+        obs, r, d, t, info = env.step(a)
+        env.render()
    
 

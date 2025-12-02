@@ -18,17 +18,17 @@ class param:
     global_size_height = 256
     SEED = None                     # 随机地图种子
     # action 缩放系数
-    RATIO_x = 5               # x缩放系数
-    RATIO_y = 5               # y缩放系数
+    RATIO_x = 4               # x缩放系数
+    RATIO_y = 4               # y缩放系数
     RATIO_yaw = math.pi / 4      # yaw缩放系数
     # reward 系数
     REACH_GOAL_REWARD = 100.0       # 到达目标奖励
     COLLISION_PENALTY = -100.0      # 碰撞惩罚
-    STEP_PENALTY = 0.0              # 每步惩罚
+    STEP_PENALTY = 2.0              # 每步惩罚
     DISTANCE_WEIGHT = 2.0           # 距离权重
-    YAW_WEIGHT = -0.5               # 航向角权重
-    EXPLORE_GAIN = 10.0             # 探索奖励增益
-    MOVE_REWARD = 10000.0           # 防止局部塌缩
+    YAW_WEIGHT = -10.5               # 航向角权重
+    EXPLORE_GAIN = 1.0             # 探索奖励增益
+    MOVE_REWARD = 3.0           # 防止局部塌缩
     # lidar参数
     RESO = 1
     MEAS_PHI = np.arange(-0.4, 0.4, 0.05)
@@ -187,8 +187,6 @@ class interface2RL:
         
         return self.local_m, self.local_m_uncertainty, self.current_pose, collision
 
-
-
 class Lidar:
     def __init__(self, true_map):
         self.true_map = true_map
@@ -285,7 +283,7 @@ class Lidar:
                     
         return self.m
     
-    def get_uncertainty_map(self, X):
+    def get_uncertainty_map(self):
         """
         生成不确定性地图
         """
@@ -335,7 +333,7 @@ class Lidar:
             X[2]   
         ])
         m = self.generate_probability_map(X_clipped)
-        m_uncertainty = self.get_uncertainty_map(X_clipped)
+        m_uncertainty = self.get_uncertainty_map()
 
         return m, m_uncertainty
     
@@ -356,7 +354,7 @@ def main():
 
     # 计算不确定性地图
     x,y,yaw = 50,50,math.pi/3
-    uncertainty_map = lidar.get_uncertainty_map([x,y,yaw])
+    uncertainty_map = lidar.get_uncertainty_map()
 
     # 可视化
     fig, axes = plt.subplots(1, 3, figsize=(12, 6))
@@ -396,10 +394,12 @@ if __name__ == "__main__":
     目前仍存在的问题
     1.环境是否太简单，如何让其更真实一些
     2.感知不确定性如何衡量，现在用信息熵衡量能否满足要求
+        证据理论不确定性
     3.如何体现越野场景（地形起伏大，只用一个地图来代替是否可行）
     4.传感器模型没有噪声，如何体现不确定性（针对当前技术，传感器噪声是否可以忽略，调研当前传感器
         技术水平，评估lidar模型是否合理）
     5.如何融合点云数据
     6.保存环境数据进行可视化
+    7.***全局地图也要更新观测、不确定性
     '''
     pass

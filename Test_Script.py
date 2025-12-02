@@ -7,9 +7,10 @@ model = SAC.load("sac_decision_making", env=env)
 
 obs, info = env.reset()
 
-for _ in range(500):  # 最多 500 步
+for _ in range(500):  
     action, _state = model.predict(obs, deterministic=True)
     obs, reward, terminated, truncated, info = env.step(action)
+    env.render()
     
     print("pose:", obs["pose"], "reward:", reward)
 
