@@ -7,7 +7,7 @@ model = SAC.load("sac_decision_making", env=env)
 
 obs, info = env.reset()
 
-for _ in range(500):  
+for _ in range(1000):  
     action, _state = model.predict(obs, deterministic=True)
     obs, reward, terminated, truncated, info = env.step(action)
     env.render()

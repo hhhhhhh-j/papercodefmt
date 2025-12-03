@@ -19,21 +19,18 @@ class DM_env(gym.Env):
         self.seed = param.SEED
         self.width = param.global_size_width
         self.height = param.global_size_height
-        # action 缩放系数
-        self.ratio_x = param.RATIO_x
-        self.ratio_y = param.RATIO_y
-        self.ratio_yaw = param.RATIO_yaw
         # render可视化参数
         plt.ion()
         self.fig, self.ax = plt.subplots(1, 2, figsize=(8,4))
         # 全局变量
         self.np_random, _ = seeding.np_random(self.seed)
+        self.v = 0
         self.agent_x = 0
         self.agent_y = 0
         self.agent_yaw = 0
-        self.goal_x = 0
-        self.goal_y = 0
-        self.goal_yaw = 0
+        self.goal_x = None
+        self.goal_y = None
+        self.goal_yaw = None
         self.timestep = 0
         self.global_map = np.zeros((self.height, self.width), dtype=np.uint8)
         self.local_m = np.ones((param.local_size_height, param.local_size_width), dtype=np.uint8)
@@ -44,12 +41,12 @@ class DM_env(gym.Env):
 
         # 定义动作空间：
         '''
-        子目标点(x,y)
+        throttle_cmd, steer_cmd(当前转角)
         '''
         self.action_space = spaces.Box(
-            low=np.array([-1.0, -1.0, -1.0]), 
-            high=np.array([1.0, 1.0, 1.0]), 
-            shape=(3,),
+            low=np.array([-1.0, -1.0]), 
+            high=np.array([1.0, 1.0]), 
+            shape=(2,),
             dtype=np.float32
         ) 
 
@@ -71,7 +68,7 @@ class DM_env(gym.Env):
             "pose": spaces.Box(
                 low=-1.0,
                 high=1.0,
-                shape=(6,),   # [x, y, yaw, gx, gy, gyaw]
+                shape=(6,),   # [x, y, sin(yaw), cos(yaw), g_distance, g_angle]
                 dtype=np.float32
             )
         })
@@ -92,8 +89,8 @@ class DM_env(gym.Env):
         self.get_easy_map()                         # 生成简单测试地图
 
         # 随机生成智能体和目标点位置（注意要避开障碍物）
-        self.agent_x,self.agent_y,self.agent_yaw = self.get_random_free_position() 
-        self.goal_x,self.goal_y,self.goal_yaw = self.get_random_free_position() 
+        self.goal_x,self.goal_y,self.goal_yaw = self.get_random_free_position()
+        self.agent_x,self.agent_y,self.agent_yaw = self.get_random_free_position()  
 
         # 初始化创建接口对象
         self.interface = interface2RL(self.global_map, 
@@ -104,6 +101,8 @@ class DM_env(gym.Env):
 
         self.local_m = local_m
         self.local_m_uncertainty = local_m_uncertainty
+
+        goal_distance,goal_angle = self.get_goal_dist_and_angle()
         
         # 写入观测值
         observation = {
@@ -112,10 +111,10 @@ class DM_env(gym.Env):
             "pose": np.array([
                 self.agent_x / self.width,
                 self.agent_y / self.height,
-                self.agent_yaw / math.pi,
-                self.goal_x / self.width,
-                self.goal_y / self.height,
-                self.goal_yaw / math.pi
+                math.sin(self.agent_yaw),
+                math.cos(self.agent_yaw),
+                goal_distance / param.max_dist,
+                goal_angle / math.pi
             ], dtype=np.float32)
         }
         
@@ -136,17 +135,32 @@ class DM_env(gym.Env):
         # 计算上一时刻与终点的distance和yaw
         distance_MH = abs(self.agent_x - self.goal_x) + abs(self.agent_y - self.goal_y)
         distance_Euclidean = math.sqrt((self.agent_x - self.goal_x)**2 + (self.agent_y - self.goal_y)**2)
-        yaw_diff = abs(self.agent_yaw - self.goal_yaw)
-        yaw_diff = min(yaw_diff, 2*math.pi - yaw_diff)
+        # yaw_diff = self.agent_yaw
+        # yaw_diff = min(yaw_diff, 2*math.pi - yaw_diff)
+
+        # 不确定性增益（两种可选，后续可优化这部分）
+        uncertain_gain = np.mean(self.local_m_uncertainty)
+        # uncertain_gain = np.max(self.local_m_uncertainty)
 
         # 计算 action - sub goal
-        sub_x = np.clip(self.agent_x + action[0] * self.ratio_x, 0, param.global_size_width)
-        sub_y = np.clip(self.agent_y + action[1] * self.ratio_y, 0, param.global_size_height)
-        sub_yaw = self.agent_yaw + action[2] * self.ratio_yaw
+        accel = param.RATIO_throttle * action[0]
+        steer = param.RATIO_yaw * action[1]
+        self.v += param.dt * accel
+        self.v = np.clip(self.v, -10.0, 10.0)
+
+        # 更新智能体坐标
+
+        desired_yaw = self.v / param.L * np.tan(steer) * param.dt + self.agent_yaw
+        desired_x = self.v * np.cos(desired_yaw) * param.dt + self.agent_x
+        desired_y = self.v * np.sin(desired_yaw) * param.dt + self.agent_y
+
+        sub_x = np.clip(desired_x, 0, param.global_size_width)
+        sub_y = np.clip(desired_y, 0, param.global_size_height)
+        sub_yaw = desired_yaw
         sub_goal = [sub_x, sub_y, sub_yaw]
         
         # 更新局部map与pose
-        local_m, local_m_uncertainty, current_pose, collision = self.interface.ToSAC_step(sub_goal)
+        local_m, local_m_uncertainty, collision, current_pose = self.interface.ToSAC_step(sub_goal)
 
         self.agent_x = current_pose[0]
         self.agent_y = current_pose[1]
@@ -154,6 +168,8 @@ class DM_env(gym.Env):
         self.local_m = local_m
         self.local_m_uncertainty = local_m_uncertainty
         
+        goal_distance,goal_angle = self.get_goal_dist_and_angle()
+
         # -----填充observation-----
         observation = {
                     "map": np.stack([local_m, local_m_uncertainty], axis=0).astype(np.float32),
@@ -161,34 +177,39 @@ class DM_env(gym.Env):
                     "pose": np.array([
                         self.agent_x / self.width,
                         self.agent_y / self.height,
-                        self.agent_yaw / math.pi,
-                        self.goal_x / self.width,
-                        self.goal_y / self.height,
-                        self.goal_yaw / math.pi
+                        math.sin(self.agent_yaw),
+                        math.cos(self.agent_yaw),
+                        goal_distance / param.max_dist,
+                        goal_angle / math.pi
                     ], dtype=np.float32)
                 }
         
         # -----reward-----
         # 计算当前时刻与终点的distance和yaw
+        yaw2goal = math.atan2(self.goal_y - self.agent_y, self.goal_x - self.agent_x)
+        yaw_err = abs((yaw2goal - self.agent_yaw + math.pi) % (2 * math.pi) - math.pi)
         distance_MH_new = abs(self.agent_x - self.goal_x) + abs(self.agent_y - self.goal_y)
         distance_Euclidean_new = math.sqrt((self.agent_x - self.goal_x)**2 + (self.agent_y - self.goal_y)**2)
-        yaw_diff_new = abs(self.agent_yaw - self.goal_yaw)
-        yaw_diff_new = min(yaw_diff_new, 2*math.pi - yaw_diff_new)
+        # yaw_diff_new = self.agent_yaw
+        # yaw_diff_new = min(yaw_diff_new, 2*math.pi - yaw_diff_new)
 
         # 不确定性增益（两种可选，后续可优化这部分）
-        uncertain_gain = np.mean(local_m_uncertainty)
-        # uncertain_gain = np.max(local_m_uncertainty)
+        uncertain_gain_new = np.mean(self.local_m_uncertainty)
+        # uncertain_gain = np.max(self.local_m_uncertainty)
+        uncertain_gain_change = uncertain_gain_new - uncertain_gain
 
         reach = self.reach_goal()
 
         # reward计算
         distance_reward = param.DISTANCE_WEIGHT * (distance_Euclidean - distance_Euclidean_new)
-        yaw_reward = param.YAW_WEIGHT * (yaw_diff - yaw_diff_new)
+        # yaw_reward = -param.YAW_WEIGHT * yaw_err
         collision_penalty = param.COLLISION_PENALTY if collision else 0.0
-        step_penalty = param.STEP_PENALTY
+        step_penalty = -param.STEP_PENALTY
         reach_goal_reward = param.REACH_GOAL_REWARD if reach else 0.0
-        move_reward = param.MOVE_STEP * np.linalg.norm(action[:2])
-        explore_reward = param.EXPLORE_GAIN * uncertain_gain
+        explore_reward = param.EXPLORE_GAIN * uncertain_gain_change
+        reverse_penalty = param.REVERSE * accel if accel<0 else 0.0
+        forward_reward = param.FOWARD * accel if accel>0 else 0.0
+        heading_reward = param.HEADING_REWARD * (1.0 - abs(goal_angle) / math.pi)
 
         # 防止程序崩溃
         # 1. 防止距离坐标溢出
@@ -200,16 +221,17 @@ class DM_env(gym.Env):
         uncertain_gain = max(0.0, min(1.0, uncertain_gain))
 
         # 3. 航向差限制在合法范围
-        yaw_diff = float(np.nan_to_num(yaw_diff, nan=0.0))
-        yaw_diff_new = float(np.nan_to_num(yaw_diff_new, nan=0.0))
+        # yaw_diff = float(np.nan_to_num(yaw_diff, nan=0.0))
+        # yaw_diff_new = float(np.nan_to_num(yaw_diff_new, nan=0.0))
 
         reward = (distance_reward + 
-                  yaw_reward + 
                   collision_penalty + 
                   step_penalty + 
                   reach_goal_reward + 
                   explore_reward + 
-                  move_reward)
+                  heading_reward +
+                  reverse_penalty + 
+                  forward_reward)
 
         reward = np.clip(reward, -200, 200)
 
@@ -309,15 +331,52 @@ class DM_env(gym.Env):
 
     def get_random_free_position(self):
         '''
-        获取随机的空闲位置 (x, y, yaw)
+        生成 RL 可学习的随机出生点：保证不贴墙、车头朝向大致目标、距离合适
         '''
+        min_dist_to_obs = 5
+        min_goal_dist = 40
+        max_goal_dist = 180
         free_cells = np.argwhere(self.global_map == 0)
-        idx = self.np_random.integers(0, len(free_cells))
-        y, x = free_cells[idx]
-        yaw = self.np_random.uniform(-np.pi, np.pi)
+        max_attempts = 300
+        for _ in range(max_attempts):
+            # ① 随机取一个 free cell（确保不是边界）
+            y, x = free_cells[self.np_random.integers(0, len(free_cells))]
 
-        return x, y, yaw
-    
+            # 边界过滤
+            if x < 5 or y < 5 or x > self.width - 5 or y > self.height - 5:
+                continue
+
+            # ② 保证离障碍物有安全距离
+            # 使用局部窗口检查障碍
+            xmin = max(0, x - min_dist_to_obs)
+            xmax = min(self.width, x + min_dist_to_obs)
+            ymin = max(0, y - min_dist_to_obs)
+            ymax = min(self.height, y + min_dist_to_obs)
+
+            if np.any(self.global_map[ymin:ymax, xmin:xmax] == 1):
+                continue
+
+            # ③ 如果这是 goal 的生成逻辑，需要只返回位置
+            if self.goal_x is None:
+                yaw = 0.0
+                return x, y, yaw
+
+            # ④ 保证起点与目标距离合理（防止前 1 步就结束）
+            dx = self.goal_x - x
+            dy = self.goal_y - y
+            dist = math.sqrt(dx*dx + dy*dy)
+            if dist < min_goal_dist or dist > max_goal_dist:
+                continue
+
+            # ⑤ Yaw 朝向目标 ±30°
+            yaw2goal = math.atan2(dy, dx)
+            yaw = yaw2goal + self.np_random.uniform(-math.pi/6, math.pi/6)
+
+            return x, y, yaw
+
+        # 如果实在找不到，就返回一个最安全的点
+        return free_cells[0][1], free_cells[0][0], 0.0
+
     def reach_goal(self):
         distance = math.sqrt((self.agent_x - self.goal_x)**2 + (self.agent_y - self.goal_y)**2)
         yaw_diff = abs(self.agent_yaw - self.goal_yaw)
@@ -327,7 +386,17 @@ class DM_env(gym.Env):
             return True
         else:
             return False
-            
+
+    def get_goal_dist_and_angle(self):
+        dx = self.goal_x - self.agent_x
+        dy = self.goal_y - self.agent_y
+        goal_distance = math.sqrt(dx*dx + dy*dy)
+        goal_angle = math.atan2(dy, dx) - self.agent_yaw
+        # 归一化到 [-pi, pi]
+        goal_angle = (goal_angle + math.pi) % (2 * math.pi) - math.pi
+        
+        return goal_distance,goal_angle
+
     def update_global_occupy_map():
         pass
 

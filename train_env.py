@@ -10,28 +10,32 @@ class param:
     XY_RESO = 1.0                   # 网格地图分辨率
     YAW_RESO = np.deg2rad(15.0)     # 航向角分辨率
     WB = 3.5                        # 车辆的轴距 (WheelBase)
-    MOVE_STEP = 0.4                 # 插值分辨率，表示在路径中每个节点之间的距离
+
     # 地图尺寸
     local_size_width = 64
     local_size_height = 64
     global_size_width = 256
     global_size_height = 256
+    max_dist = np.sqrt(global_size_width**2 + global_size_height**2)
     SEED = None                     # 随机地图种子
     # action 缩放系数
-    RATIO_x = 4               # x缩放系数
-    RATIO_y = 4               # y缩放系数
-    RATIO_yaw = math.pi / 4      # yaw缩放系数
+    RATIO_throttle = 4                  # x缩放系数
+    RATIO_yaw = math.pi / 4             # yaw缩放系数
+    dt = 0.15                            # 时间步长
+    L = 2.5                             # 车辆轴距
     # reward 系数
-    REACH_GOAL_REWARD = 100.0       # 到达目标奖励
-    COLLISION_PENALTY = -100.0      # 碰撞惩罚
-    STEP_PENALTY = 2.0              # 每步惩罚
-    DISTANCE_WEIGHT = 2.0           # 距离权重
-    YAW_WEIGHT = -10.5               # 航向角权重
-    EXPLORE_GAIN = 1.0             # 探索奖励增益
-    MOVE_REWARD = 3.0           # 防止局部塌缩
+    REACH_GOAL_REWARD = 50.0        # 到达目标奖励
+    COLLISION_PENALTY = -10.0       # 碰撞惩罚
+    STEP_PENALTY = 0.5              # 每步惩罚
+    DISTANCE_WEIGHT = 2.85           # 距离权重
+    YAW_WEIGHT = 0.5                # 航向角权重
+    EXPLORE_GAIN = 1.0              # 探索奖励增益
+    REVERSE = 1.0                   # 倒车惩罚
+    FOWARD = 1.0                    # 前进奖励
+    HEADING_REWARD = 0.3
     # lidar参数
     RESO = 1
-    MEAS_PHI = np.arange(-0.4, 0.4, 0.05)
+    MEAS_PHI = np.arange(-0.6, 0.6, 0.05)
     RMAX = 30 # Max beam range.
     ALPHA = 1 # Width of an obstacle (distance about measurement to fill in).
     BETA = 0.05 # Angular width of a beam.
@@ -59,22 +63,36 @@ class interface2RL:
         half_h = h // 2
         half_w = w // 2
 
-        y_min = max(0, y - half_h)
-        y_max = min(global_map.shape[0], y + half_h)
+         # 裁剪区域的左上/右下坐标
+        y_min = y - half_h
+        y_max = y + half_h
+        x_min = x - half_w
+        x_max = x + half_w
 
-        x_min = max(0, x - half_w)
-        x_max = min(global_map.shape[1], x + half_w)
+        # 计算真实可裁剪区域（保证不越界）
+        real_y_min = max(0, y_min)
+        real_y_max = min(global_map.shape[0], y_max)
+        real_x_min = max(0, x_min)
+        real_x_max = min(global_map.shape[1], x_max)
 
-        local_map = global_map[y_min:y_max, x_min:x_max]
+        local_map = global_map[real_y_min:real_y_max, real_x_min:real_x_max]
+
+         # 计算需要补多少
+        pad_top = real_y_min - y_min          # y_min < 0 → 需要补上方
+        pad_bottom = y_max - real_y_max       # y_max > height → 补下方
+        pad_left = real_x_min - x_min         # x_min < 0 → 补左方
+        pad_right = x_max - real_x_max        # x_max > width → 补右方
 
         # 如果大小不够，补齐（padding）
         local_map = np.pad(
             local_map,
-            ((0, h - local_map.shape[0]), (0, w - local_map.shape[1])),
+            ((pad_top, pad_bottom), (pad_left, pad_right)),
             mode='constant',
             constant_values=1   # 未知区域给 1
         )
-        
+
+        assert local_map.shape == (h, w), f"Local map shape incorrect: {local_map.shape}"
+
         return local_map
 
     def get_local_obs(self, local_map, threshold=0.6):
@@ -185,7 +203,7 @@ class interface2RL:
         # 是否碰撞
         collision = self.is_collision(self.current_pose)
         
-        return self.local_m, self.local_m_uncertainty, self.current_pose, collision
+        return self.local_m, self.local_m_uncertainty, collision, self.current_pose
 
 class Lidar:
     def __init__(self, true_map):

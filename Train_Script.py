@@ -19,6 +19,7 @@ policy_kwargs = dict(
 model = SAC(
     policy="MultiInputPolicy",
     env=env,
+    tensorboard_log="./logs_sac",
     learning_rate=3e-4,        # ★ 默认3e-4，适合大多数 SAC 应用
     buffer_size=200000,        # ★ 越野 RL 必须要大 buffer（你的 20000 绝对不够）
     batch_size=256,            # ★ SAC 使用较大 batch 更稳定
@@ -33,8 +34,8 @@ model = SAC(
     verbose=1
 )
 
-model = SAC.load("sac_decision_making", env=env)
-model.learn(total_timesteps=8000, log_interval=4)
+model = SAC.load("sac_decision_making", env=env, tensorboard_log="./logs_sac")
+model.learn(total_timesteps=10000, log_interval=4)
 model.save("sac_decision_making")
 
 env.close()
