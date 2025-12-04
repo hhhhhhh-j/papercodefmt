@@ -26,13 +26,13 @@ class param:
     # reward 系数
     REACH_GOAL_REWARD = 50.0        # 到达目标奖励
     COLLISION_PENALTY = -10.0       # 碰撞惩罚
-    STEP_PENALTY = 0.5              # 每步惩罚
-    DISTANCE_WEIGHT = 2.85           # 距离权重
-    YAW_WEIGHT = 0.5                # 航向角权重
+    STEP_PENALTY = 1.5              # 每步惩罚
+    DISTANCE_WEIGHT = 3.85           # 距离权重
+    # YAW_WEIGHT = 0.5                # 航向角权重
     EXPLORE_GAIN = 1.0              # 探索奖励增益
     REVERSE = 1.0                   # 倒车惩罚
-    FOWARD = 1.0                    # 前进奖励
-    HEADING_REWARD = 0.3
+    FOWARD = 0.5                    # 前进奖励
+    HEADING_REWARD = 3.3
     # lidar参数
     RESO = 1
     MEAS_PHI = np.arange(-0.6, 0.6, 0.05)

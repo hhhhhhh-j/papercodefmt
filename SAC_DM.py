@@ -280,14 +280,14 @@ class DM_env(gym.Env):
 
          # --- 左图：local map ---
         self.ax[0].clear()
-        self.ax[0].imshow(self.local_m, cmap="gray_r", 
-                          extent=[ x_max, x_min, y_min, y_max])
+        self.ax[0].imshow(self.local_m, cmap="gray_r", origin="lower",
+                          extent=[ x_min, x_max, y_min, y_max])
         self.ax[0].set_title("Local Map")
 
         # --- 右图：uncertainty map ---
         self.ax[1].clear()
-        self.ax[1].imshow(self.local_m_uncertainty, cmap="turbo", vmin=0, vmax=1,
-                          extent=[x_max, x_min, y_min, y_max], # interpolation="bilinear", 
+        self.ax[1].imshow(self.local_m_uncertainty, cmap="turbo", vmin=0, vmax=1,origin="lower",
+                          extent=[x_min, x_max, y_min, y_max], # interpolation="bilinear", 
                           interpolation="bicubic")
         self.ax[1].set_title("Uncertainty Map")
 
@@ -382,7 +382,7 @@ class DM_env(gym.Env):
         yaw_diff = abs(self.agent_yaw - self.goal_yaw)
         yaw_diff = min(yaw_diff, 2*math.pi - yaw_diff)
 
-        if distance < 5.0 and yaw_diff < (15.0 * math.pi / 180.0):
+        if distance < 10.0 and yaw_diff < (30.0 * math.pi / 180.0):
             return True
         else:
             return False
