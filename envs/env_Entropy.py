@@ -2,7 +2,7 @@ import numpy as np
 import math
 import seaborn as sns
 import matplotlib.pyplot as plt
-from read_grid_map import ReadGridMap
+from utils.read_grid_map import ReadGridMap
 import time
 
 class param:
@@ -21,18 +21,18 @@ class param:
     # action 缩放系数
     RATIO_throttle = 4                  # x缩放系数
     RATIO_yaw = math.pi / 4             # yaw缩放系数
-    dt = 0.15                            # 时间步长
+    dt = 0.3                            # 时间步长
     L = 2.5                             # 车辆轴距
     # reward 系数
-    REACH_GOAL_REWARD = 50.0        # 到达目标奖励
-    COLLISION_PENALTY = -10.0       # 碰撞惩罚
-    STEP_PENALTY = 1.5              # 每步惩罚
-    DISTANCE_WEIGHT = 3.85           # 距离权重
+    REACH_GOAL_REWARD = 80.0        # 到达目标奖励
+    COLLISION_PENALTY = -20.0       # 碰撞惩罚
+    STEP_PENALTY = 0.05              # 每步惩罚
+    DISTANCE_WEIGHT = 5.85           # 距离权重
     # YAW_WEIGHT = 0.5                # 航向角权重
     EXPLORE_GAIN = 1.0              # 探索奖励增益
     REVERSE = 1.0                   # 倒车惩罚
     FOWARD = 0.5                    # 前进奖励
-    HEADING_REWARD = 3.3
+    HEADING_REWARD = 0.3
     # lidar参数
     RESO = 1
     MEAS_PHI = np.arange(-0.6, 0.6, 0.05)
@@ -301,7 +301,7 @@ class Lidar:
                     
         return self.m
     
-    def get_uncertainty_map(self):
+    def get_uncertainty_map_entropy(self):
         """
         生成不确定性地图
         """
@@ -309,9 +309,12 @@ class Lidar:
         self.m_uncertainty /= np.log(2)
         self.m_uncertainty = np.clip(self.m_uncertainty, 1e-6, 1 - 1e-6)
 
-        self.m_uncertaintys.append(self.m_uncertainty)          
+        self.m_uncertaintys.append(self.m_uncertainty)
 
         return self.m_uncertainty
+    
+    # def get_uncertainty_map_DS():
+
 
     def generate_probability_map(self, X):
         """
@@ -351,7 +354,7 @@ class Lidar:
             X[2]   
         ])
         m = self.generate_probability_map(X_clipped)
-        m_uncertainty = self.get_uncertainty_map()
+        m_uncertainty = self.get_uncertainty_map_entropy()
 
         return m, m_uncertainty
     
@@ -372,7 +375,7 @@ def main():
 
     # 计算不确定性地图
     x,y,yaw = 50,50,math.pi/3
-    uncertainty_map = lidar.get_uncertainty_map()
+    uncertainty_map = lidar.get_uncertainty_map_entropy()
 
     # 可视化
     fig, axes = plt.subplots(1, 3, figsize=(12, 6))

@@ -1,14 +1,19 @@
+import sys, os
+CURRENT_DIR = os.path.dirname(os.path.abspath(__file__))  # SAC_DS/
+PARENT_DIR = os.path.dirname(CURRENT_DIR)                 # sb3_SAC/
+sys.path.append(PARENT_DIR)
+
 import gymnasium as gym
 from gymnasium import spaces
 from gymnasium.utils import seeding
 import numpy as np  
 import math
-from train_env import Lidar
-from train_env import param
-from read_grid_map import ReadGridMap # 读取真实栅格地图
-from train_env import interface2RL
+from envs.env_DS import Lidar
+from envs.env_DS import param
+from utils.read_grid_map import ReadGridMap # 读取真实栅格地图
+from envs.env_DS import interface2RL
 import matplotlib.pyplot as plt
-from draw import draw_agent
+from utils.draw import draw_agent
 
 class DM_env(gym.Env):
     def __init__(self):
@@ -35,9 +40,10 @@ class DM_env(gym.Env):
         self.global_map = np.zeros((self.height, self.width), dtype=np.uint8)
         self.local_m = np.ones((param.local_size_height, param.local_size_width), dtype=np.uint8)
         self.local_m_uncertainty = np.ones((param.local_size_height, param.local_size_width), dtype=np.uint8)
-        self.path = 0
-        self.global_occupy_map = 0
-        self.global_uncertainty_map = 0
+        
+        self.path = 0                           # buggggggggggggggggg
+        self.global_occupy_map = 0              # buggggggggggggggggg
+        self.global_uncertainty_map = 0         # buggggggggggggggggg
 
         # 定义动作空间：
         '''
@@ -97,16 +103,16 @@ class DM_env(gym.Env):
                                       [self.agent_x, self.agent_y, self.agent_yaw])
         
         # 获取初始观测值（map_uncertainty、map_occupancy）
-        local_m, local_m_uncertainty, _ = self.interface.ToSAC_reset()
+        local_m_occ, local_m_free, local_m_unk, _ = self.interface.ToSAC_reset()
 
-        self.local_m = local_m
-        self.local_m_uncertainty = local_m_uncertainty
+        self.local_m = local_m_occ
+        self.local_m_uncertainty = local_m_unk
 
         goal_distance,goal_angle = self.get_goal_dist_and_angle()
         
         # 写入观测值
         observation = {
-            "map": np.stack([local_m, local_m_uncertainty], axis=0).astype(np.float32),
+            "map": np.stack([local_m_occ, local_m_unk], axis=0).astype(np.float32),
 
             "pose": np.array([
                 self.agent_x / self.width,
@@ -151,8 +157,8 @@ class DM_env(gym.Env):
         # 更新智能体坐标
 
         desired_yaw = self.v / param.L * np.tan(steer) * param.dt + self.agent_yaw
-        desired_x = self.v * np.cos(desired_yaw) * param.dt + self.agent_x
-        desired_y = self.v * np.sin(desired_yaw) * param.dt + self.agent_y
+        desired_x = self.v * np.cos(self.agent_yaw) * param.dt + self.agent_x
+        desired_y = self.v * np.sin(self.agent_yaw) * param.dt + self.agent_y
 
         sub_x = np.clip(desired_x, 0, param.global_size_width)
         sub_y = np.clip(desired_y, 0, param.global_size_height)
@@ -206,7 +212,7 @@ class DM_env(gym.Env):
         collision_penalty = param.COLLISION_PENALTY if collision else 0.0
         step_penalty = -param.STEP_PENALTY
         reach_goal_reward = param.REACH_GOAL_REWARD if reach else 0.0
-        explore_reward = param.EXPLORE_GAIN * uncertain_gain_change
+        explore_reward = -param.EXPLORE_GAIN * uncertain_gain_change
         reverse_penalty = param.REVERSE * accel if accel<0 else 0.0
         forward_reward = param.FOWARD * accel if accel>0 else 0.0
         heading_reward = param.HEADING_REWARD * (1.0 - abs(goal_angle) / math.pi)

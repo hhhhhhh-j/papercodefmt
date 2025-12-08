@@ -1,8 +1,17 @@
+import sys, os
+
+CURRENT_DIR = os.path.dirname(os.path.abspath(__file__))
+ROOT_DIR = os.path.dirname(CURRENT_DIR)
+sys.path.append(os.path.join(ROOT_DIR, "utils"))
+sys.path.append(ROOT_DIR)
+
+print("PYTHONPATH updated:", ROOT_DIR)
+
 import gymnasium as gym
-import register_env
+import utils.register_env as register_env
 from stable_baselines3 import SAC
 
-env = gym.make("DM-v0")
+env = gym.make("DM-v1")
 model = SAC.load("sac_decision_making", env=env)
 
 obs, info = env.reset()

@@ -1,11 +1,20 @@
+import sys, os
+
+CURRENT_DIR = os.path.dirname(os.path.abspath(__file__))
+ROOT_DIR = os.path.dirname(CURRENT_DIR)
+sys.path.append(ROOT_DIR)
+sys.path.append(os.path.join(ROOT_DIR, "utils"))
+
+print("PYTHONPATH updated:", ROOT_DIR)
+
 import gymnasium as gym
-import register_env
+import utils.register_env as register_env
 from stable_baselines3 import SAC
-from custom_cnn import CustomCNN
+from utils.custom_cnn import CustomCNN
 from stable_baselines3.common.callbacks import BaseCallback
 
 print("Start Training")
-env = gym.make("DM-v0")
+env = gym.make("DM-v1")
 
 policy_kwargs = dict(
     features_extractor_class=CustomCNN,
