@@ -6,7 +6,7 @@ sys.path.append(PARENT_DIR)
 import gymnasium as gym
 from gymnasium import spaces
 from gymnasium.utils import seeding
-import numpy as np  
+import numpy as np
 import math
 from envs.env_DS import Lidar
 from envs.env_DS import param
@@ -14,19 +14,23 @@ from utils.read_grid_map import ReadGridMap # 读取真实栅格地图
 from envs.env_DS import interface2RL
 import matplotlib.pyplot as plt
 from utils.draw import draw_agent
+from collections import defaultdict
+import scipy.ndimage as nd
+
 
 class DM_env(gym.Env):
     def __init__(self):
         super(DM_env, self).__init__()
+
         # 参数
         self.step_count = 0
-        self.max_steps = 10000
+        self.max_steps = 300
         self.seed = param.SEED
         self.width = param.global_size_width
         self.height = param.global_size_height
         # render可视化参数
         plt.ion()
-        self.fig, self.ax = plt.subplots(1, 2, figsize=(8,4))
+        self.fig, self.ax = plt.subplots(1, 3, figsize=(14,5))
         # 全局变量
         self.np_random, _ = seeding.np_random(self.seed)
         self.v = 0
@@ -41,9 +45,14 @@ class DM_env(gym.Env):
         self.local_m = np.ones((param.local_size_height, param.local_size_width), dtype=np.uint8)
         self.local_m_uncertainty = np.ones((param.local_size_height, param.local_size_width), dtype=np.uint8)
         
-        self.path = 0                           # buggggggggggggggggg
-        self.global_occupy_map = 0              # buggggggggggggggggg
-        self.global_uncertainty_map = 0         # buggggggggggggggggg
+        # self.path = 0                           # buggggggggggggggggg
+        # self.global_occupy_map = 0              # buggggggggggggggggg
+        # self.global_uncertainty_map = 0         # buggggggggggggggggg
+        self.belief_map = defaultdict(lambda: {"occ": 0.0, "free": 0.0, "unk": 1.0})
+
+        # 评价指标
+        self.episode_reward = 0.0
+        self.episode_length = 0
 
         # 定义动作空间：
         '''
@@ -87,7 +96,8 @@ class DM_env(gym.Env):
         info	        额外信息（一般空字典）
         '''
         super().reset(seed=seed)
-
+        self.episode_reward = 0.0
+        self.episode_length = 0
         self.step_count = 0
 
         # 生成地图
@@ -103,7 +113,7 @@ class DM_env(gym.Env):
                                       [self.agent_x, self.agent_y, self.agent_yaw])
         
         # 获取初始观测值（map_uncertainty、map_occupancy）
-        local_m_occ, local_m_free, local_m_unk, _ = self.interface.ToSAC_reset()
+        local_m_occ, local_m_free, local_m_unk, _ , self.belief_map = self.interface.ToSAC_reset()
 
         self.local_m = local_m_occ
         self.local_m_uncertainty = local_m_unk
@@ -166,7 +176,7 @@ class DM_env(gym.Env):
         sub_goal = [sub_x, sub_y, sub_yaw]
         
         # 更新局部map与pose
-        local_m, local_m_uncertainty, collision, current_pose = self.interface.ToSAC_step(sub_goal)
+        local_m, local_m_uncertainty, collision, current_pose, self.belief_map = self.interface.ToSAC_step(sub_goal)
 
         self.agent_x = current_pose[0]
         self.agent_y = current_pose[1]
@@ -177,7 +187,7 @@ class DM_env(gym.Env):
         goal_distance,goal_angle = self.get_goal_dist_and_angle()
 
         # -----填充observation-----
-        observation = {
+        obs = {
                     "map": np.stack([local_m, local_m_uncertainty], axis=0).astype(np.float32),
 
                     "pose": np.array([
@@ -240,21 +250,8 @@ class DM_env(gym.Env):
                   forward_reward)
 
         reward = np.clip(reward, -200, 200)
-
-        # -----设置done和truncated-----
-        done = True if (reach or collision) else False
-        truncated = True if self.step_count >= self.max_steps else False
-
-        # -----调试信息-----
-        if reach:
-            print("reachhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhh")
-
-        if collision:
-            print("collisionnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnn")
-        
-        print("current.pose:",self.agent_x,self.agent_y)
-        print("goal:",self.goal_x,self.goal_y)
-        print("reward:",reward)
+        self.episode_reward += reward
+        self.episode_length += 1
 
         # -----输出info-----
         info = {
@@ -264,10 +261,35 @@ class DM_env(gym.Env):
             "uncertainty": np.mean(local_m_uncertainty)
         }
 
+        # -----设置terminated和truncated-----
+        terminated = True if (reach or collision) else False
+        truncated = True if self.step_count >= self.max_steps else False
+
+        # 如果 episode 结束，必须手动写入 episode 信息
+        if terminated or truncated:
+            info["episode"] = {
+                "r": self.episode_reward,   # 总奖励
+                "l": self.episode_length    # episode 长度
+            }
+
+        # -----调试信息-----
+        if reach:
+            print("reachhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhh")
+
+        if collision:
+            print("collisionnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnn")
+        
+        if truncated:
+            print("max   steppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppp")
+        
+        print("current.pose:",self.agent_x,self.agent_y)
+        print("goal:",self.goal_x,self.goal_y)
+        print("reward:",reward)
+
         self.timestep += 1
         print("step:",self.timestep)
         
-        return observation, reward, done, truncated, info
+        return obs, reward, terminated, truncated, info
     
     def render(self, mode='human'):
         '''
@@ -276,6 +298,12 @@ class DM_env(gym.Env):
         'human'：渲染到屏幕
         'rgb_array'：返回RGB图像数组
         '''
+        self._draw_local_map()
+        self._draw_belief_map()
+        plt.pause(0.2)  
+        
+    
+    def _draw_local_map(self):
         self.ax[0].clear()
         self.ax[1].clear()
 
@@ -301,7 +329,38 @@ class DM_env(gym.Env):
         draw_agent(self.ax[0], self.agent_x, self.agent_y, self.agent_yaw)
         draw_agent(self.ax[1], self.agent_x, self.agent_y, self.agent_yaw)
 
-        plt.pause(0.2)    
+    def _draw_belief_map(self):
+        # belief_map 为空就不画
+        if len(self.belief_map) == 0:
+            return
+
+        H = self.height      # 256
+        W = self.width       # 256
+
+        # 全局栅格，默认未知 0.5
+        grid = np.ones((H, W), dtype=float) * 0.5
+
+        # belief_map 的 key 约定为 (x, y) = (列索引, 行索引)
+        for (x, y), b in self.belief_map.items():
+            # 防止越界
+            if 0 <= x < W and 0 <= y < H:
+                grid[y, x] = b["occ"]
+
+        # 空间平滑（可选）
+        grid_smooth = nd.gaussian_filter(grid, sigma=1.0)
+
+        self.ax[2].clear()
+        img = self.ax[2].imshow(
+            grid_smooth,
+            cmap="gray_r",
+            origin="lower",               # y 轴向上
+            vmin=0,
+            vmax=1,
+            extent=[0, W, 0, H]           # 🌟 关键：和 global_map / agent 坐标完全一致
+        )
+        self.ax[2].set_title("Belief Map (Dense)")
+        
+
 
     def generate_random_map(self, obstacle_ratio=0.2, width=256, height=256, seed = None):
         """
@@ -388,7 +447,7 @@ class DM_env(gym.Env):
         yaw_diff = abs(self.agent_yaw - self.goal_yaw)
         yaw_diff = min(yaw_diff, 2*math.pi - yaw_diff)
 
-        if distance < 10.0 and yaw_diff < (30.0 * math.pi / 180.0):
+        if distance < 30.0: # and yaw_diff < (30.0 * math.pi / 180.0):
             return True
         else:
             return False

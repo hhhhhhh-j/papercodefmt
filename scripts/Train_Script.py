@@ -12,9 +12,32 @@ import utils.register_env as register_env
 from stable_baselines3 import SAC
 from utils.custom_cnn import CustomCNN
 from stable_baselines3.common.callbacks import BaseCallback
+import wandb
+from wandb.integration.sb3 import WandbCallback
+from utils.wandb_callback import WandbCustomCallback
+from stable_baselines3.common.monitor import Monitor
+from stable_baselines3.common.env_util import make_vec_env
 
 print("Start Training")
-env = gym.make("DM-v1")
+env = make_vec_env("DM-v1", n_envs=1, monitor_dir="./monitor")
+
+# 初始化 wandb
+wandb.init(
+    sync_tensorboard=True,
+    dir="./",
+    project="offroad-sac-ds",       # 你的项目名称
+    name="SAC_DS_run1",             # 当前实验名
+    config={
+        "learning_rate": 3e-4,
+        "buffer_size": 200000,
+        "batch_size": 256,
+        "gamma": 0.99,
+        "tau": 0.005,
+        "net_arch": [256, 256],
+        "features_dim": 256,
+        "total_timesteps": 10000,
+    }
+)
 
 policy_kwargs = dict(
     features_extractor_class=CustomCNN,
@@ -25,29 +48,49 @@ policy_kwargs = dict(
     )
 )
 
-# model = SAC(
-#     policy="MultiInputPolicy",
-#     env=env,
-#     tensorboard_log="./logs_sac",
-#     learning_rate=3e-4,        # ★ 默认3e-4，适合大多数 SAC 应用
-#     buffer_size=200000,        # ★ 越野 RL 必须要大 buffer（你的 20000 绝对不够）
-#     batch_size=256,            # ★ SAC 使用较大 batch 更稳定
-#     tau=0.005,                 # target smoothing
-#     gamma=0.99,                # discount factor
-#     train_freq=(1, "step"),    # 每步更新
-#     gradient_steps=1,          # 每次更新1步（可提高）
-#     ent_coef="auto",           # ★ 自动调节 entropy 更稳定
-#     target_entropy="auto",     # 自动
-#     use_sde=False,
-#     policy_kwargs=policy_kwargs,
-#     verbose=1
-# )
+# 创建或加载 SAC 模型
+if os.path.exists("sac_decision_making.zip"):
+    print("Loading existing model...")
+    model = SAC.load("sac_decision_making", env=env)
+else:
+    print("Creating new model...")
+    model = SAC(
+        policy="MultiInputPolicy",
+        env=env,
+        learning_rate=wandb.config.learning_rate,
+        buffer_size=wandb.config.buffer_size,
+        batch_size=wandb.config.batch_size,
+        tau=wandb.config.tau,
+        gamma=wandb.config.gamma,
+        train_freq=(1, "step"),
+        gradient_steps=1,
+        ent_coef="auto",
+        target_entropy="auto",
+        policy_kwargs=policy_kwargs,
+        verbose=2, 
+        tensorboard_log="./tb_logs/", 
+    )
 
-model = SAC.load("sac_decision_making", env=env, tensorboard_log="./logs_sac")
-model.learn(total_timesteps=10000, log_interval=4)
+# 开始训练（接入 WandB）
+wandb_cb = WandbCallback(
+    model_save_path="./wandb_models",
+    model_save_freq=5000,
+    verbose=2
+)
+
+custom_cb = WandbCustomCallback(
+    log_freq=200,
+)
+
+model.learn(
+    total_timesteps=wandb.config.total_timesteps,
+    log_interval=4,
+    callback=[wandb_cb, custom_cb]
+)
+
 model.save("sac_decision_making")
-
 env.close()
+wandb.finish()
 
 if __name__ == "__main__":
     '''

@@ -1,0 +1,9 @@
+Loading existing model...
+Traceback (most recent call last):
+  File "/home/fmt/fmt_/sb3_SAC/scripts/Train_Script.py", line 85, in <module>
+    model.set_logger(model.logger)
+                     ^^^^^^^^^^^^
+  File "/home/fmt/miniconda3/envs/sb3/lib/python3.12/site-packages/stable_baselines3/common/base_class.py", line 272, in logger
+    return self._logger
+           ^^^^^^^^^^^^
+AttributeError: 'SAC' object has no attribute '_logger'. Did you mean: 'logger'?

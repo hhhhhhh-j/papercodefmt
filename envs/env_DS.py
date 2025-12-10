@@ -4,6 +4,7 @@ import seaborn as sns
 import matplotlib.pyplot as plt
 from utils.read_grid_map import ReadGridMap
 import time
+from collections import defaultdict
 
 class param:
     # Hybrid A* 参数
@@ -24,22 +25,22 @@ class param:
     dt = 0.3                            # 时间步长
     L = 2.5                             # 车辆轴距
     # reward 系数
-    REACH_GOAL_REWARD = 80.0            # 到达目标奖励
-    COLLISION_PENALTY = -20.0           # 碰撞惩罚
-    STEP_PENALTY = 0.05                 # 每步惩罚
-    DISTANCE_WEIGHT = 5.85              # 距离权重
+    REACH_GOAL_REWARD = 50.0            # 到达目标奖励
+    COLLISION_PENALTY = -50.0           # 碰撞惩罚
+    STEP_PENALTY = 0.035                 # 每步惩罚
+    DISTANCE_WEIGHT = 1.00              # 距离权重
     # YAW_WEIGHT = 0.5                  # 航向角权重
-    EXPLORE_GAIN = 1.0                  # 探索奖励增益
+    EXPLORE_GAIN = 0.0                  # 探索奖励增益
     REVERSE = 1.0                       # 倒车惩罚
     FOWARD = 0.5                        # 前进奖励
-    HEADING_REWARD = 0.3
+    HEADING_REWARD = 0.003
     # lidar参数
     RESO = 1
     MEAS_PHI = np.arange(-0.6, 0.6, 0.05)
     RMAX = 30               # Max beam range.
     ALPHA = 1               # Width of an obstacle (distance about measurement to fill in).
     BETA = 0.05             # Angular width of a beam.
-    gamma = 0.99            # 遗忘指数
+    gamma = 0.9999999999999 # 遗忘指数
 
 class interface2RL:
     def __init__(self, global_map, init_pose = [0.0, 0.0, 0.0]):
@@ -50,12 +51,42 @@ class interface2RL:
         # self.local_m = np.zeros((param.local_size_height, param.local_size_width))
         # self.local_m_uncertainty = np.zeros((param.local_size_height, param.local_size_width))
         self.current_pose = np.array(init_pose, dtype=np.float32) 
-        self.global_m_occ = np.zeros((param.global_size_height, param.global_size_width))
-        self.globa_m_free = np.zeros((param.global_size_height, param.global_size_width))
-        self.global_m_unk = np.ones((param.global_size_height, param.global_size_width))
+
+        self.belief_map = defaultdict(lambda: {"occ": 0.0, "free": 0.0, "unk": 1.0})
+        
         self.local_m_occ = np.zeros((param.local_size_height, param.local_size_width))
         self.local_m_free = np.zeros((param.local_size_height, param.local_size_width))
         self.local_m_unk = np.ones((param.local_size_height, param.local_size_width))
+
+    def record2belief_map(self):
+        agent_x = self.current_pose[0]
+        agent_y = self.current_pose[1]
+
+        H, W = param.local_size_height, param.local_size_width  # e.g., 64, 64
+        center_i = H // 2
+        center_j = W // 2
+
+        for i in range(H):
+            for j in range(W):
+
+                # local → global 坐标偏移
+                dx = j - center_j
+                dy = i - center_i
+
+                # global 坐标
+                gx = int(agent_x + dx)
+                gy = int(agent_y + dy)
+
+                np.clip(gx, 0, param.global_size_width)
+                np.clip(gx, 0, param.global_size_height)
+
+                # 写入 belief_map（注意自动初始化）
+                self.belief_map[(gx, gy)]["occ"] = float(self.local_m_occ[i, j])
+                self.belief_map[(gx, gy)]["free"] = float(self.local_m_free[i, j])
+                self.belief_map[(gx, gy)]["unk"] = float(self.local_m_unk[i, j])
+
+                # print(self.belief_map)
+                return self.belief_map
 
     def get_local_map(self, global_map, X):
         '''
@@ -179,8 +210,9 @@ class interface2RL:
             self.local_m_unk = self.get_local_map(m_unk, self.current_pose )
 
         local_m = self.local_m_occ + 0.5 * self.local_m_unk
+        belief_map = self.record2belief_map()
         
-        return local_m,self.local_m_free,self.local_m_unk,self.current_pose
+        return local_m, self.local_m_free, self.local_m_unk, self.current_pose, belief_map
 
     def is_collision(self, pose):
         '''
@@ -211,12 +243,15 @@ class interface2RL:
         self.local_m_occ = self.get_local_map(m_occ,self.current_pose )
         self.local_m_unk = self.get_local_map(m_unk, self.current_pose )
 
+        # belief map
+        belief_map = self.record2belief_map()
+
         # 是否碰撞
         collision = self.is_collision(self.current_pose)
 
         local_m = self.local_m_occ + 0.5 * self.local_m_unk
         
-        return local_m, self.local_m_unk, collision, self.current_pose
+        return local_m, self.local_m_unk, collision, self.current_pose, belief_map
 
 class Lidar:
     def __init__(self, true_map):
@@ -302,27 +337,38 @@ class Lidar:
         m_unk = np.full_like(r, 1.0, dtype=float)
         m_free = np.full_like(r, 0.0, dtype=float)
 
+        
+
         # 对每条激光束判断
         for k, angle in enumerate(self.meas_phi):
+            # 添加噪声
+            '''
+            distance angle noise
+            '''
+            w_r = np.exp(-0.005 * r)   # 距离越大，可信度越低
+            w_phi = np.exp(-( (phi - angle)**2 ) / (2 * self.beta**2))
+            meas_r_noisy = meas_r[k] + np.random.normal(0, 0.05)
 
             mask_angle = np.abs(phi - angle) <= self.beta / 2
 
-            mask_occ = mask_angle & (np.abs(r - meas_r[k]) <= self.alpha / 2)
-            mask_free = mask_angle & (r < meas_r[k])
+            # mask_occ = mask_angle & (np.abs(r - meas_r[k]) <= self.alpha / 2)
+            # mask_free = mask_angle & (r < meas_r[k])
+            mask_occ = mask_angle & (np.abs(r - meas_r_noisy) <= self.alpha / 2)
+            mask_free = mask_angle & (r < meas_r_noisy)
 
-            m_occ[mask_occ] = 0.7
+            w = w_r * w_phi
+
+            m_occ[mask_occ] += 0.7 * w[mask_occ]
             m_unk[mask_occ] = 1 - m_occ[mask_occ]
             m_free[mask_occ] = 0.0
 
-            m_free[mask_free] = 0.3
+            m_free[mask_free] += 0.3 * w[mask_free]
             m_unk[mask_free] = 1 - m_free[mask_free]
             m_occ[mask_free] = 0.0
 
-        # 写回全局
-        # h, w = m_occ.shape
-        # self.m_occ[y_min:y_min+h, x_min:x_min+w] = m_occ
-        # self.m_unk[y_min:y_min+h, x_min:x_min+w] = m_unk
-        # self.m_free[y_min:y_min+h, x_min:x_min+w] = m_free
+        m_occ = np.clip(m_occ, 0, 1)
+        m_free = np.clip(m_free, 0, 1)
+        m_unk = np.clip(m_unk, 0, 1)
 
         return m_occ, m_free, m_unk
     
