@@ -86,7 +86,7 @@ class interface2RL:
                 self.belief_map[(gx, gy)]["unk"] = float(self.local_m_unk[i, j])
 
                 # print(self.belief_map)
-                return self.belief_map
+        return self.belief_map
 
     def get_local_map(self, global_map, X):
         '''

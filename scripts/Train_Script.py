@@ -34,8 +34,8 @@ wandb.init(
         "gamma": 0.99,
         "tau": 0.005,
         "net_arch": [256, 256],
-        "features_dim": 256,
-        "total_timesteps": 10000,
+        "features_dim": 256, 
+        "total_timesteps": 1000,
     }
 )
 
@@ -49,6 +49,9 @@ policy_kwargs = dict(
 )
 
 # 创建或加载 SAC 模型
+print("CWD =", os.getcwd())
+print("Expect ckpt =", os.path.abspath("sac_decision_making.zip"))
+print("Exists? =", os.path.exists("sac_decision_making.zip"))
 if os.path.exists("sac_decision_making.zip"):
     print("Loading existing model...")
     model = SAC.load("sac_decision_making", env=env)
@@ -88,7 +91,7 @@ model.learn(
     callback=[wandb_cb, custom_cb]
 )
 
-model.save("sac_decision_making")
+model.save("/home/fmt/catkin_ws/src/fmt_/sb3_SAC/sac_decision_making")
 env.close()
 wandb.finish()
 

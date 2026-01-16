@@ -482,7 +482,7 @@ if __name__ == "__main__":
         应该是不用了，采用carla或者gazebo
     8.应该加一个倒车惩罚
     '''
-    env = DM_env()   # 假如你环境叫这个名字
+    env = DM_env()   
     obs, info = env.reset()
 
     for _ in range(200):
