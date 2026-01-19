@@ -1,0 +1,67 @@
+CWD = /home/fmt/catkin_ws/src/fmt_/sb3_SAC
+Expect ckpt = /home/fmt/catkin_ws/src/fmt_/sb3_SAC/sac_decision_making.zip
+Exists? = True
+Loading existing model...
+Logging to ./tb_logs/SAC_5
+current.pose: 159.06919344814438 73.73524180749845
+goal: 126 198
+reward: -3.34621332179842
+step: 1
+current.pose: 159.23177163416585 73.1339760505761
+goal: 126 198
+reward: -4.534942550332526
+step: 2
+Traceback (most recent call last):
+  File "/home/fmt/catkin_ws/src/fmt_/sb3_SAC/scripts/Train_Script.py", line 88, in <module>
+    model.learn(
+  File "/home/fmt/miniconda3/envs/sb3/lib/python3.12/site-packages/stable_baselines3/sac/sac.py", line 313, in learn
+    return super().learn(
+           ^^^^^^^^^^^^^^
+  File "/home/fmt/miniconda3/envs/sb3/lib/python3.12/site-packages/stable_baselines3/common/off_policy_algorithm.py", line 335, in learn
+    rollout = self.collect_rollouts(
+              ^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/fmt/miniconda3/envs/sb3/lib/python3.12/site-packages/stable_baselines3/common/off_policy_algorithm.py", line 567, in collect_rollouts
+    new_obs, rewards, dones, infos = env.step(actions)
+                                     ^^^^^^^^^^^^^^^^^
+  File "/home/fmt/miniconda3/envs/sb3/lib/python3.12/site-packages/stable_baselines3/common/vec_env/base_vec_env.py", line 222, in step
+    return self.step_wait()
+           ^^^^^^^^^^^^^^^^
+  File "/home/fmt/miniconda3/envs/sb3/lib/python3.12/site-packages/stable_baselines3/common/vec_env/dummy_vec_env.py", line 59, in step_wait
+    obs, self.buf_rews[env_idx], terminated, truncated, self.buf_infos[env_idx] = self.envs[env_idx].step(  # type: ignore[assignment]
+                                                                                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/fmt/miniconda3/envs/sb3/lib/python3.12/site-packages/stable_baselines3/common/monitor.py", line 94, in step
+    observation, reward, terminated, truncated, info = self.env.step(action)
+                                                       ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/fmt/miniconda3/envs/sb3/lib/python3.12/site-packages/gymnasium/wrappers/common.py", line 393, in step
+    return super().step(action)
+           ^^^^^^^^^^^^^^^^^^^^
+  File "/home/fmt/miniconda3/envs/sb3/lib/python3.12/site-packages/gymnasium/core.py", line 327, in step
+    return self.env.step(action)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/fmt/miniconda3/envs/sb3/lib/python3.12/site-packages/gymnasium/wrappers/common.py", line 285, in step
+    return self.env.step(action)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/fmt/catkin_ws/src/fmt_/sb3_SAC/models/SAC_DS_DM.py", line 179, in step
+    local_m, local_m_uncertainty, collision, current_pose, self.belief_map = self.interface.ToSAC_step(sub_goal)
+                                                                             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/fmt/catkin_ws/src/fmt_/sb3_SAC/envs/env_DS.py", line 247, in ToSAC_step
+    belief_map = self.record2belief_map()
+                 ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/fmt/catkin_ws/src/fmt_/sb3_SAC/envs/env_DS.py", line 81, in record2belief_map
+    np.clip(gx, 0, param.global_size_height)
+  File "/home/fmt/miniconda3/envs/sb3/lib/python3.12/site-packages/numpy/_core/fromnumeric.py", line 2330, in clip
+    return _wrapfunc(a, 'clip', a_min, a_max, out=out, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/fmt/miniconda3/envs/sb3/lib/python3.12/site-packages/numpy/_core/fromnumeric.py", line 54, in _wrapfunc
+    return _wrapit(obj, method, *args, **kwds)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/fmt/miniconda3/envs/sb3/lib/python3.12/site-packages/numpy/_core/fromnumeric.py", line 46, in _wrapit
+    result = getattr(arr, method)(*args, **kwds)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/fmt/miniconda3/envs/sb3/lib/python3.12/site-packages/numpy/_core/_methods.py", line 105, in _clip
+    if type(max) is int and max >= np.iinfo(a.dtype).max:
+                                   ^^^^^^^^^^^^^^^^^
+  File "/home/fmt/miniconda3/envs/sb3/lib/python3.12/site-packages/numpy/_core/getlimits.py", line 697, in __init__
+    def __init__(self, int_type):
+
+KeyboardInterrupt

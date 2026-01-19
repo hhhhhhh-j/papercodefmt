@@ -1,0 +1,16 @@
+{
+  "os":  "Linux-5.15.0-139-generic-x86_64-with-glibc2.31",
+  "python":  "CPython 3.12.12",
+  "startedAt":  "2026-01-16T15:05:58.440177Z",
+  "program":  "/home/fmt/catkin_ws/src/fmt_/sb3_SAC/scripts/Train_Script.py",
+  "codePath":  "scripts/Train_Script.py",
+  "codePathLocal":  "scripts/Train_Script.py",
+  "git":  {
+    "commit":  "bce47273a5bdb072345681fb8be78cbf2a7640a6"
+  },
+  "email":  "3297240254@qq.com",
+  "root":  "./",
+  "host":  "fmt-Lenovo-Legion-Y7000P2020",
+  "executable":  "/home/fmt/miniconda3/envs/sb3/bin/python",
+  "writerId":  "0miahnt3ojsxxo55vr2t7w6ujaoglo65"
+}

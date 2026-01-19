@@ -35,7 +35,7 @@ wandb.init(
         "tau": 0.005,
         "net_arch": [256, 256],
         "features_dim": 256, 
-        "total_timesteps": 1000,
+        "total_timesteps": 1000000,
     }
 )
 

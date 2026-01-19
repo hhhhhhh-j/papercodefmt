@@ -1,0 +1,16 @@
+{"time":"2026-01-16T22:49:14.15206548+08:00","level":"INFO","msg":"stream: starting","core version":"0.23.1"}
+{"time":"2026-01-16T22:49:15.246058103+08:00","level":"INFO","msg":"stream: created new stream","id":"4t4ktl83"}
+{"time":"2026-01-16T22:49:15.246217033+08:00","level":"INFO","msg":"handler: started","stream_id":"4t4ktl83"}
+{"time":"2026-01-16T22:49:15.24649045+08:00","level":"INFO","msg":"stream: started","id":"4t4ktl83"}
+{"time":"2026-01-16T22:49:15.24657608+08:00","level":"INFO","msg":"writer: started","stream_id":"4t4ktl83"}
+{"time":"2026-01-16T22:49:15.246620851+08:00","level":"INFO","msg":"sender: started","stream_id":"4t4ktl83"}
+{"time":"2026-01-16T22:49:27.102377117+08:00","level":"WARN","msg":"tensorboard: no root directory","error":"timed out after 10s"}
+{"time":"2026-01-16T22:49:27.102421322+08:00","level":"INFO","msg":"tensorboard: tracking new log directory","rootDir":{},"logDir":"LocalOrCloudPath(LocalPath=\"/home/fmt/catkin_ws/src/fmt_/sb3_SAC/tb_logs/SAC_4\")","namespace":""}
+{"time":"2026-01-16T22:49:27.102646818+08:00","level":"INFO","msg":"tensorboard: saving file","fileLocation":"/home/fmt/catkin_ws/src/fmt_/sb3_SAC/tb_logs/SAC_4/events.out.tfevents.1768574957.fmt-Lenovo-Legion-Y7000P2020.51694.0","runPath":"tb_logs/SAC_4/events.out.tfevents.1768574957.fmt-Lenovo-Legion-Y7000P2020.51694.0"}
+{"time":"2026-01-16T23:04:31.843140338+08:00","level":"INFO","msg":"api: retrying error","error":"Post \"https://api.wandb.ai/files/3297240254-bit/offroad-sac-ds/4t4ktl83/file_stream\": unexpected EOF"}
+{"time":"2026-01-16T23:04:44.399638397+08:00","level":"INFO","msg":"fileTransfer: Close: file transfer manager closed"}
+{"time":"2026-01-16T23:04:45.718706683+08:00","level":"INFO","msg":"handler: operation stats","stats":{}}
+{"time":"2026-01-16T23:04:45.723548176+08:00","level":"INFO","msg":"stream: closing","id":"4t4ktl83"}
+{"time":"2026-01-16T23:04:45.723571449+08:00","level":"INFO","msg":"handler: closed","stream_id":"4t4ktl83"}
+{"time":"2026-01-16T23:04:45.723626589+08:00","level":"INFO","msg":"sender: closed","stream_id":"4t4ktl83"}
+{"time":"2026-01-16T23:04:45.723661766+08:00","level":"INFO","msg":"stream: closed","id":"4t4ktl83"}

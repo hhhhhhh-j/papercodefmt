@@ -5,10 +5,12 @@ import matplotlib.pyplot as plt
 from utils.read_grid_map import ReadGridMap
 import time
 from collections import defaultdict
+from envs.node import Frontier
+import cv2
 
 class param:
     # Hybrid A* 参数
-    XY_RESO = 1.0                   # 网格地图分辨率
+    XY_RESO = 1.0                   # 一个格子代表多少m
     YAW_RESO = np.deg2rad(15.0)     # 航向角分辨率
     WB = 3.5                        # 车辆的轴距 (WheelBase)
 
@@ -19,28 +21,34 @@ class param:
     global_size_height = 256
     max_dist = np.sqrt(global_size_width**2 + global_size_height**2)
     SEED = None                         # 随机地图种子
+
     # action 缩放系数
     RATIO_throttle = 4                  # x缩放系数
     RATIO_yaw = math.pi / 4             # yaw缩放系数
     dt = 0.3                            # 时间步长
     L = 2.5                             # 车辆轴距
+
     # reward 系数
     REACH_GOAL_REWARD = 50.0            # 到达目标奖励
     COLLISION_PENALTY = -50.0           # 碰撞惩罚
-    STEP_PENALTY = 0.035                 # 每步惩罚
-    DISTANCE_WEIGHT = 1.00              # 距离权重
+    STEP_PENALTY = 1.5                 # 每步惩罚
+    DISTANCE_WEIGHT = 1.30              # 距离权重
     # YAW_WEIGHT = 0.5                  # 航向角权重
     EXPLORE_GAIN = 0.0                  # 探索奖励增益
     REVERSE = 1.0                       # 倒车惩罚
     FOWARD = 0.5                        # 前进奖励
-    HEADING_REWARD = 0.003
+    HEADING_REWARD = 10.3
+
+    # 
+    PATCH_SIZE_beliefmap = 256                   # 全局地图patch大小
+
     # lidar参数
     RESO = 1
     MEAS_PHI = np.arange(-0.6, 0.6, 0.05)
     RMAX = 30               # Max beam range.
     ALPHA = 1               # Width of an obstacle (distance about measurement to fill in).
     BETA = 0.05             # Angular width of a beam.
-    gamma = 0.9999999999999 # 遗忘指数
+    gamma = 0.99999999999999999999999999999999 # 遗忘指数
 
 class interface2RL:
     def __init__(self, global_map, init_pose = [0.0, 0.0, 0.0]):
@@ -52,13 +60,73 @@ class interface2RL:
         # self.local_m_uncertainty = np.zeros((param.local_size_height, param.local_size_width))
         self.current_pose = np.array(init_pose, dtype=np.float32) 
 
-        self.belief_map = defaultdict(lambda: {"occ": 0.0, "free": 0.0, "unk": 1.0})
+        self.belief_map_dict = defaultdict(lambda: {"occ": 0.0, "free": 0.0, "unk": 1.0})
         
         self.local_m_occ = np.zeros((param.local_size_height, param.local_size_width))
         self.local_m_free = np.zeros((param.local_size_height, param.local_size_width))
         self.local_m_unk = np.ones((param.local_size_height, param.local_size_width))
 
-    def record2belief_map(self):
+    def ToSAC_reset(self):
+        '''
+        与RL reset的接口
+        '''
+        res = self.lidar.DS_update([self.current_pose[0], 
+                         self.current_pose[1], 
+                         self.current_pose[2]])
+        # 防止map无效
+        if res is None:
+            self.local_m_occ = np.ones((param.local_size_height, param.local_size_width))
+            self.local_m_free = np.zeros((param.local_size_height, param.local_size_width))
+            self.local_m_unk = np.ones((param.local_size_height, param.local_size_width))
+        else:
+            m_occ,m_free,m_unk = res
+            self.local_m_occ = self.get_local_map(m_occ,self.current_pose )
+            self.local_m_free = self.get_local_map(m_free, self.current_pose )
+            self.local_m_unk = self.get_local_map(m_unk, self.current_pose )
+
+        local_m = self.local_m_occ + 0.5 * self.local_m_unk
+        belief_map_dict = self.record_belief_map()
+        
+        return local_m, self.local_m_free, self.local_m_unk, self.current_pose, belief_map_dict
+
+    def ToSAC_step(self, sub_goal):
+        '''
+        与RL step的接口
+        '''
+        x_new = sub_goal[0]
+        y_new = sub_goal[1]
+        yaw_new = sub_goal[2]
+
+        m_occ, m_free, m_unk = self.lidar.DS_update([x_new, y_new, yaw_new])
+        self.current_pose = np.array([x_new, y_new, yaw_new])
+        
+        self.local_m_occ = self.get_local_map(m_occ,self.current_pose )
+        self.local_m_unk = self.get_local_map(m_unk, self.current_pose )
+        self.local_m_free = self.get_local_map(m_free, self.current_pose )
+
+        # belief map
+        belief_map_dict = self.record_belief_map()
+
+        # 是否碰撞
+        collision = self.is_collision(self.current_pose)
+
+        local_m = self.local_m_occ + 0.5 * self.local_m_unk
+        
+        return local_m, self.local_m_unk, collision, self.current_pose, belief_map_dict
+
+    def get_frontier_clusters(self): # -> List of frontier clusters waitting to be explored
+        '''
+        获取 top k frontier clusters
+        '''
+        frontier = Frontier(self.local_m_occ, self.local_m_unk, 
+                            self.local_m_free,(param.local_size_height // 2, param.local_size_width // 2))
+        frontier_mask = frontier.compute_frontier_mask()
+        clusters = frontier.cluster_frontiers(frontier_mask)
+        infos = frontier.summarize_clusters_rep_points(clusters)
+        topk = frontier.select_topk(infos) # no risk map for now
+        return topk, frontier_mask
+
+    def record_belief_map(self):
         agent_x = self.current_pose[0]
         agent_y = self.current_pose[1]
 
@@ -77,16 +145,16 @@ class interface2RL:
                 gx = int(agent_x + dx)
                 gy = int(agent_y + dy)
 
-                np.clip(gx, 0, param.global_size_width)
-                np.clip(gx, 0, param.global_size_height)
+                gx = np.clip(gx, 0, param.global_size_width - 1)
+                gy = np.clip(gy, 0, param.global_size_height - 1)
 
-                # 写入 belief_map（注意自动初始化）
-                self.belief_map[(gx, gy)]["occ"] = float(self.local_m_occ[i, j])
-                self.belief_map[(gx, gy)]["free"] = float(self.local_m_free[i, j])
-                self.belief_map[(gx, gy)]["unk"] = float(self.local_m_unk[i, j])
+                # 写入 belief_map_dict（注意自动初始化）
+                self.belief_map_dict[(gx, gy)]["occ"] = float(self.local_m_occ[i, j])
+                self.belief_map_dict[(gx, gy)]["free"] = float(self.local_m_free[i, j])
+                self.belief_map_dict[(gx, gy)]["unk"] = float(self.local_m_unk[i, j])
 
-                # print(self.belief_map)
-        return self.belief_map
+                # print(self.belief_map_dict)
+        return self.belief_map_dict
 
     def get_local_map(self, global_map, X):
         '''
@@ -161,12 +229,25 @@ class interface2RL:
         all_x = np.concatenate([ox, top_x, bottom_x, left_x, right_x])
         all_y = np.concatenate([oy, top_y, bottom_y, left_y, right_y])
         return all_x.tolist(), all_y.tolist()
+    
+    def is_collision(self, pose):
+        '''
+        检测碰撞
+        '''
+        x = int(pose[0])
+        y = int(pose[1])
 
+        if x < 0 or x >= self.global_map.shape[1] or y < 0 or y >= self.global_map.shape[0]:
+            return True  # 越界视为碰撞
+
+        if self.global_map[y, x] >= 0.6:  # 假设大于等于0.6的概率视为障碍物
+            return True
+        else:
+            return False
+
+    '''Hybrid A* interface
     def GetPath(self, sx = 10.0, sy = 7.0, syaw0 = np.deg2rad(120.0), 
                 gx = 45.0, gy = 20.0, gyaw0 = np.deg2rad(90.0)): # , sx, sy, syaw0, gx, gy, gyaw0, ox, oy
-        '''
-        获取行动路径
-        '''
        
         # 生成障碍物的坐标
         ox, oy = self.get_local_obs(self.global_map)
@@ -190,69 +271,8 @@ class interface2RL:
         direction = path.direction
 
         return x,y, yaw, direction
-
-    def ToSAC_reset(self):
         '''
-        与RL reset的接口
-        '''
-        res = self.lidar.DS_update([self.current_pose[0], 
-                         self.current_pose[1], 
-                         self.current_pose[2]])
-        # 防止map无效
-        if res is None:
-            self.local_m_occ = np.ones((param.local_size_height, param.local_size_width))
-            self.local_m_free = np.zeros((param.local_size_height, param.local_size_width))
-            self.local_m_unk = np.ones((param.local_size_height, param.local_size_width))
-        else:
-            m_occ,m_free,m_unk = res
-            self.local_m_occ = self.get_local_map(m_occ,self.current_pose )
-            self.local_m_free = self.get_local_map(m_free, self.current_pose )
-            self.local_m_unk = self.get_local_map(m_unk, self.current_pose )
-
-        local_m = self.local_m_occ + 0.5 * self.local_m_unk
-        belief_map = self.record2belief_map()
-        
-        return local_m, self.local_m_free, self.local_m_unk, self.current_pose, belief_map
-
-    def is_collision(self, pose):
-        '''
-        检测碰撞
-        '''
-        x = int(pose[0])
-        y = int(pose[1])
-
-        if x < 0 or x >= self.global_map.shape[1] or y < 0 or y >= self.global_map.shape[0]:
-            return True  # 越界视为碰撞
-
-        if self.global_map[y, x] >= 0.6:  # 假设大于等于0.6的概率视为障碍物
-            return True
-        else:
-            return False
-
-    def ToSAC_step(self, sub_goal):
-        '''
-        与RL step的接口
-        '''
-        x_new = sub_goal[0]
-        y_new = sub_goal[1]
-        yaw_new = sub_goal[2]
-
-        m_occ, m_free, m_unk = self.lidar.DS_update([x_new, y_new, yaw_new])
-        self.current_pose = np.array([x_new, y_new, yaw_new])
-        
-        self.local_m_occ = self.get_local_map(m_occ,self.current_pose )
-        self.local_m_unk = self.get_local_map(m_unk, self.current_pose )
-
-        # belief map
-        belief_map = self.record2belief_map()
-
-        # 是否碰撞
-        collision = self.is_collision(self.current_pose)
-
-        local_m = self.local_m_occ + 0.5 * self.local_m_unk
-        
-        return local_m, self.local_m_unk, collision, self.current_pose, belief_map
-
+    
 class Lidar:
     def __init__(self, true_map):
         self.true_map = true_map
@@ -337,8 +357,6 @@ class Lidar:
         m_unk = np.full_like(r, 1.0, dtype=float)
         m_free = np.full_like(r, 0.0, dtype=float)
 
-        
-
         # 对每条激光束判断
         for k, angle in enumerate(self.meas_phi):
             # 添加噪声
@@ -382,21 +400,21 @@ class Lidar:
 
         coef = 1.0 / (1.0 - K)
 
-        # --------- 合成占用 ----------
+        # ---------  occ ----------
         m_occ = coef * (
             m1_occ * m2_occ +
             m1_occ * m2_unk +
             m1_unk * m2_occ
         )
 
-        # --------- 合成 free ----------
+        # ---------  free ----------
         m_free = coef * (
             m1_free * m2_free +
             m1_free * m2_unk +
             m1_unk * m2_free
         )
 
-        # --------- 合成 unknown ----------
+        # --------- unknown ----------
         m_unk = coef * (m1_unk * m2_unk)
 
         return m_occ, m_free, m_unk

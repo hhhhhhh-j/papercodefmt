@@ -67,10 +67,10 @@ class DM_env(gym.Env):
 
         # 定义观测空间：
         '''
+        local map(uncertainty map)
+        local map(occupancy grid map)
         智能体坐标(x,y)
         目标点坐标(x_goal,y_goal)
-        map(uncertainty map)二维数组展平
-        map(occupancy grid map)二维数组展平
         '''
         self.observation_space = spaces.Dict({
             "map": spaces.Box(
@@ -104,7 +104,7 @@ class DM_env(gym.Env):
         # self.generate_random_map(seed = seed)     # 随机生成地图 
         self.get_easy_map()                         # 生成简单测试地图
 
-        # 随机生成智能体和目标点位置（注意要避开障碍物）
+        # 随机生成智能体和目标点位置
         self.goal_x,self.goal_y,self.goal_yaw = self.get_random_free_position()
         self.agent_x,self.agent_y,self.agent_yaw = self.get_random_free_position()  
 
@@ -154,7 +154,7 @@ class DM_env(gym.Env):
         # yaw_diff = self.agent_yaw
         # yaw_diff = min(yaw_diff, 2*math.pi - yaw_diff)
 
-        # 不确定性增益（两种可选，后续可优化这部分）
+        # 不确定性增益
         uncertain_gain = np.mean(self.local_m_uncertainty)
         # uncertain_gain = np.max(self.local_m_uncertainty)
 
@@ -170,8 +170,8 @@ class DM_env(gym.Env):
         desired_x = self.v * np.cos(self.agent_yaw) * param.dt + self.agent_x
         desired_y = self.v * np.sin(self.agent_yaw) * param.dt + self.agent_y
 
-        sub_x = np.clip(desired_x, 0, param.global_size_width)
-        sub_y = np.clip(desired_y, 0, param.global_size_height)
+        sub_x = np.clip(desired_x, 0, param.global_size_width - 1)
+        sub_y = np.clip(desired_y, 0, param.global_size_height - 1)
         sub_yaw = desired_yaw
         sub_goal = [sub_x, sub_y, sub_yaw]
         
@@ -223,8 +223,8 @@ class DM_env(gym.Env):
         step_penalty = -param.STEP_PENALTY
         reach_goal_reward = param.REACH_GOAL_REWARD if reach else 0.0
         explore_reward = -param.EXPLORE_GAIN * uncertain_gain_change
-        reverse_penalty = param.REVERSE * accel if accel<0 else 0.0
-        forward_reward = param.FOWARD * accel if accel>0 else 0.0
+        reverse_penalty = param.REVERSE * self.v if self.v<0 else 0.0
+        forward_reward = param.FOWARD * self.v if self.v>0 else 0.0
         heading_reward = param.HEADING_REWARD * (1.0 - abs(goal_angle) / math.pi)
 
         # 防止程序崩溃
@@ -242,10 +242,10 @@ class DM_env(gym.Env):
 
         reward = (distance_reward + 
                   collision_penalty + 
-                  step_penalty + 
+                #   step_penalty + 
                   reach_goal_reward + 
                   explore_reward + 
-                  heading_reward +
+                #   heading_reward +
                   reverse_penalty + 
                   forward_reward)
 

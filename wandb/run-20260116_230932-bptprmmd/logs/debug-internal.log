@@ -1,0 +1,13 @@
+{"time":"2026-01-16T23:09:32.6801834+08:00","level":"INFO","msg":"stream: starting","core version":"0.23.1"}
+{"time":"2026-01-16T23:09:33.946581559+08:00","level":"INFO","msg":"stream: created new stream","id":"bptprmmd"}
+{"time":"2026-01-16T23:09:33.946686823+08:00","level":"INFO","msg":"handler: started","stream_id":"bptprmmd"}
+{"time":"2026-01-16T23:09:33.946784664+08:00","level":"INFO","msg":"stream: started","id":"bptprmmd"}
+{"time":"2026-01-16T23:09:33.946857759+08:00","level":"INFO","msg":"writer: started","stream_id":"bptprmmd"}
+{"time":"2026-01-16T23:09:33.946907864+08:00","level":"INFO","msg":"sender: started","stream_id":"bptprmmd"}
+{"time":"2026-01-16T23:09:45.532463515+08:00","level":"WARN","msg":"tensorboard: no root directory","error":"timed out after 10s"}
+{"time":"2026-01-16T23:09:45.532503927+08:00","level":"INFO","msg":"tensorboard: tracking new log directory","rootDir":{},"logDir":"LocalOrCloudPath(LocalPath=\"/home/fmt/catkin_ws/src/fmt_/sb3_SAC/tb_logs/SAC_6\")","namespace":""}
+{"time":"2026-01-16T23:09:45.532728994+08:00","level":"INFO","msg":"tensorboard: saving file","fileLocation":"/home/fmt/catkin_ws/src/fmt_/sb3_SAC/tb_logs/SAC_6/events.out.tfevents.1768576175.fmt-Lenovo-Legion-Y7000P2020.56424.0","runPath":"tb_logs/SAC_6/events.out.tfevents.1768576175.fmt-Lenovo-Legion-Y7000P2020.56424.0"}
+{"time":"2026-01-17T14:54:38.699338364+08:00","level":"INFO","msg":"api: retrying error","error":"Post \"https://api.wandb.ai/files/3297240254-bit/offroad-sac-ds/bptprmmd/file_stream\": dial tcp: lookup api.wandb.ai on 127.0.0.53:53: server misbehaving"}
+{"time":"2026-01-17T14:54:39.753296662+08:00","level":"INFO","msg":"stream: closing","id":"bptprmmd"}
+{"time":"2026-01-17T14:54:40.903088336+08:00","level":"INFO","msg":"api: retrying error","error":"Post \"https://api.wandb.ai/files/3297240254-bit/offroad-sac-ds/bptprmmd/file_stream\": dial tcp: lookup api.wandb.ai on 127.0.0.53:53: server misbehaving"}
+{"time":"2026-01-17T14:55:09.82268483+08:00","level":"INFO","msg":"api: retrying error","error":"Post \"https://api.wandb.ai/graphql\": net/http: request canceled (Client.Timeout exceeded while awaiting headers)"}

@@ -1,0 +1,14 @@
+{"time":"2026-01-17T15:09:06.0442886+08:00","level":"INFO","msg":"stream: starting","core version":"0.23.1"}
+{"time":"2026-01-17T15:09:09.245901977+08:00","level":"INFO","msg":"stream: created new stream","id":"fuqkx4f7"}
+{"time":"2026-01-17T15:09:09.246119252+08:00","level":"INFO","msg":"handler: started","stream_id":"fuqkx4f7"}
+{"time":"2026-01-17T15:09:09.246384172+08:00","level":"INFO","msg":"stream: started","id":"fuqkx4f7"}
+{"time":"2026-01-17T15:09:09.246490245+08:00","level":"INFO","msg":"writer: started","stream_id":"fuqkx4f7"}
+{"time":"2026-01-17T15:09:09.246505237+08:00","level":"INFO","msg":"sender: started","stream_id":"fuqkx4f7"}
+{"time":"2026-01-17T15:09:18.061491075+08:00","level":"INFO","msg":"stream: closing","id":"fuqkx4f7"}
+{"time":"2026-01-17T15:09:20.663499096+08:00","level":"WARN","msg":"tensorboard: no root directory","error":"timed out after 10s"}
+{"time":"2026-01-17T15:09:20.66354243+08:00","level":"INFO","msg":"tensorboard: tracking new log directory","rootDir":{},"logDir":"LocalOrCloudPath(LocalPath=\"/home/fmt/catkin_ws/src/fmt_/sb3_SAC/tb_logs/SAC_9\")","namespace":""}
+{"time":"2026-01-17T15:09:20.663673822+08:00","level":"INFO","msg":"tensorboard: saving file","fileLocation":"/home/fmt/catkin_ws/src/fmt_/sb3_SAC/tb_logs/SAC_9/events.out.tfevents.1768633750.fmt-Lenovo-Legion-Y7000P2020.59967.0","runPath":"tb_logs/SAC_9/events.out.tfevents.1768633750.fmt-Lenovo-Legion-Y7000P2020.59967.0"}
+{"time":"2026-01-17T15:09:21.880828932+08:00","level":"INFO","msg":"fileTransfer: Close: file transfer manager closed"}
+{"time":"2026-01-17T15:09:24.282761433+08:00","level":"INFO","msg":"handler: closed","stream_id":"fuqkx4f7"}
+{"time":"2026-01-17T15:09:24.282848823+08:00","level":"INFO","msg":"sender: closed","stream_id":"fuqkx4f7"}
+{"time":"2026-01-17T15:09:24.282870949+08:00","level":"INFO","msg":"stream: closed","id":"fuqkx4f7"}
