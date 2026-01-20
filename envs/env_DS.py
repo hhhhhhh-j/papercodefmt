@@ -5,7 +5,7 @@ import matplotlib.pyplot as plt
 from utils.read_grid_map import ReadGridMap
 import time
 from collections import defaultdict
-from envs.node import Frontier
+from envs.attachments import Frontier
 import cv2
 
 class param:
@@ -48,7 +48,7 @@ class param:
     RMAX = 30               # Max beam range.
     ALPHA = 1               # Width of an obstacle (distance about measurement to fill in).
     BETA = 0.05             # Angular width of a beam.
-    gamma = 0.99999999999999999999999999999999 # 遗忘指数
+    gamma = 1.0000000000000 # 遗忘指数
 
 class interface2RL:
     def __init__(self, global_map, init_pose = [0.0, 0.0, 0.0]):
@@ -62,9 +62,12 @@ class interface2RL:
 
         self.belief_map_dict = defaultdict(lambda: {"occ": 0.0, "free": 0.0, "unk": 1.0})
         
-        self.local_m_occ = np.zeros((param.local_size_height, param.local_size_width))
-        self.local_m_free = np.zeros((param.local_size_height, param.local_size_width))
-        self.local_m_unk = np.ones((param.local_size_height, param.local_size_width))
+        self.local_m_occ = np.zeros((param.local_size_height, param.local_size_width))              # DS证据理论
+        self.local_m_free = np.zeros((param.local_size_height, param.local_size_width))             # DS证据理论
+        self.local_m_unk = np.ones((param.local_size_height, param.local_size_width))               # DS证据理论
+        self.m_occ = np.zeros((param.global_size_height, param.global_size_width), dtype=float)     # DS证据理论
+        self.m_free = np.zeros((param.global_size_height, param.global_size_width), dtype=float)    # DS证据理论
+        self.m_unk =np.zeros((param.global_size_height, param.global_size_width), dtype=float)      # DS证据理论
 
     def ToSAC_reset(self):
         '''
@@ -75,16 +78,20 @@ class interface2RL:
                          self.current_pose[2]])
         # 防止map无效
         if res is None:
-            self.local_m_occ = np.ones((param.local_size_height, param.local_size_width))
+            self.m_occ = np.zeros((param.global_size_height, param.global_size_width))
+            self.m_free = np.zeros((param.global_size_height, param.global_size_width))
+            self.m_unk = np.ones((param.global_size_height, param.global_size_width))
+            self.local_m_occ = np.zeros((param.local_size_height, param.local_size_width))
             self.local_m_free = np.zeros((param.local_size_height, param.local_size_width))
             self.local_m_unk = np.ones((param.local_size_height, param.local_size_width))
         else:
-            m_occ,m_free,m_unk = res
-            self.local_m_occ = self.get_local_map(m_occ,self.current_pose )
-            self.local_m_free = self.get_local_map(m_free, self.current_pose )
-            self.local_m_unk = self.get_local_map(m_unk, self.current_pose )
+            self.m_occ,self.m_free,self.m_unk = res
+            
+            self.local_m_occ = self.get_local_map(self.m_occ,self.current_pose ) 
+            self.local_m_free = self.get_local_map(self.m_free, self.current_pose )
+            self.local_m_unk = self.get_local_map(self.m_unk, self.current_pose )
 
-        local_m = self.local_m_occ + 0.5 * self.local_m_unk
+        local_m = self.local_m_occ # + 0.5 * self.local_m_unk
         belief_map_dict = self.record_belief_map()
         
         return local_m, self.local_m_free, self.local_m_unk, self.current_pose, belief_map_dict
@@ -110,7 +117,7 @@ class interface2RL:
         # 是否碰撞
         collision = self.is_collision(self.current_pose)
 
-        local_m = self.local_m_occ + 0.5 * self.local_m_unk
+        local_m = self.local_m_occ # + 0.5 * self.local_m_unk
         
         return local_m, self.local_m_unk, collision, self.current_pose, belief_map_dict
 
@@ -288,8 +295,8 @@ class Lidar:
         # self.L = np.zeros((self.M, self.N))
         # self.m = np.full((self.M, self.N), 0.5)             # 初始化感知概率地图为0.5
         # self.ms = []                                        # 存储每一帧的感知概率地图
-        self.m_uncertainty = np.full((self.M, self.N),1)    # 初始化不确定性地图
-        self.m_uncertaintys = []                            # 存储每一帧的不确定性地图
+        # self.m_uncertainty = np.full((self.M, self.N),1)    # 初始化不确定性地图
+        # self.m_uncertaintys = []                            # 存储每一帧的不确定性地图
         
         self.m_occ = np.zeros((self.M, self.N), dtype=float)            # DS证据理论
         self.m_free = np.zeros((self.M, self.N), dtype=float)           # DS证据理论
@@ -363,7 +370,7 @@ class Lidar:
             '''
             distance angle noise
             '''
-            w_r = np.exp(-0.005 * r)   # 距离越大，可信度越低
+            w_r = np.exp(-0.01 * r)   # 距离越大，可信度越低
             w_phi = np.exp(-( (phi - angle)**2 ) / (2 * self.beta**2))
             meas_r_noisy = meas_r[k] + np.random.normal(0, 0.05)
 
@@ -376,17 +383,37 @@ class Lidar:
 
             w = w_r * w_phi
 
-            m_occ[mask_occ] += 0.7 * w[mask_occ]
-            m_unk[mask_occ] = 1 - m_occ[mask_occ]
-            m_free[mask_occ] = 0.0
+            # m_occ[mask_occ] += 0.7 * w[mask_occ]
+            # m_unk[mask_occ] = 1 - m_occ[mask_occ]
+            # m_free[mask_occ] = 0.0
 
-            m_free[mask_free] += 0.3 * w[mask_free]
-            m_unk[mask_free] = 1 - m_free[mask_free]
-            m_occ[mask_free] = 0.0
+            # m_free[mask_free] += 0.3 * w[mask_free]
+            # m_unk[mask_free] = 1 - m_free[mask_free]
+            # m_occ[mask_free] = 0.0
 
-        m_occ = np.clip(m_occ, 0, 1)
-        m_free = np.clip(m_free, 0, 1)
-        m_unk = np.clip(m_unk, 0, 1)
+            # 0120 调整
+            occ_evi = 0.7 * w
+            free_evi = 0.3 * w
+
+            m_occ[mask_occ] = np.maximum(m_occ[mask_occ], occ_evi[mask_occ])
+            m_free[mask_free] = np.maximum(m_free[mask_free], 1 - m_occ[mask_free])
+
+        m_occ = np.clip(m_occ, 0.0, 1.0)
+        m_free = np.clip(m_free, 0.0, 1.0)
+
+        s = m_occ + m_free
+        over = s > 1.0
+        if np.any(over):
+            m_occ[over] /= s[over]
+            m_free[over] /= s[over]
+            s = m_occ + m_free
+        
+        m_unk = 1.0 - s
+        m_unk = np.clip(m_unk, 0.0, 1.0)
+
+        # m_occ = np.clip(m_occ, 0, 1)
+        # m_free = np.clip(m_free, 0, 1)
+        # m_unk = np.clip(m_unk, 0, 1)
 
         return m_occ, m_free, m_unk
     
