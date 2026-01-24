@@ -4,35 +4,44 @@ PARENT_DIR = os.path.dirname(CURRENT_DIR)                 # sb3_SAC/
 sys.path.append(PARENT_DIR)
 
 import gymnasium as gym
-from gymnasium import spaces
-from gymnasium.utils import seeding
+import scipy.ndimage as nd
 import numpy as np
 import math
-from envs.env_DS import Lidar
-from envs.env_DS import param
-from utils.read_grid_map import ReadGridMap # 读取真实栅格地图
-from envs.env_DS import interface2RL
 import matplotlib.pyplot as plt
-from utils.draw import draw_agent
 from collections import defaultdict
-import scipy.ndimage as nd
+from collections import deque
+from envs.env_DS import Lidar
+from envs.env_DS import interface2RL
+from envs.attachments import param
+from envs.attachments import Render
+from envs.attachments import Planner
+from envs.attachments import Frontier
+from utils.read_grid_map import ReadGridMap # 读取真实栅格地图
+from gymnasium import spaces
+from gymnasium.utils import seeding
+
 
 
 class DM_env(gym.Env):
     def __init__(self):
         super(DM_env, self).__init__()
 
+        self.planner = Planner()
+        self.render_obj = Render()
+
         # 参数
+        self.micro_step = 0
         self.step_count = 0
+        self.timestep = 0
         self.max_steps = 300
+        self.replan_interval = 3                                      
+        self.visit_count = defaultdict(int)
         self.seed = param.SEED
-        self.width = param.global_size_width
-        self.height = param.global_size_height
-        # render可视化参数
-        plt.ion()
-        self.fig, self.ax = plt.subplots(1, 3, figsize=(14,5))
-        # 全局变量
         self.np_random, _ = seeding.np_random(self.seed)
+        self.global_map = np.zeros((param.global_size_height, param.global_size_width))
+        self.reward_step = 0.0
+
+        # vehicle state
         self.v = 0
         self.agent_x = 0
         self.agent_y = 0
@@ -40,53 +49,87 @@ class DM_env(gym.Env):
         self.goal_x = None
         self.goal_y = None
         self.goal_yaw = None
-        self.timestep = 0
-        self.global_map = np.zeros((self.height, self.width), dtype=np.uint8)
-        self.local_m = np.ones((param.local_size_height, param.local_size_width), dtype=np.uint8)
-        self.local_m_uncertainty = np.ones((param.local_size_height, param.local_size_width), dtype=np.uint8)
+        self.global_mask = np.zeros((param.global_size_height, param.global_size_width))
+        self.local_mask = np.zeros((param.local_size_height, param.local_size_width))
+        # self.current_sub_goal_astar = (None, None)              # astar goal point
+        self.path = deque()                                     # path without yaw
+
+        # map old
+        self.local_m = np.ones((param.local_size_height, param.local_size_width))
+        self.local_m_uncertainty = np.ones((param.local_size_height, param.local_size_width))
         
-        # self.path = 0                           # buggggggggggggggggg
-        # self.global_occupy_map = 0              # buggggggggggggggggg
-        # self.global_uncertainty_map = 0         # buggggggggggggggggg
+        # map
+        self.local_m_occ = np.zeros((param.local_size_height, param.local_size_width))              # DS证据理论
+        self.local_m_free = np.zeros((param.local_size_height, param.local_size_width))             # DS证据理论
+        self.local_m_unk = np.ones((param.local_size_height, param.local_size_width))               # DS证据理论
+        self.m_occ = np.zeros((param.global_size_height, param.global_size_width))                  # DS证据理论
+        self.m_free = np.zeros((param.global_size_height, param.global_size_width))                 # DS证据理论
+        self.m_unk =np.zeros((param.global_size_height, param.global_size_width))                   # DS证据理论
         self.belief_map = defaultdict(lambda: {"occ": 0.0, "free": 0.0, "unk": 1.0})
 
         # 评价指标
         self.episode_reward = 0.0
         self.episode_length = 0
 
-        # 定义动作空间：
-        '''
-        throttle_cmd, steer_cmd(当前转角)
-        '''
-        self.action_space = spaces.Box(
-            low=np.array([-1.0, -1.0]), 
-            high=np.array([1.0, 1.0]), 
-            shape=(2,),
-            dtype=np.float32
-        ) 
+        # 状态空间通道数
+        self.global_map_channel = 4         
+        self.local_map_channel = 4         
+        self.pose_channel = 7              
 
-        # 定义观测空间：
+        # 动作空间通道数
+        self.action_channel = 3             
+
+        # 定义状态空间：
         '''
-        local map(uncertainty map)
-        local map(occupancy grid map)
-        智能体坐标(x,y)
-        目标点坐标(x_goal,y_goal)
+        global_mask
+        m_occ
+        m_free
+        m_unk
+        local_mask
+        local_m_occ
+        local_m_free
+        local_m_unk
+        x, y, sin(yaw), cos(yaw), g_distance, g_angle, v_norm(归一化到 [-1, 1])
         '''
         self.observation_space = spaces.Dict({
-            "map": spaces.Box(
+            "global_map": spaces.Box(
                 low=0.0,
                 high=1.0,
-                shape=(2, param.local_size_height, param.local_size_width),  # occupancy map + uncertainty map
+                shape=(self.global_map_channel, 
+                       param.global_size_height, 
+                       param.global_size_width),  
+                dtype=np.float32
+            ),
+
+            "local_map": spaces.Box(
+                low=0.0,
+                high=1.0,
+                shape=(self.local_map_channel, 
+                       param.local_size_height, 
+                       param.local_size_width),  
                 dtype=np.float32
             ),
 
             "pose": spaces.Box(
                 low=-1.0,
                 high=1.0,
-                shape=(6,),   # [x, y, sin(yaw), cos(yaw), g_distance, g_angle]
+                shape=(self.pose_channel,), 
                 dtype=np.float32
             )
         })
+
+        # 定义动作空间：
+        '''
+        alpha_size          frontier score函数 size权重
+        alpha_dist          frontier score函数 distance权重
+        alpha_risk          frontier score函数 risk权重
+        '''
+        self.action_space = spaces.Box(
+            low=np.array([-1.0, -1.0, -1.0]), 
+            high=np.array([1.0, 1.0, 1.0]), 
+            shape=(self.action_channel,),
+            dtype=np.float32
+        ) 
 
     def reset(self, *, seed=None, options=None):
         '''
@@ -96,9 +139,17 @@ class DM_env(gym.Env):
         info	        额外信息（一般空字典）
         '''
         super().reset(seed=seed)
+
         self.episode_reward = 0.0
         self.episode_length = 0
         self.step_count = 0
+        self.micro_step = 0
+        self.visit_count.clear()
+        self.v = 0.0
+        self.goal_x = None
+        self.goal_y = None
+        self.goal_yaw = None
+        self.path = deque()
 
         # 生成地图
         # self.generate_random_map(seed = seed)     # 随机生成地图 
@@ -108,29 +159,48 @@ class DM_env(gym.Env):
         self.goal_x,self.goal_y,self.goal_yaw = self.get_random_free_position()
         self.agent_x,self.agent_y,self.agent_yaw = self.get_random_free_position()  
 
+        # 得到 position mask
+        self.global_mask[self.agent_y // param.XY_RESO, self.agent_x // param.XY_RESO] = 1
+        self.local_mask[param.local_size_height//2, param.local_size_width//2] = 1
+
         # 初始化创建接口对象
         self.interface = interface2RL(self.global_map, 
                                       [self.agent_x, self.agent_y, self.agent_yaw])
-        
+
         # 获取初始观测值（map_uncertainty、map_occupancy）
-        local_m_occ, local_m_free, local_m_unk, _ , self.belief_map = self.interface.ToSAC_reset()
+        m_occ, m_free, m_unk, local_m, local_m_occ, local_m_free, local_m_unk, _ , self.belief_map = self.interface.ToSAC_reset()
 
-        self.local_m = local_m_occ
-        self.local_m_uncertainty = local_m_unk
+        self.local_m_occ = local_m_occ
+        self.local_m_free = local_m_free
+        self.local_m_unk = local_m_unk
+        self.local_m = local_m
+        self.m_occ = m_occ
+        self.m_free = m_free
+        self.m_unk = m_unk
 
-        goal_distance,goal_angle = self.get_goal_dist_and_angle()
+        goal_distance = self.get_distance2goal()
+        goal_angle = self.get_angle2goal()
         
         # 写入观测值
         observation = {
-            "map": np.stack([local_m_occ, local_m_unk], axis=0).astype(np.float32),
+            "global_map": np.stack([self.global_mask,
+                                    self.m_occ,
+                                    self.m_free,
+                                    self.m_unk], axis=0).astype(np.float32),
+
+            "local_map": np.stack([self.local_mask,
+                                   self.local_m_occ,
+                                   self.local_m_free,
+                                   self.local_m_unk], axis=0).astype(np.float32),
 
             "pose": np.array([
-                self.agent_x / self.width,
-                self.agent_y / self.height,
+                self.agent_x / param.global_size_width,
+                self.agent_y / param.global_size_height,
                 math.sin(self.agent_yaw),
                 math.cos(self.agent_yaw),
                 goal_distance / param.max_dist,
-                goal_angle / math.pi
+                goal_angle / math.pi,
+                self.v / param.max_velocity
             ], dtype=np.float32)
         }
         
@@ -147,121 +217,127 @@ class DM_env(gym.Env):
         '''
         # 执行动作，更新环境状态
         self.step_count += 1
+        self.timestep += 1
+        self.reward_step = 0.0
 
-        # 计算上一时刻与终点的distance和yaw
-        distance_MH = abs(self.agent_x - self.goal_x) + abs(self.agent_y - self.goal_y)
-        distance_Euclidean = math.sqrt((self.agent_x - self.goal_x)**2 + (self.agent_y - self.goal_y)**2)
-        # yaw_diff = self.agent_yaw
-        # yaw_diff = min(yaw_diff, 2*math.pi - yaw_diff)
-
-        # 不确定性增益
-        uncertain_gain = np.mean(self.local_m_uncertainty)
-        # uncertain_gain = np.max(self.local_m_uncertainty)
-
-        # 计算 action - sub goal
-        accel = param.RATIO_throttle * action[0]
-        steer = param.RATIO_yaw * action[1]
-        self.v += param.dt * accel
-        self.v = np.clip(self.v, -10.0, 10.0)
-
-        # 更新智能体坐标
-
-        desired_yaw = self.v / param.L * np.tan(steer) * param.dt + self.agent_yaw
-        desired_x = self.v * np.cos(self.agent_yaw) * param.dt + self.agent_x
-        desired_y = self.v * np.sin(self.agent_yaw) * param.dt + self.agent_y
-
-        sub_x = np.clip(desired_x, 0, param.global_size_width - 1)
-        sub_y = np.clip(desired_y, 0, param.global_size_height - 1)
-        sub_yaw = desired_yaw
-        sub_goal = [sub_x, sub_y, sub_yaw]
         
-        # 更新局部map与pose
-        local_m, local_m_uncertainty, collision, current_pose, self.belief_map = self.interface.ToSAC_step(sub_goal)
 
-        self.agent_x = current_pose[0]
-        self.agent_y = current_pose[1]
-        self.agent_yaw = current_pose[2]
-        self.local_m = local_m
-        self.local_m_uncertainty = local_m_uncertainty
-        
-        goal_distance,goal_angle = self.get_goal_dist_and_angle()
+        # ---计算 frontier , astar planning---
+        self.planning_strategy(action)
 
-        # -----填充observation-----
+        # micro steps
+        for i in range(self.replan_interval):
+            self.micro_step += 1
+
+            # pop sub_goal
+            '''
+            buggggggggggggggg:sub_goal maybe None
+            '''
+            sub_goal = self.pop_sub_goal()
+            if sub_goal is None:
+                self.planning_strategy(action)
+                sub_goal = self.pop_sub_goal()
+
+            # last reward params
+            distance, angle_yaw_goal, uncertain_gain, risk = self.calculate_reward_param()
+
+            # ---更新局部map与pose---
+            m_occ, m_free, m_unk, local_m, local_m_occ, local_m_free, local_m_unk, collision, current_pose, self.belief_map = self.interface.ToSAC_step(sub_goal)
+
+            self.agent_x = current_pose[0]
+            self.agent_y = current_pose[1]
+            self.agent_yaw = current_pose[2]
+            self.local_m_occ = local_m_occ
+            self.local_m_free = local_m_free
+            self.local_m_unk = local_m_unk
+            self.local_m = local_m
+            self.m_occ = m_occ
+            self.m_free = m_free
+            self.m_unk = m_unk
+
+            # 得到 position mask
+            self.global_mask[self.agent_y // param.XY_RESO, self.agent_x // param.XY_RESO] = 1
+            
+            goal_distance = self.get_distance2goal()
+            goal_angle = self.get_angle2goal()
+
+            # ---reward---
+            # reward params
+            distance_new, angle_yaw_goal_new, uncertain_gain_new, risk_new = self.calculate_reward_param()
+            dist_err = distance_new - distance
+            yaw2goal_err = abs(angle_yaw_goal_new) - abs(angle_yaw_goal) # 
+            uncertainty_err = uncertain_gain_new - uncertain_gain
+            risk_err = risk_new - risk
+            reach = self.reach_goal()
+            visit_penalty = self.revisit_penalty_func()
+
+            # reward计算
+            distance_reward = param.DISTANCE_WEIGHT * (-dist_err)
+            yaw_reward = param.YAW_WEIGHT * (-yaw2goal_err)
+            collision_penalty = param.COLLISION_WEIGHT if collision else 0.0
+            step_penalty = param.STEP_PENALTY_WEIGHT * (-self.micro_step / self.max_steps)
+            reach_goal_reward = param.REACH_GOAL_WEIGHT if reach else 0.0
+            explore_reward = param.EXPLORE_GAIN_WEIGHT * (-uncertainty_err)
+            reverse_penalty = param.REVERSE_WEIGHT * self.v if self.v<0 else 0.0
+            forward_reward = param.FOWARD_WEIGHT * self.v if self.v>0 else 0.0
+            risk_penalty = param.RISK_PENALTY_WEIGHT * (-risk_err)
+            revisit_penalty = param.VISIT_PENALTY_WEIGHT * (-visit_penalty)
+
+            self.reward_step += (distance_reward + 
+                                 yaw_reward + 
+                                 collision_penalty + 
+                                 step_penalty + 
+                                 reach_goal_reward + 
+                                 explore_reward +
+                                 reverse_penalty + 
+                                 forward_reward + 
+                                 risk_penalty +
+                                 revisit_penalty)
+
+            #---terminated collsion reach---
+            if (reach or collision): 
+                break
+            if self.step_count >= self.max_steps:
+                break
+    
+        self.reward_step = np.clip(self.reward_step, -200, 200)
+
+        # ---observation---
         obs = {
-                    "map": np.stack([local_m, local_m_uncertainty], axis=0).astype(np.float32),
+                    "global_map": np.stack([self.global_mask,
+                                            self.m_occ,
+                                            self.m_free,
+                                            self.m_unk], axis=0).astype(np.float32),
+
+                    "local_map": np.stack([self.local_mask,
+                                           self.local_m_occ,
+                                           self.local_m_free,
+                                           self.local_m_unk], axis=0).astype(np.float32),
 
                     "pose": np.array([
-                        self.agent_x / self.width,
-                        self.agent_y / self.height,
+                        self.agent_x / param.global_size_width,
+                        self.agent_y / param.global_size_height,
                         math.sin(self.agent_yaw),
                         math.cos(self.agent_yaw),
                         goal_distance / param.max_dist,
-                        goal_angle / math.pi
+                        goal_angle / math.pi,
+                        self.v / param.max_velocity
                     ], dtype=np.float32)
                 }
-        
-        # -----reward-----
-        # 计算当前时刻与终点的distance和yaw
-        yaw2goal = math.atan2(self.goal_y - self.agent_y, self.goal_x - self.agent_x)
-        yaw_err = abs((yaw2goal - self.agent_yaw + math.pi) % (2 * math.pi) - math.pi)
-        distance_MH_new = abs(self.agent_x - self.goal_x) + abs(self.agent_y - self.goal_y)
-        distance_Euclidean_new = math.sqrt((self.agent_x - self.goal_x)**2 + (self.agent_y - self.goal_y)**2)
-        # yaw_diff_new = self.agent_yaw
-        # yaw_diff_new = min(yaw_diff_new, 2*math.pi - yaw_diff_new)
 
-        # 不确定性增益（两种可选，后续可优化这部分）
-        uncertain_gain_new = np.mean(self.local_m_uncertainty)
-        # uncertain_gain = np.max(self.local_m_uncertainty)
-        uncertain_gain_change = uncertain_gain_new - uncertain_gain
-
-        reach = self.reach_goal()
-
-        # reward计算
-        distance_reward = param.DISTANCE_WEIGHT * (distance_Euclidean - distance_Euclidean_new)
-        # yaw_reward = -param.YAW_WEIGHT * yaw_err
-        collision_penalty = param.COLLISION_PENALTY if collision else 0.0
-        step_penalty = -param.STEP_PENALTY
-        reach_goal_reward = param.REACH_GOAL_REWARD if reach else 0.0
-        explore_reward = -param.EXPLORE_GAIN * uncertain_gain_change
-        reverse_penalty = param.REVERSE * self.v if self.v<0 else 0.0
-        forward_reward = param.FOWARD * self.v if self.v>0 else 0.0
-        heading_reward = param.HEADING_REWARD * (1.0 - abs(goal_angle) / math.pi)
-
-        # 防止程序崩溃
-        # 1. 防止距离坐标溢出
-        distance_Euclidean = float(np.nan_to_num(distance_Euclidean, nan=500.0, posinf=500.0, neginf=500.0))
-        distance_Euclidean_new = float(np.nan_to_num(distance_Euclidean_new, nan=500.0, posinf=500.0, neginf=500.0))
-
-        # 2. 不确定性保证在 [0,1]
-        uncertain_gain = float(np.nan_to_num(uncertain_gain, nan=1.0, posinf=1.0, neginf=1.0))
-        uncertain_gain = max(0.0, min(1.0, uncertain_gain))
-
-        # 3. 航向差限制在合法范围
-        # yaw_diff = float(np.nan_to_num(yaw_diff, nan=0.0))
-        # yaw_diff_new = float(np.nan_to_num(yaw_diff_new, nan=0.0))
-
-        reward = (distance_reward + 
-                  collision_penalty + 
-                #   step_penalty + 
-                  reach_goal_reward + 
-                  explore_reward + 
-                #   heading_reward +
-                  reverse_penalty + 
-                  forward_reward)
-
-        reward = np.clip(reward, -200, 200)
-        self.episode_reward += reward
+        # ---评价指标---
+        self.episode_reward += self.reward_step
         self.episode_length += 1
 
-        # -----输出info-----
+        # ---输出info---
         info = {
             "reach_goal": reach,
             "collision": collision,
-            "distance_to_goal": distance_Euclidean_new,
-            "uncertainty": np.mean(local_m_uncertainty)
+            "distance_to_goal": distance_new,
+            "uncertainty": np.mean(local_m_unk)
         }
 
-        # -----设置terminated和truncated-----
+        # ---设置terminated和truncated---
         terminated = True if (reach or collision) else False
         truncated = True if self.step_count >= self.max_steps else False
 
@@ -272,7 +348,7 @@ class DM_env(gym.Env):
                 "l": self.episode_length    # episode 长度
             }
 
-        # -----调试信息-----
+        # ---调试信息---
         if reach:
             print("reachhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhh")
 
@@ -284,13 +360,24 @@ class DM_env(gym.Env):
         
         print("current.pose:",self.agent_x,self.agent_y)
         print("goal:",self.goal_x,self.goal_y)
-        print("reward:",reward)
-
-        self.timestep += 1
+        print("reward:",self.reward_step)
         print("step:",self.timestep)
         
-        return obs, reward, terminated, truncated, info
-    
+        return obs, self.reward_step, terminated, truncated, info
+
+    def get_frontier_clusters(self, action): 
+        '''
+        获取 top k frontier clusters
+        '''
+        frontier = Frontier(self.local_m_occ, self.local_m_unk, 
+                            self.local_m_free,(param.local_size_height // 2, param.local_size_width // 2)
+                            , action, k=param.frontier_k)
+        frontier_mask = frontier.compute_frontier_mask()
+        clusters = frontier.cluster_frontiers(frontier_mask)
+        infos = frontier.summarize_clusters_rep_points(clusters)
+        topk = frontier.select_topk(infos) # no risk map for now
+        return topk, frontier_mask
+
     def render(self, mode='human'):
         '''
         渲染环境（可选）
@@ -298,85 +385,137 @@ class DM_env(gym.Env):
         'human'：渲染到屏幕
         'rgb_array'：返回RGB图像数组
         '''
-        self._draw_local_map()
-        self._draw_belief_map()
-        plt.pause(0.2)  
         
+        self.render_obj._draw_local_map(self.local_m, self.agent_x, self.agent_y, self.agent_yaw)
+        self.render_obj._draw_local_map_uncertainty(self.local_m_unk, self.agent_x, self.agent_y, self.agent_yaw)
+        self.render_obj._draw_belief_map(self.belief_map)
+        self.render_obj.flush()
     
-    def _draw_local_map(self):
-        self.ax[0].clear()
-        self.ax[1].clear()
+        plt.pause(0.10)   
 
-        x_min = self.agent_x - (param.local_size_width)/2
-        x_max = self.agent_x + (param.local_size_width)/2
-        y_min = self.agent_y - (param.local_size_height)/2
-        y_max = self.agent_y + (param.local_size_height)/2
+    def planning_strategy(self, action):
+        topk, _ = self.get_frontier_clusters(action)
+        best = topk[0] if topk and topk[0] is not None else None
+        current_sub_goal_astar = best.get("rep_ij") if best else None     
+            # 
+        self.path.clear()
+        if current_sub_goal_astar is None:
+            print("No frontier found!")
+            current_sub_goal_ = self.sub_goal_back_up_poloicy()
+            path_local = self.get_path_astar(self.local_m, current_sub_goal_)
+            path_global = self.path_local_to_global(path_local, self.agent_x, self.agent_y)
+            self.path.extend(path_global)
+        else:
+            path_local = self.get_path_astar(self.local_m, current_sub_goal_astar)
+            path_global = self.path_local_to_global(path_local, self.agent_x, self.agent_y)
+            self.path.extend(path_global)
 
-         # --- 左图：local map ---
-        self.ax[0].clear()
-        self.ax[0].imshow(self.local_m, cmap="gray_r", origin="lower",
-                          extent=[ x_min, x_max, y_min, y_max])
-        self.ax[0].set_title("Local Map")
 
-        # --- 右图：uncertainty map ---
-        self.ax[1].clear()
-        self.ax[1].imshow(self.local_m_uncertainty, cmap="turbo", vmin=0, vmax=1,origin="lower",
-                          extent=[x_min, x_max, y_min, y_max], # interpolation="bilinear", 
-                          interpolation="bicubic")
-        self.ax[1].set_title("Uncertainty Map")
-
-        # draw agent
-        draw_agent(self.ax[0], self.agent_x, self.agent_y, self.agent_yaw)
-        draw_agent(self.ax[1], self.agent_x, self.agent_y, self.agent_yaw)
-
-    def _draw_belief_map(self):
-        # belief_map 为空就不画
-        if len(self.belief_map) == 0:
-            return
-
-        H = self.height      # 256
-        W = self.width       # 256
-
-        # 全局栅格，默认未知 0.5
-        grid = np.ones((H, W), dtype=float) * 0.5
-
-        # belief_map 的 key 约定为 (x, y) = (列索引, 行索引)
-        for (x, y), b in self.belief_map.items():
-            # 防止越界
-            if 0 <= x < W and 0 <= y < H:
-                grid[y, x] = b["occ"]
-
-        # 空间平滑（可选）
-        grid_smooth = nd.gaussian_filter(grid, sigma=1.0)
-
-        self.ax[2].clear()
-        img = self.ax[2].imshow(
-            grid_smooth,
-            cmap="gray_r",
-            origin="lower",               # y 轴向上
-            vmin=0,
-            vmax=1,
-            extent=[0, W, 0, H]           # 🌟 关键：和 global_map / agent 坐标完全一致
-        )
-        self.ax[2].set_title("Belief Map (Dense)")
+    def pop_sub_goal(self):
+        '''
+        返回 sub_goal = [x, y, yaw]
+        如果 path 不足，返回 None（触发重规划或 fallback）
+        '''
+        if len(self.path) == 0:
+            return None
         
+        if len(self.path) == 1:
+            p_ = self.path.popleft()
+            sub_x, sub_y = p_
+            sub_yaw = self.agent_yaw
+            sub_goal = [sub_x, sub_y, sub_yaw]
+            return sub_goal
+        else:
+            p_ = self.path.popleft()
+            p_next = self.path[0]
+            sub_x, sub_y = p_
+            sub_x_next, sub_y_next = p_next
+            sub_yaw = math.atan2((sub_y_next - sub_y),(sub_x_next - sub_x))
+            sub_goal = [sub_x, sub_y, sub_yaw]
+            return sub_goal
+
+    def sub_goal_back_up_poloicy(self):
+        H, W = param.local_size_height, param.local_size_width
+        ci, cj = H // 2, W // 2
+        res = param.XY_RESO
+
+        # goal 在 local 坐标系中的偏移（格）
+        dx = (self.goal_x - self.agent_x) / res
+        dy = (self.goal_y - self.agent_y) / res
+
+        # local 索引 (y, x)
+        y = int(round(ci + dy))
+        x = int(round(cj + dx))
+
+        # clamp 到 local 边界
+        y = int(np.clip(y, 0, H - 1))
+        x = int(np.clip(x, 0, W - 1))
+        return (x, y)
 
 
-    def generate_random_map(self, obstacle_ratio=0.2, width=256, height=256, seed = None):
+    def path_local_to_global(self, path_local, agent_x, agent_y):
+        if path_local is None or len(path_local)==0:
+            return []
+        H, W = param.local_size_height, param.local_size_width
+        ci, cj = H // 2, W // 2
+        res = param.XY_RESO
+        
+        path_global = []
+        for (y, x) in path_local:   # y, x
+            xg = agent_x + (x - cj) * res
+            yg = agent_y + (y - ci) * res
+            # 
+            xg = np.clip(xg, 0, param.global_size_width - 1)
+            yg = np.clip(yg, 0, param.global_size_height - 1)
+            path_global.append((xg, yg))
+
+        return path_global
+
+    # Astar interface
+    def get_path_astar(self, local_map, goal):
+        path = self.planner.main_workflow(local_map, goal)
+        return path
+
+    def calculate_reward_param(self):
+
+        # distance and yaw
+        distance_MH = abs(self.agent_x - self.goal_x) + abs(self.agent_y - self.goal_y)
+        distance_Euclidean = math.sqrt((self.agent_x - self.goal_x)**2 + (self.agent_y - self.goal_y)**2)
+        yaw2goal = self.get_angle2goal()
+        angle_yaw_goal = yaw2goal - self.agent_yaw
+        angle_yaw_goal = (angle_yaw_goal + math.pi) % (2 * math.pi) - math.pi
+
+        # 不确定性增益
+        uncertain_gain = np.mean(self.local_m_unk)
+        # uncertain_gain = np.max(self.local_m_unk)
+
+        # risk gain
+        ci = param.local_size_height // 2
+        cj = param.local_size_width // 2
+        risk_gain = self.local_m_occ[ci, cj] + self.local_m_unk[ci, cj] 
+        
+        return distance_Euclidean, angle_yaw_goal, uncertain_gain, risk_gain
+        
+    def revisit_penalty_func(self):
+        ix, iy = int(self.agent_x), int(self.agent_y)
+        c = self.visit_count[(ix, iy)]
+        visit_penalty = c 
+        self.visit_count[(ix, iy)] = c + 1
+        return visit_penalty
+
+    def generate_random_map(self, obstacle_ratio=0.2, seed = None): # bugggggggggggggggggggggggggggggggggggg
         """
         使用 gym 环境的随机系统生成随机地图
         1 = obstacle
         0 = free
         """
-        self.width = width
-        self.height = height
         self.np_random, _ = seeding.np_random(seed)
 
-        random_matrix = self.np_random.random((height, width))
-        self.global_map = (random_matrix < obstacle_ratio).astype(np.uint8)
+        random_matrix = self.np_random.random((param.global_size_height, param.global_size_width))
+        self.global_map = (random_matrix < obstacle_ratio).astype(np.float32)
 
     def get_easy_map(self, width=256, height=256):
-        map_ = np.zeros((height, width), dtype=np.uint8)
+        map_ = np.zeros((height, width))
 
         # 1. 四周边框
         map_[0, :] = 1
@@ -404,36 +543,36 @@ class DM_env(gym.Env):
         free_cells = np.argwhere(self.global_map == 0)
         max_attempts = 300
         for _ in range(max_attempts):
-            # ① 随机取一个 free cell（确保不是边界）
+            # 随机取一个 free cell（确保不是边界）
             y, x = free_cells[self.np_random.integers(0, len(free_cells))]
 
             # 边界过滤
-            if x < 5 or y < 5 or x > self.width - 5 or y > self.height - 5:
+            if x < 5 or y < 5 or x > param.global_size_width - 5 or y > param.global_size_height - 5:
                 continue
 
-            # ② 保证离障碍物有安全距离
+            # 保证离障碍物有安全距离
             # 使用局部窗口检查障碍
             xmin = max(0, x - min_dist_to_obs)
-            xmax = min(self.width, x + min_dist_to_obs)
+            xmax = min(param.global_size_width, x + min_dist_to_obs)
             ymin = max(0, y - min_dist_to_obs)
-            ymax = min(self.height, y + min_dist_to_obs)
+            ymax = min(param.global_size_height, y + min_dist_to_obs)
 
             if np.any(self.global_map[ymin:ymax, xmin:xmax] == 1):
                 continue
 
-            # ③ 如果这是 goal 的生成逻辑，需要只返回位置
+            # 如果这是 goal 的生成逻辑，需要只返回位置
             if self.goal_x is None:
                 yaw = 0.0
                 return x, y, yaw
 
-            # ④ 保证起点与目标距离合理（防止前 1 步就结束）
+            # 保证起点与目标距离合理
             dx = self.goal_x - x
             dy = self.goal_y - y
             dist = math.sqrt(dx*dx + dy*dy)
             if dist < min_goal_dist or dist > max_goal_dist:
                 continue
 
-            # ⑤ Yaw 朝向目标 ±30°
+            # Yaw 朝向目标 ±30°
             yaw2goal = math.atan2(dy, dx)
             yaw = yaw2goal + self.np_random.uniform(-math.pi/6, math.pi/6)
 
@@ -447,47 +586,29 @@ class DM_env(gym.Env):
         yaw_diff = abs(self.agent_yaw - self.goal_yaw)
         yaw_diff = min(yaw_diff, 2*math.pi - yaw_diff)
 
-        if distance < 30.0: # and yaw_diff < (30.0 * math.pi / 180.0):
+        if distance < 5.0: # and yaw_diff < (30.0 * math.pi / 180.0):
             return True
         else:
             return False
 
-    def get_goal_dist_and_angle(self):
+    def get_distance2goal(self):
         dx = self.goal_x - self.agent_x
         dy = self.goal_y - self.agent_y
         goal_distance = math.sqrt(dx*dx + dy*dy)
-        goal_angle = math.atan2(dy, dx) - self.agent_yaw
+        
+        return goal_distance
+    
+    def get_angle2goal(self):
+        goal_angle = math.atan2(self.goal_y - self.agent_y, self.goal_x - self.agent_x)
         # 归一化到 [-pi, pi]
         goal_angle = (goal_angle + math.pi) % (2 * math.pi) - math.pi
         
-        return goal_distance,goal_angle
-
-    def update_global_occupy_map():
-        pass
-
-    def update_global_uncertainty_map():
-        pass
+        return goal_angle
 
 if __name__ == "__main__":
     '''
-    待完善部分
-    1.动作空间是否可以直接设计为 throttle，yaw
-    2.地图：如何随机的生成合理（具备可行性，满足越野场景）的地图
-    3.奖励函数目前不完善，可能有错误
-    4.状态空间是否可以加入一些视觉的东西
-    5.是否要用开源数据集去跑
-    6.如何用render进行可视化
-        ok，已完成
-    7.后续是否要用pybullet来跑
-        应该是不用了，采用carla或者gazebo
-    8.应该加一个倒车惩罚
+    
     '''
-    env = DM_env()   
-    obs, info = env.reset()
-
-    for _ in range(200):
-        a = env.action_space.sample()
-        obs, r, d, t, info = env.step(a)
-        env.render()
+    pass
    
 

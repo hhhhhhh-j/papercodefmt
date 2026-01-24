@@ -2,59 +2,19 @@ import numpy as np
 import math
 import seaborn as sns
 import matplotlib.pyplot as plt
-from utils.read_grid_map import ReadGridMap
+import cv2
 import time
+from utils.read_grid_map import ReadGridMap
 from collections import defaultdict
 from envs.attachments import Frontier
-import cv2
-
-class param:
-    # Hybrid A* 参数
-    XY_RESO = 1.0                   # 一个格子代表多少m
-    YAW_RESO = np.deg2rad(15.0)     # 航向角分辨率
-    WB = 3.5                        # 车辆的轴距 (WheelBase)
-
-    # 地图尺寸
-    local_size_width = 64
-    local_size_height = 64
-    global_size_width = 256
-    global_size_height = 256
-    max_dist = np.sqrt(global_size_width**2 + global_size_height**2)
-    SEED = None                         # 随机地图种子
-
-    # action 缩放系数
-    RATIO_throttle = 4                  # x缩放系数
-    RATIO_yaw = math.pi / 4             # yaw缩放系数
-    dt = 0.3                            # 时间步长
-    L = 2.5                             # 车辆轴距
-
-    # reward 系数
-    REACH_GOAL_REWARD = 50.0            # 到达目标奖励
-    COLLISION_PENALTY = -50.0           # 碰撞惩罚
-    STEP_PENALTY = 1.5                 # 每步惩罚
-    DISTANCE_WEIGHT = 1.30              # 距离权重
-    # YAW_WEIGHT = 0.5                  # 航向角权重
-    EXPLORE_GAIN = 0.0                  # 探索奖励增益
-    REVERSE = 1.0                       # 倒车惩罚
-    FOWARD = 0.5                        # 前进奖励
-    HEADING_REWARD = 10.3
-
-    # 
-    PATCH_SIZE_beliefmap = 256                   # 全局地图patch大小
-
-    # lidar参数
-    RESO = 1
-    MEAS_PHI = np.arange(-0.6, 0.6, 0.05)
-    RMAX = 30               # Max beam range.
-    ALPHA = 1               # Width of an obstacle (distance about measurement to fill in).
-    BETA = 0.05             # Angular width of a beam.
-    gamma = 1.0000000000000 # 遗忘指数
+from envs.attachments import param
 
 class interface2RL:
     def __init__(self, global_map, init_pose = [0.0, 0.0, 0.0]):
         # 创建调用对象
         self.global_map = global_map
         self.lidar = Lidar(global_map)
+        
         # 全局变量
         # self.local_m = np.zeros((param.local_size_height, param.local_size_width))
         # self.local_m_uncertainty = np.zeros((param.local_size_height, param.local_size_width))
@@ -94,7 +54,7 @@ class interface2RL:
         local_m = self.local_m_occ # + 0.5 * self.local_m_unk
         belief_map_dict = self.record_belief_map()
         
-        return local_m, self.local_m_free, self.local_m_unk, self.current_pose, belief_map_dict
+        return self.m_occ, self.m_free, self.m_unk, local_m, self.local_m_occ, self.local_m_free, self.local_m_unk, self.current_pose, belief_map_dict
 
     def ToSAC_step(self, sub_goal):
         '''
@@ -104,34 +64,31 @@ class interface2RL:
         y_new = sub_goal[1]
         yaw_new = sub_goal[2]
 
-        m_occ, m_free, m_unk = self.lidar.DS_update([x_new, y_new, yaw_new])
+        self.m_occ, self.m_free, self.m_unk = self.lidar.DS_update([x_new, y_new, yaw_new])
         self.current_pose = np.array([x_new, y_new, yaw_new])
         
-        self.local_m_occ = self.get_local_map(m_occ,self.current_pose )
-        self.local_m_unk = self.get_local_map(m_unk, self.current_pose )
-        self.local_m_free = self.get_local_map(m_free, self.current_pose )
+        self.local_m_occ = self.get_local_map(self.m_occ,self.current_pose )
+        self.local_m_unk = self.get_local_map(self.m_unk, self.current_pose )
+        self.local_m_free = self.get_local_map(self.m_free, self.current_pose )
 
         # belief map
-        belief_map_dict = self.record_belief_map()
+        if not hasattr(self, "_rec_step"): # 初始化记录步数
+            self._rec_step = 0
+        self._rec_step += 1
+
+        if self._rec_step  == 1:   # 第1步记录一次
+            self.record_belief_map()
+
+        if self._rec_step % 10 == 0:   # 每10步记录一次
+            self.record_belief_map()
+
 
         # 是否碰撞
         collision = self.is_collision(self.current_pose)
 
-        local_m = self.local_m_occ # + 0.5 * self.local_m_unk
+        local_m = self.local_m_occ  + 0.5 * self.local_m_unk
         
-        return local_m, self.local_m_unk, collision, self.current_pose, belief_map_dict
-
-    def get_frontier_clusters(self): # -> List of frontier clusters waitting to be explored
-        '''
-        获取 top k frontier clusters
-        '''
-        frontier = Frontier(self.local_m_occ, self.local_m_unk, 
-                            self.local_m_free,(param.local_size_height // 2, param.local_size_width // 2))
-        frontier_mask = frontier.compute_frontier_mask()
-        clusters = frontier.cluster_frontiers(frontier_mask)
-        infos = frontier.summarize_clusters_rep_points(clusters)
-        topk = frontier.select_topk(infos) # no risk map for now
-        return topk, frontier_mask
+        return self.m_occ, self.m_free, self.m_unk, local_m, self.local_m_occ, self.local_m_free, self.local_m_unk, collision, self.current_pose, self.belief_map_dict
 
     def record_belief_map(self):
         agent_x = self.current_pose[0]
@@ -253,7 +210,7 @@ class interface2RL:
             return False
 
     '''Hybrid A* interface
-    def GetPath(self, sx = 10.0, sy = 7.0, syaw0 = np.deg2rad(120.0), 
+    def GetPathHAstar(self, sx = 10.0, sy = 7.0, syaw0 = np.deg2rad(120.0), 
                 gx = 45.0, gy = 20.0, gyaw0 = np.deg2rad(90.0)): # , sx, sy, syaw0, gx, gy, gyaw0, ox, oy
        
         # 生成障碍物的坐标

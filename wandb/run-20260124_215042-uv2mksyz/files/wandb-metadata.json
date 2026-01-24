@@ -1,0 +1,39 @@
+{
+  "os":  "Linux-5.15.0-139-generic-x86_64-with-glibc2.31",
+  "python":  "CPython 3.12.12",
+  "startedAt":  "2026-01-24T13:50:42.667152Z",
+  "program":  "/home/fmt/catkin_ws/src/fmt_/sb3_SAC/scripts/Train_Script.py",
+  "codePath":  "scripts/Train_Script.py",
+  "codePathLocal":  "scripts/Train_Script.py",
+  "git":  {
+    "commit":  "f1f3a10a9e137cb5d8fad6edcb81ada09cecd2a7"
+  },
+  "email":  "3297240254@qq.com",
+  "root":  "./",
+  "host":  "fmt-Lenovo-Legion-Y7000P2020",
+  "executable":  "/home/fmt/miniconda3/envs/sb3/bin/python",
+  "cpu_count":  8,
+  "cpu_count_logical":  16,
+  "gpu":  "NVIDIA GeForce GTX 1650",
+  "gpu_count":  1,
+  "disk":  {
+    "/":  {
+      "total":  "180902232064",
+      "used":  "86562398208"
+    }
+  },
+  "memory":  {
+    "total":  "16623517696"
+  },
+  "gpu_nvidia":  [
+    {
+      "name":  "NVIDIA GeForce GTX 1650",
+      "memoryTotal":  "4294967296",
+      "cudaCores":  896,
+      "architecture":  "Turing",
+      "uuid":  "GPU-866177ef-22d3-fdee-6758-f45e9f57a01c"
+    }
+  ],
+  "cudaVersion":  "12.8",
+  "writerId":  "81lccusuhvulssv1wmmm99jp8h085hsh"
+}
