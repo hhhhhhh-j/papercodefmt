@@ -1,0 +1,49 @@
+CWD = /home/fmt/catkin_ws/src/fmt_/sb3_SAC
+Expect ckpt = /home/fmt/catkin_ws/src/fmt_/sb3_SAC/sac_decision_making.zip
+Exists? = False
+Creating new model...
+Using cuda device
+Logging to ./tb_logs/SAC_35
+[32m2026-01-26 14:40:41.968[0m | [34m[1mDEBUG   [0m | [36mmodels.SAC_DS_DM[0m:[36mplanning_strategy[0m:[36m441[0m - [34m[1mcurrent_sub_goal_astar:(32, 32)[0m
+[32m2026-01-26 14:40:41.968[0m | [34m[1mDEBUG   [0m | [36mmodels.SAC_DS_DM[0m:[36mplanning_strategy[0m:[36m453[0m - [34m[1mpath_local frontier:[][0m
+[32m2026-01-26 14:40:41.969[0m | [34m[1mDEBUG   [0m | [36mmodels.SAC_DS_DM[0m:[36mplanning_strategy[0m:[36m455[0m - [34m[1mpath_global frontier:[][0m
+[32m2026-01-26 14:40:41.969[0m | [34m[1mDEBUG   [0m | [36mmodels.SAC_DS_DM[0m:[36mplanning_strategy[0m:[36m462[0m - [34m[1mcan not obtain path from astar![0m
+[32m2026-01-26 14:40:41.970[0m | [34m[1mDEBUG   [0m | [36mmodels.SAC_DS_DM[0m:[36mplanning_strategy[0m:[36m464[0m - [34m[1mpath_global backup:[(np.float64(139.0), np.float64(189.0)), (np.float64(140.0), np.float64(190.0)), (np.float64(141.0), np.float64(191.0)), (np.float64(142.0), np.float64(192.0)), (np.float64(143.0), np.float64(193.0)), (np.float64(144.0), np.float64(194.0)), (np.float64(145.0), np.float64(195.0)), (np.float64(146.0), np.float64(196.0)), (np.float64(147.0), np.float64(197.0)), (np.float64(148.0), np.float64(198.0)), (np.float64(149.0), np.float64(199.0)), (np.float64(150.0), np.float64(200.0)), (np.float64(151.0), np.float64(201.0)), (np.float64(152.0), np.float64(202.0)), (np.float64(153.0), np.float64(203.0)), (np.float64(154.0), np.float64(204.0)), (np.float64(155.0), np.float64(205.0)), (np.float64(156.0), np.float64(206.0)), (np.float64(157.0), np.float64(207.0)), (np.float64(158.0), np.float64(208.0)), (np.float64(159.0), np.float64(209.0)), (np.float64(160.0), np.float64(210.0)), (np.float64(161.0), np.float64(211.0)), (np.float64(161.0), np.float64(212.0)), (np.float64(161.0), np.float64(213.0)), (np.float64(161.0), np.float64(214.0)), (np.float64(161.0), np.float64(215.0)), (np.float64(161.0), np.float64(216.0)), (np.float64(161.0), np.float64(217.0)), (np.float64(161.0), np.float64(218.0)), (np.float64(161.0), np.float64(219.0))][0m
+[32m2026-01-26 14:40:41.970[0m | [34m[1mDEBUG   [0m | [36mmodels.SAC_DS_DM[0m:[36mstep[0m:[36m246[0m - [34m[1mself.path:deque([(np.float64(139.0), np.float64(189.0)), (np.float64(140.0), np.float64(190.0)), (np.float64(141.0), np.float64(191.0)), (np.float64(142.0), np.float64(192.0)), (np.float64(143.0), np.float64(193.0)), (np.float64(144.0), np.float64(194.0)), (np.float64(145.0), np.float64(195.0)), (np.float64(146.0), np.float64(196.0)), (np.float64(147.0), np.float64(197.0)), (np.float64(148.0), np.float64(198.0)), (np.float64(149.0), np.float64(199.0)), (np.float64(150.0), np.float64(200.0)), (np.float64(151.0), np.float64(201.0)), (np.float64(152.0), np.float64(202.0)), (np.float64(153.0), np.float64(203.0)), (np.float64(154.0), np.float64(204.0)), (np.float64(155.0), np.float64(205.0)), (np.float64(156.0), np.float64(206.0)), (np.float64(157.0), np.float64(207.0)), (np.float64(158.0), np.float64(208.0)), (np.float64(159.0), np.float64(209.0)), (np.float64(160.0), np.float64(210.0)), (np.float64(161.0), np.float64(211.0)), (np.float64(161.0), np.float64(212.0)), (np.float64(161.0), np.float64(213.0)), (np.float64(161.0), np.float64(214.0)), (np.float64(161.0), np.float64(215.0)), (np.float64(161.0), np.float64(216.0)), (np.float64(161.0), np.float64(217.0)), (np.float64(161.0), np.float64(218.0)), (np.float64(161.0), np.float64(219.0))])[0m
+Traceback (most recent call last):
+  File "/home/fmt/catkin_ws/src/fmt_/sb3_SAC/scripts/Train_Script.py", line 96, in <module>
+    model.learn(
+  File "/home/fmt/miniconda3/envs/sb3/lib/python3.12/site-packages/stable_baselines3/sac/sac.py", line 313, in learn
+    return super().learn(
+           ^^^^^^^^^^^^^^
+  File "/home/fmt/miniconda3/envs/sb3/lib/python3.12/site-packages/stable_baselines3/common/off_policy_algorithm.py", line 335, in learn
+    rollout = self.collect_rollouts(
+              ^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/fmt/miniconda3/envs/sb3/lib/python3.12/site-packages/stable_baselines3/common/off_policy_algorithm.py", line 567, in collect_rollouts
+    new_obs, rewards, dones, infos = env.step(actions)
+                                     ^^^^^^^^^^^^^^^^^
+  File "/home/fmt/miniconda3/envs/sb3/lib/python3.12/site-packages/stable_baselines3/common/vec_env/base_vec_env.py", line 222, in step
+    return self.step_wait()
+           ^^^^^^^^^^^^^^^^
+  File "/home/fmt/miniconda3/envs/sb3/lib/python3.12/site-packages/stable_baselines3/common/vec_env/dummy_vec_env.py", line 59, in step_wait
+    obs, self.buf_rews[env_idx], terminated, truncated, self.buf_infos[env_idx] = self.envs[env_idx].step(  # type: ignore[assignment]
+                                                                                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/fmt/miniconda3/envs/sb3/lib/python3.12/site-packages/stable_baselines3/common/monitor.py", line 94, in step
+    observation, reward, terminated, truncated, info = self.env.step(action)
+                                                       ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/fmt/miniconda3/envs/sb3/lib/python3.12/site-packages/gymnasium/wrappers/common.py", line 393, in step
+    return super().step(action)
+           ^^^^^^^^^^^^^^^^^^^^
+  File "/home/fmt/miniconda3/envs/sb3/lib/python3.12/site-packages/gymnasium/core.py", line 327, in step
+    return self.env.step(action)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/fmt/miniconda3/envs/sb3/lib/python3.12/site-packages/gymnasium/wrappers/common.py", line 283, in step
+    return env_step_passive_checker(self.env, action)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/fmt/miniconda3/envs/sb3/lib/python3.12/site-packages/gymnasium/utils/passive_env_checker.py", line 207, in env_step_passive_checker
+    result = env.step(action)
+             ^^^^^^^^^^^^^^^^
+  File "/home/fmt/catkin_ws/src/fmt_/sb3_SAC/models/SAC_DS_DM.py", line 308, in step
+    nopath_penalty = param.NOPATH_PENALTY_WEIGHT if nopath else 0.0
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: type object 'param' has no attribute 'NOPATH_PENALTY_WEIGHT'. Did you mean: 'VISIT_PENALTY_WEIGHT'?

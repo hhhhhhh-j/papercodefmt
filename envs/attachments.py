@@ -51,8 +51,9 @@ class param:
     FOWARD_WEIGHT = 0.5                         # 前进奖励
     VISIT_PENALTY_WEIGHT = 0.5                  # 访问频次惩罚系数
     RISK_PENALTY_WEIGHT = 2.0                   # 风险惩罚系数
+    NOPATH_PENALTY_WEIGHT = 5.0                 # 无路径惩罚系数
 
-    # 
+    # 111
     PATCH_SIZE_beliefmap = 256                  # 全局地图patch大小
 
     # lidar参数

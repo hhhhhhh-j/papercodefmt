@@ -7,6 +7,7 @@ import gymnasium as gym
 import scipy.ndimage as nd
 import numpy as np
 import math
+import cv2
 import matplotlib.pyplot as plt
 from loguru import logger                       # info debug warning error
 from collections import defaultdict
@@ -70,6 +71,7 @@ class DM_env(gym.Env):
         self.m_free = np.zeros((param.global_size_height, param.global_size_width))                 # DS证据理论
         self.m_unk =np.zeros((param.global_size_height, param.global_size_width))                   # DS证据理论
         self.belief_map = defaultdict(lambda: {"occ": 0.0, "free": 0.0, "unk": 1.0})
+        self.risk_map = np.zeros((param.local_size_height, param.local_size_width))                 # risk map: local
 
         # 评价指标
         self.episode_reward = 0.0
@@ -192,6 +194,8 @@ class DM_env(gym.Env):
 
         goal_distance = self.get_distance2goal()
         goal_angle = self.get_angle2goal()
+
+        self.risk_map = self.get_risk_map()
         
         # 写入观测值
         observation = {
@@ -240,8 +244,9 @@ class DM_env(gym.Env):
             self.path.clear()
             path_global = self.path_local_to_global(path2goal, self.agent_x, self.agent_y)
             self.path.extend(path_global)
+            nopath = False
         else:
-            self.planning_strategy(action)
+            nopath = self.planning_strategy(action)
 
         logger.debug("self.path:{}", self.path)        # --
 
@@ -253,9 +258,12 @@ class DM_env(gym.Env):
             '''
             buggggggggggggggg:sub_goal maybe None
             '''
+
+            # ---获取 sub_goal---
             sub_goal = self.pop_sub_goal()
+            # when path is used up
             if sub_goal is None:
-                self.planning_strategy(action)
+                _ = self.planning_strategy(action)
                 sub_goal = self.pop_sub_goal()
 
             # last reward params
@@ -283,6 +291,9 @@ class DM_env(gym.Env):
             goal_distance = self.get_distance2goal()
             goal_angle = self.get_angle2goal()
 
+            # risk map update
+            self.risk_map = self.get_risk_map()
+
             # ---reward---
             # reward params
             distance_new, angle_yaw_goal_new, uncertain_gain_new, risk_new = self.calculate_reward_param()
@@ -302,6 +313,7 @@ class DM_env(gym.Env):
             explore_reward = param.EXPLORE_GAIN_WEIGHT * (-uncertainty_err)
             risk_penalty = param.RISK_PENALTY_WEIGHT * (-risk_err)
             revisit_penalty = param.VISIT_PENALTY_WEIGHT * (-visit_penalty)
+            nopath_penalty = param.NOPATH_PENALTY_WEIGHT if nopath else 0.0
 
             self.reward_step += (distance_reward + 
                                  yaw_reward + 
@@ -310,7 +322,8 @@ class DM_env(gym.Env):
                                  reach_goal_reward + 
                                  explore_reward +
                                  risk_penalty +
-                                 revisit_penalty)
+                                 revisit_penalty + 
+                                 nopath_penalty)
 
             #---terminated collsion reach---
             if (reach or collision): 
@@ -385,18 +398,7 @@ class DM_env(gym.Env):
         
         return obs, self.reward_step, terminated, truncated, info
 
-    def get_frontier_clusters(self, action): 
-        '''
-        获取 top k frontier clusters
-        '''
-        frontier = Frontier(self.local_m_occ, self.local_m_unk, 
-                            self.local_m_free,(param.local_size_height // 2, param.local_size_width // 2)
-                            , action, k=param.frontier_k)
-        frontier_mask = frontier.compute_frontier_mask()
-        clusters = frontier.cluster_frontiers(frontier_mask)
-        infos = frontier.summarize_clusters_rep_points(clusters)
-        topk = frontier.select_topk(infos) # no risk map for now
-        return topk, frontier_mask
+
 
     def render(self, mode='human'):
         '''
@@ -413,6 +415,50 @@ class DM_env(gym.Env):
     
         plt.pause(0.10)   
 
+    def get_risk_map(self, beta_occ = 1.0, beta_unk = 0.5, occ_threshold = 0.6,
+                     safe_radius = 3.0,
+                     w_inflate = 1.0,
+                     mapping = "linear"):
+        '''
+        return: risk map
+        '''
+        r = beta_occ * self.local_m_occ + beta_unk * self.local_m_unk
+
+        occ_mask = (self.local_m_occ > occ_threshold).astype(np.uint8)
+        logger.debug("local_m_occ{}", self.local_m_occ)
+
+        free_mask = (1 - occ_mask).astype(np.uint8)
+
+        # 每个格到最近障碍的距离（单位：格）
+        dist = cv2.distanceTransform(free_mask, distanceType=cv2.DIST_L2, maskSize=5).astype(np.float32)
+
+        if mapping == "linear":
+            # dist=0 -> 1, dist>=R -> 0
+            r_inflate = np.clip((safe_radius - dist) / (safe_radius + 1e-6), 0.0, 1.0)
+        elif mapping == "exp":
+            # exp(-d/sigma)：d=0 -> 1, d大 -> 0
+            sigma = max(1.0, safe_radius / 2.0)
+            r_inflate = np.exp(-dist / sigma).astype(np.float32)
+        else:
+            raise ValueError("mapping must be 'linear' or 'exp'")
+
+        risk_map = w_inflate * r_inflate + r
+        
+        return risk_map
+
+    def get_frontier_clusters(self, action, risk_map=None): 
+        '''
+        获取 top k frontier clusters
+        '''
+        frontier = Frontier(self.local_m_occ, self.local_m_unk, 
+                            self.local_m_free,(param.local_size_height // 2, param.local_size_width // 2)
+                            , action, k=param.frontier_k)
+        frontier_mask = frontier.compute_frontier_mask()
+        clusters = frontier.cluster_frontiers(frontier_mask)
+        infos = frontier.summarize_clusters_rep_points(clusters)
+        topk = frontier.select_topk(infos, risk_map) # no risk map for now
+        return topk, frontier_mask
+
     def goal_reachable(self):
         goal_local_yi, goal_local_xi = self.point_global_to_local(self.goal_x, self.goal_y)
         if goal_local_xi < 0 or goal_local_xi >= param.local_size_width or \
@@ -425,34 +471,44 @@ class DM_env(gym.Env):
             return True, path
 
     def planning_strategy(self, action):
-        topk, _ = self.get_frontier_clusters(action)
+        '''
+        return nopath: bool
+        '''
+        self.path.clear()
+        topk, _ = self.get_frontier_clusters(action, self.risk_map)
         best = topk[0] if topk and topk[0] is not None else None
         current_sub_goal_astar = best.get("rep_ij") if best else None     
 
         logger.debug("current_sub_goal_astar:{}", current_sub_goal_astar)
-            # 
-        self.path.clear()
-
-        path_local = self.get_path_astar(self.local_m, current_sub_goal_astar)
-        logger.debug("path_local frontier:{}", path_local)
-        path_global = self.path_local_to_global(path_local, self.agent_x, self.agent_y)
-        logger.debug("path_global frontier:{}", path_global)
-        self.path.extend(path_global)
 
         if current_sub_goal_astar is None:
             logger.debug("No frontier found!")
             path_global = self.back_up_poloicy()
             logger.debug("path_global backup:{}", path_global)
+            
+            self.path.clear()
             self.path.extend(path_global)
+            return True
+
+        path_local = self.get_path_astar(self.local_m, current_sub_goal_astar)
+        logger.debug("path_local frontier:{}", path_local)
+        path_global = self.path_local_to_global(path_local, self.agent_x, self.agent_y)
+        logger.debug("path_global frontier:{}", path_global)
+
+        self.path.extend(path_global)
+
+        
         
         if not path_local:
             logger.debug("can not obtain path from astar!")
             path_global = self.back_up_poloicy()
             logger.debug("path_global backup:{}", path_global)
+            self.path.clear()
             self.path.extend(path_global)
-
+            return True
+        
+        return False
             
-
     def pop_sub_goal(self):
         '''
         返回 sub_goal = [x, y, yaw]
