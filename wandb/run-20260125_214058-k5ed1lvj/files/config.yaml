@@ -1,0 +1,51 @@
+_wandb:
+    value:
+        cli_version: 0.23.1
+        e:
+            gldzgs95z4g41nn9e1kqlhex4fxmq8tr:
+                codePath: scripts/Train_Script.py
+                codePathLocal: scripts/Train_Script.py
+                email: 3297240254@qq.com
+                executable: /home/fmt/miniconda3/envs/sb3/bin/python
+                git:
+                    commit: 0b799da3ceb963f69287ee6adf13143bbc958577
+                host: fmt-Lenovo-Legion-Y7000P2020
+                os: Linux-5.15.0-139-generic-x86_64-with-glibc2.31
+                program: /home/fmt/catkin_ws/src/fmt_/sb3_SAC/scripts/Train_Script.py
+                python: CPython 3.12.12
+                root: ./
+                startedAt: "2026-01-25T13:40:58.905235Z"
+                writerId: gldzgs95z4g41nn9e1kqlhex4fxmq8tr
+        m: []
+        python_version: 3.12.12
+        t:
+            "1":
+                - 1
+            "2":
+                - 1
+            "3":
+                - 13
+                - 16
+                - 35
+            "4": 3.12.12
+            "5": 0.23.1
+            "12": 0.23.1
+            "13": linux-x86_64
+batch_size:
+    value: 256
+buffer_size:
+    value: 200000
+features_dim:
+    value: 256
+gamma:
+    value: 0.99
+learning_rate:
+    value: 0.0003
+net_arch:
+    value:
+        - 256
+        - 256
+tau:
+    value: 0.005
+total_timesteps:
+    value: 1000000

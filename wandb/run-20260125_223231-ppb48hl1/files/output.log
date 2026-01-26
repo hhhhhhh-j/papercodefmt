@@ -1,0 +1,1009 @@
+CWD = /home/fmt/catkin_ws/src/fmt_/sb3_SAC
+Expect ckpt = /home/fmt/catkin_ws/src/fmt_/sb3_SAC/sac_decision_making.zip
+Exists? = False
+Creating new model...
+Using cuda device
+Logging to ./tb_logs/SAC_20
+path_local frontier: [(33, 32)]
+path_global frontier: [(np.float64(167.0), np.float64(120.0))]
+deque([(np.float64(167.0), np.float64(120.0))])
+micro step: 1
+agent pose: 120.0 167.0 2.00167963924477
+current.pose: 120.0 167.0
+goal: 97 212
+reward: 3.0874249344872027
+step: 1
+path_local frontier: []
+path_global frontier: []
+can not obtain path from astar!
+path_global backup: [(np.float64(168.0), np.float64(119.0)), (np.float64(169.0), np.float64(118.0)), (np.float64(170.0), np.float64(117.0)), (np.float64(171.0), np.float64(116.0)), (np.float64(172.0), np.float64(115.0)), (np.float64(173.0), np.float64(114.0)), (np.float64(174.0), np.float64(113.0)), (np.float64(175.0), np.float64(112.0)), (np.float64(176.0), np.float64(111.0)), (np.float64(177.0), np.float64(110.0)), (np.float64(178.0), np.float64(109.0)), (np.float64(179.0), np.float64(108.0)), (np.float64(180.0), np.float64(107.0)), (np.float64(181.0), np.float64(106.0)), (np.float64(182.0), np.float64(105.0)), (np.float64(183.0), np.float64(104.0)), (np.float64(184.0), np.float64(103.0)), (np.float64(185.0), np.float64(102.0)), (np.float64(186.0), np.float64(101.0)), (np.float64(187.0), np.float64(101.0)), (np.float64(188.0), np.float64(101.0)), (np.float64(189.0), np.float64(101.0)), (np.float64(190.0), np.float64(100.0)), (np.float64(191.0), np.float64(99.0)), (np.float64(192.0), np.float64(98.0)), (np.float64(193.0), np.float64(97.0)), (np.float64(194.0), np.float64(97.0)), (np.float64(195.0), np.float64(97.0)), (np.float64(196.0), np.float64(97.0)), (np.float64(197.0), np.float64(97.0)), (np.float64(198.0), np.float64(97.0))]
+deque([(np.float64(168.0), np.float64(119.0)), (np.float64(169.0), np.float64(118.0)), (np.float64(170.0), np.float64(117.0)), (np.float64(171.0), np.float64(116.0)), (np.float64(172.0), np.float64(115.0)), (np.float64(173.0), np.float64(114.0)), (np.float64(174.0), np.float64(113.0)), (np.float64(175.0), np.float64(112.0)), (np.float64(176.0), np.float64(111.0)), (np.float64(177.0), np.float64(110.0)), (np.float64(178.0), np.float64(109.0)), (np.float64(179.0), np.float64(108.0)), (np.float64(180.0), np.float64(107.0)), (np.float64(181.0), np.float64(106.0)), (np.float64(182.0), np.float64(105.0)), (np.float64(183.0), np.float64(104.0)), (np.float64(184.0), np.float64(103.0)), (np.float64(185.0), np.float64(102.0)), (np.float64(186.0), np.float64(101.0)), (np.float64(187.0), np.float64(101.0)), (np.float64(188.0), np.float64(101.0)), (np.float64(189.0), np.float64(101.0)), (np.float64(190.0), np.float64(100.0)), (np.float64(191.0), np.float64(99.0)), (np.float64(192.0), np.float64(98.0)), (np.float64(193.0), np.float64(97.0)), (np.float64(194.0), np.float64(97.0)), (np.float64(195.0), np.float64(97.0)), (np.float64(196.0), np.float64(97.0)), (np.float64(197.0), np.float64(97.0)), (np.float64(198.0), np.float64(97.0))])
+micro step: 2
+agent pose: 119.0 168.0 2.356194490192345
+current.pose: 119.0 168.0
+goal: 97 212
+reward: 1.4699703073396648
+step: 2
+path_local frontier: []
+path_global frontier: []
+can not obtain path from astar!
+path_global backup: [(np.float64(169.0), np.float64(118.0)), (np.float64(170.0), np.float64(117.0)), (np.float64(171.0), np.float64(116.0)), (np.float64(172.0), np.float64(115.0)), (np.float64(173.0), np.float64(114.0)), (np.float64(174.0), np.float64(113.0)), (np.float64(175.0), np.float64(112.0)), (np.float64(176.0), np.float64(111.0)), (np.float64(177.0), np.float64(110.0)), (np.float64(178.0), np.float64(109.0)), (np.float64(179.0), np.float64(108.0)), (np.float64(180.0), np.float64(107.0)), (np.float64(181.0), np.float64(106.0)), (np.float64(182.0), np.float64(105.0)), (np.float64(183.0), np.float64(104.0)), (np.float64(184.0), np.float64(103.0)), (np.float64(185.0), np.float64(102.0)), (np.float64(186.0), np.float64(101.0)), (np.float64(187.0), np.float64(100.0)), (np.float64(188.0), np.float64(100.0)), (np.float64(189.0), np.float64(100.0)), (np.float64(190.0), np.float64(100.0)), (np.float64(191.0), np.float64(99.0)), (np.float64(192.0), np.float64(98.0)), (np.float64(193.0), np.float64(97.0)), (np.float64(194.0), np.float64(97.0)), (np.float64(195.0), np.float64(97.0)), (np.float64(196.0), np.float64(97.0)), (np.float64(197.0), np.float64(97.0)), (np.float64(198.0), np.float64(97.0)), (np.float64(199.0), np.float64(97.0))]
+deque([(np.float64(169.0), np.float64(118.0)), (np.float64(170.0), np.float64(117.0)), (np.float64(171.0), np.float64(116.0)), (np.float64(172.0), np.float64(115.0)), (np.float64(173.0), np.float64(114.0)), (np.float64(174.0), np.float64(113.0)), (np.float64(175.0), np.float64(112.0)), (np.float64(176.0), np.float64(111.0)), (np.float64(177.0), np.float64(110.0)), (np.float64(178.0), np.float64(109.0)), (np.float64(179.0), np.float64(108.0)), (np.float64(180.0), np.float64(107.0)), (np.float64(181.0), np.float64(106.0)), (np.float64(182.0), np.float64(105.0)), (np.float64(183.0), np.float64(104.0)), (np.float64(184.0), np.float64(103.0)), (np.float64(185.0), np.float64(102.0)), (np.float64(186.0), np.float64(101.0)), (np.float64(187.0), np.float64(100.0)), (np.float64(188.0), np.float64(100.0)), (np.float64(189.0), np.float64(100.0)), (np.float64(190.0), np.float64(100.0)), (np.float64(191.0), np.float64(99.0)), (np.float64(192.0), np.float64(98.0)), (np.float64(193.0), np.float64(97.0)), (np.float64(194.0), np.float64(97.0)), (np.float64(195.0), np.float64(97.0)), (np.float64(196.0), np.float64(97.0)), (np.float64(197.0), np.float64(97.0)), (np.float64(198.0), np.float64(97.0)), (np.float64(199.0), np.float64(97.0))])
+micro step: 3
+agent pose: 118.0 169.0 2.356194490192345
+current.pose: 118.0 169.0
+goal: 97 212
+reward: 1.531743602512171
+step: 3
+path_local frontier: [(31, 32)]
+path_global frontier: [(np.float64(168.0), np.float64(118.0))]
+deque([(np.float64(168.0), np.float64(118.0))])
+micro step: 4
+agent pose: 118.0 168.0 2.356194490192345
+current.pose: 118.0 168.0
+goal: 97 212
+reward: -1.4485391268023844
+step: 4
+path_local frontier: []
+path_global frontier: []
+can not obtain path from astar!
+path_global backup: [(np.float64(169.0), np.float64(117.0)), (np.float64(170.0), np.float64(116.0)), (np.float64(171.0), np.float64(115.0)), (np.float64(172.0), np.float64(114.0)), (np.float64(173.0), np.float64(113.0)), (np.float64(174.0), np.float64(112.0)), (np.float64(175.0), np.float64(111.0)), (np.float64(176.0), np.float64(110.0)), (np.float64(177.0), np.float64(109.0)), (np.float64(178.0), np.float64(108.0)), (np.float64(179.0), np.float64(107.0)), (np.float64(180.0), np.float64(106.0)), (np.float64(181.0), np.float64(105.0)), (np.float64(182.0), np.float64(104.0)), (np.float64(183.0), np.float64(103.0)), (np.float64(184.0), np.float64(102.0)), (np.float64(185.0), np.float64(101.0)), (np.float64(186.0), np.float64(100.0)), (np.float64(187.0), np.float64(100.0)), (np.float64(188.0), np.float64(100.0)), (np.float64(189.0), np.float64(100.0)), (np.float64(190.0), np.float64(100.0)), (np.float64(191.0), np.float64(100.0)), (np.float64(192.0), np.float64(100.0)), (np.float64(193.0), np.float64(99.0)), (np.float64(194.0), np.float64(98.0)), (np.float64(195.0), np.float64(97.0)), (np.float64(196.0), np.float64(97.0)), (np.float64(197.0), np.float64(97.0)), (np.float64(198.0), np.float64(97.0)), (np.float64(199.0), np.float64(97.0))]
+deque([(np.float64(169.0), np.float64(117.0)), (np.float64(170.0), np.float64(116.0)), (np.float64(171.0), np.float64(115.0)), (np.float64(172.0), np.float64(114.0)), (np.float64(173.0), np.float64(113.0)), (np.float64(174.0), np.float64(112.0)), (np.float64(175.0), np.float64(111.0)), (np.float64(176.0), np.float64(110.0)), (np.float64(177.0), np.float64(109.0)), (np.float64(178.0), np.float64(108.0)), (np.float64(179.0), np.float64(107.0)), (np.float64(180.0), np.float64(106.0)), (np.float64(181.0), np.float64(105.0)), (np.float64(182.0), np.float64(104.0)), (np.float64(183.0), np.float64(103.0)), (np.float64(184.0), np.float64(102.0)), (np.float64(185.0), np.float64(101.0)), (np.float64(186.0), np.float64(100.0)), (np.float64(187.0), np.float64(100.0)), (np.float64(188.0), np.float64(100.0)), (np.float64(189.0), np.float64(100.0)), (np.float64(190.0), np.float64(100.0)), (np.float64(191.0), np.float64(100.0)), (np.float64(192.0), np.float64(100.0)), (np.float64(193.0), np.float64(99.0)), (np.float64(194.0), np.float64(98.0)), (np.float64(195.0), np.float64(97.0)), (np.float64(196.0), np.float64(97.0)), (np.float64(197.0), np.float64(97.0)), (np.float64(198.0), np.float64(97.0)), (np.float64(199.0), np.float64(97.0))])
+micro step: 5
+agent pose: 117.0 169.0 2.356194490192345
+current.pose: 117.0 169.0
+goal: 97 212
+reward: 1.3834828666871952
+step: 5
+path_local frontier: []
+path_global frontier: []
+can not obtain path from astar!
+path_global backup: [(np.float64(170.0), np.float64(116.0)), (np.float64(171.0), np.float64(115.0)), (np.float64(172.0), np.float64(114.0)), (np.float64(173.0), np.float64(113.0)), (np.float64(174.0), np.float64(112.0)), (np.float64(175.0), np.float64(111.0)), (np.float64(176.0), np.float64(110.0)), (np.float64(177.0), np.float64(109.0)), (np.float64(178.0), np.float64(108.0)), (np.float64(179.0), np.float64(107.0)), (np.float64(180.0), np.float64(106.0)), (np.float64(181.0), np.float64(105.0)), (np.float64(182.0), np.float64(104.0)), (np.float64(183.0), np.float64(103.0)), (np.float64(184.0), np.float64(102.0)), (np.float64(185.0), np.float64(101.0)), (np.float64(186.0), np.float64(100.0)), (np.float64(187.0), np.float64(99.0)), (np.float64(188.0), np.float64(99.0)), (np.float64(189.0), np.float64(99.0)), (np.float64(190.0), np.float64(99.0)), (np.float64(191.0), np.float64(99.0)), (np.float64(192.0), np.float64(99.0)), (np.float64(193.0), np.float64(98.0)), (np.float64(194.0), np.float64(97.0)), (np.float64(195.0), np.float64(97.0)), (np.float64(196.0), np.float64(97.0)), (np.float64(197.0), np.float64(97.0)), (np.float64(198.0), np.float64(97.0)), (np.float64(199.0), np.float64(97.0)), (np.float64(200.0), np.float64(97.0))]
+deque([(np.float64(170.0), np.float64(116.0)), (np.float64(171.0), np.float64(115.0)), (np.float64(172.0), np.float64(114.0)), (np.float64(173.0), np.float64(113.0)), (np.float64(174.0), np.float64(112.0)), (np.float64(175.0), np.float64(111.0)), (np.float64(176.0), np.float64(110.0)), (np.float64(177.0), np.float64(109.0)), (np.float64(178.0), np.float64(108.0)), (np.float64(179.0), np.float64(107.0)), (np.float64(180.0), np.float64(106.0)), (np.float64(181.0), np.float64(105.0)), (np.float64(182.0), np.float64(104.0)), (np.float64(183.0), np.float64(103.0)), (np.float64(184.0), np.float64(102.0)), (np.float64(185.0), np.float64(101.0)), (np.float64(186.0), np.float64(100.0)), (np.float64(187.0), np.float64(99.0)), (np.float64(188.0), np.float64(99.0)), (np.float64(189.0), np.float64(99.0)), (np.float64(190.0), np.float64(99.0)), (np.float64(191.0), np.float64(99.0)), (np.float64(192.0), np.float64(99.0)), (np.float64(193.0), np.float64(98.0)), (np.float64(194.0), np.float64(97.0)), (np.float64(195.0), np.float64(97.0)), (np.float64(196.0), np.float64(97.0)), (np.float64(197.0), np.float64(97.0)), (np.float64(198.0), np.float64(97.0)), (np.float64(199.0), np.float64(97.0)), (np.float64(200.0), np.float64(97.0))])
+micro step: 6
+agent pose: 116.0 170.0 2.356194490192345
+current.pose: 116.0 170.0
+goal: 97 212
+reward: 1.3084101186525041
+step: 6
+path_local frontier: [(31, 32)]
+path_global frontier: [(np.float64(169.0), np.float64(116.0))]
+deque([(np.float64(169.0), np.float64(116.0))])
+micro step: 7
+agent pose: 116.0 169.0 2.356194490192345
+current.pose: 116.0 169.0
+goal: 97 212
+reward: -1.6695064119517506
+step: 7
+path_local frontier: []
+path_global frontier: []
+can not obtain path from astar!
+path_global backup: [(np.float64(170.0), np.float64(115.0)), (np.float64(171.0), np.float64(114.0)), (np.float64(172.0), np.float64(113.0)), (np.float64(173.0), np.float64(112.0)), (np.float64(174.0), np.float64(111.0)), (np.float64(175.0), np.float64(110.0)), (np.float64(176.0), np.float64(109.0)), (np.float64(177.0), np.float64(108.0)), (np.float64(178.0), np.float64(107.0)), (np.float64(179.0), np.float64(106.0)), (np.float64(180.0), np.float64(105.0)), (np.float64(181.0), np.float64(104.0)), (np.float64(182.0), np.float64(103.0)), (np.float64(183.0), np.float64(102.0)), (np.float64(184.0), np.float64(101.0)), (np.float64(185.0), np.float64(100.0)), (np.float64(186.0), np.float64(99.0)), (np.float64(187.0), np.float64(98.0)), (np.float64(188.0), np.float64(98.0)), (np.float64(189.0), np.float64(98.0)), (np.float64(190.0), np.float64(98.0)), (np.float64(191.0), np.float64(98.0)), (np.float64(192.0), np.float64(98.0)), (np.float64(193.0), np.float64(98.0)), (np.float64(194.0), np.float64(97.0)), (np.float64(195.0), np.float64(97.0)), (np.float64(196.0), np.float64(97.0)), (np.float64(197.0), np.float64(97.0)), (np.float64(198.0), np.float64(97.0)), (np.float64(199.0), np.float64(97.0)), (np.float64(200.0), np.float64(97.0))]
+deque([(np.float64(170.0), np.float64(115.0)), (np.float64(171.0), np.float64(114.0)), (np.float64(172.0), np.float64(113.0)), (np.float64(173.0), np.float64(112.0)), (np.float64(174.0), np.float64(111.0)), (np.float64(175.0), np.float64(110.0)), (np.float64(176.0), np.float64(109.0)), (np.float64(177.0), np.float64(108.0)), (np.float64(178.0), np.float64(107.0)), (np.float64(179.0), np.float64(106.0)), (np.float64(180.0), np.float64(105.0)), (np.float64(181.0), np.float64(104.0)), (np.float64(182.0), np.float64(103.0)), (np.float64(183.0), np.float64(102.0)), (np.float64(184.0), np.float64(101.0)), (np.float64(185.0), np.float64(100.0)), (np.float64(186.0), np.float64(99.0)), (np.float64(187.0), np.float64(98.0)), (np.float64(188.0), np.float64(98.0)), (np.float64(189.0), np.float64(98.0)), (np.float64(190.0), np.float64(98.0)), (np.float64(191.0), np.float64(98.0)), (np.float64(192.0), np.float64(98.0)), (np.float64(193.0), np.float64(98.0)), (np.float64(194.0), np.float64(97.0)), (np.float64(195.0), np.float64(97.0)), (np.float64(196.0), np.float64(97.0)), (np.float64(197.0), np.float64(97.0)), (np.float64(198.0), np.float64(97.0)), (np.float64(199.0), np.float64(97.0)), (np.float64(200.0), np.float64(97.0))])
+micro step: 8
+agent pose: 115.0 170.0 2.356194490192345
+current.pose: 115.0 170.0
+goal: 97 212
+reward: 1.158544970299904
+step: 8
+path_local frontier: [(31, 32)]
+path_global frontier: [(np.float64(169.0), np.float64(115.0))]
+deque([(np.float64(169.0), np.float64(115.0))])
+micro step: 9
+agent pose: 115.0 169.0 2.356194490192345
+current.pose: 115.0 169.0
+goal: 97 212
+reward: -1.8162775339894912
+step: 9
+path_local frontier: []
+path_global frontier: []
+can not obtain path from astar!
+path_global backup: [(np.float64(170.0), np.float64(114.0)), (np.float64(171.0), np.float64(113.0)), (np.float64(172.0), np.float64(112.0)), (np.float64(173.0), np.float64(111.0)), (np.float64(174.0), np.float64(110.0)), (np.float64(175.0), np.float64(109.0)), (np.float64(176.0), np.float64(108.0)), (np.float64(177.0), np.float64(107.0)), (np.float64(178.0), np.float64(106.0)), (np.float64(179.0), np.float64(105.0)), (np.float64(180.0), np.float64(104.0)), (np.float64(181.0), np.float64(103.0)), (np.float64(182.0), np.float64(102.0)), (np.float64(183.0), np.float64(101.0)), (np.float64(184.0), np.float64(100.0)), (np.float64(185.0), np.float64(99.0)), (np.float64(186.0), np.float64(98.0)), (np.float64(187.0), np.float64(98.0)), (np.float64(188.0), np.float64(98.0)), (np.float64(189.0), np.float64(98.0)), (np.float64(190.0), np.float64(98.0)), (np.float64(191.0), np.float64(98.0)), (np.float64(192.0), np.float64(98.0)), (np.float64(193.0), np.float64(98.0)), (np.float64(194.0), np.float64(98.0)), (np.float64(195.0), np.float64(97.0)), (np.float64(196.0), np.float64(97.0)), (np.float64(197.0), np.float64(97.0)), (np.float64(198.0), np.float64(97.0)), (np.float64(199.0), np.float64(97.0)), (np.float64(200.0), np.float64(97.0))]
+deque([(np.float64(170.0), np.float64(114.0)), (np.float64(171.0), np.float64(113.0)), (np.float64(172.0), np.float64(112.0)), (np.float64(173.0), np.float64(111.0)), (np.float64(174.0), np.float64(110.0)), (np.float64(175.0), np.float64(109.0)), (np.float64(176.0), np.float64(108.0)), (np.float64(177.0), np.float64(107.0)), (np.float64(178.0), np.float64(106.0)), (np.float64(179.0), np.float64(105.0)), (np.float64(180.0), np.float64(104.0)), (np.float64(181.0), np.float64(103.0)), (np.float64(182.0), np.float64(102.0)), (np.float64(183.0), np.float64(101.0)), (np.float64(184.0), np.float64(100.0)), (np.float64(185.0), np.float64(99.0)), (np.float64(186.0), np.float64(98.0)), (np.float64(187.0), np.float64(98.0)), (np.float64(188.0), np.float64(98.0)), (np.float64(189.0), np.float64(98.0)), (np.float64(190.0), np.float64(98.0)), (np.float64(191.0), np.float64(98.0)), (np.float64(192.0), np.float64(98.0)), (np.float64(193.0), np.float64(98.0)), (np.float64(194.0), np.float64(98.0)), (np.float64(195.0), np.float64(97.0)), (np.float64(196.0), np.float64(97.0)), (np.float64(197.0), np.float64(97.0)), (np.float64(198.0), np.float64(97.0)), (np.float64(199.0), np.float64(97.0)), (np.float64(200.0), np.float64(97.0))])
+micro step: 10
+agent pose: 114.0 170.0 2.356194490192345
+current.pose: 114.0 170.0
+goal: 97 212
+reward: 1.0077749427754137
+step: 10
+path_local frontier: []
+path_global frontier: []
+can not obtain path from astar!
+path_global backup: [(np.float64(171.0), np.float64(113.0)), (np.float64(172.0), np.float64(112.0)), (np.float64(173.0), np.float64(111.0)), (np.float64(174.0), np.float64(110.0)), (np.float64(175.0), np.float64(109.0)), (np.float64(176.0), np.float64(108.0)), (np.float64(177.0), np.float64(107.0)), (np.float64(178.0), np.float64(106.0)), (np.float64(179.0), np.float64(105.0)), (np.float64(180.0), np.float64(104.0)), (np.float64(181.0), np.float64(103.0)), (np.float64(182.0), np.float64(102.0)), (np.float64(183.0), np.float64(101.0)), (np.float64(184.0), np.float64(100.0)), (np.float64(185.0), np.float64(100.0)), (np.float64(186.0), np.float64(100.0)), (np.float64(187.0), np.float64(100.0)), (np.float64(188.0), np.float64(100.0)), (np.float64(189.0), np.float64(100.0)), (np.float64(190.0), np.float64(100.0)), (np.float64(191.0), np.float64(100.0)), (np.float64(192.0), np.float64(100.0)), (np.float64(193.0), np.float64(100.0)), (np.float64(194.0), np.float64(100.0)), (np.float64(195.0), np.float64(100.0)), (np.float64(196.0), np.float64(100.0)), (np.float64(197.0), np.float64(99.0)), (np.float64(198.0), np.float64(98.0)), (np.float64(199.0), np.float64(97.0)), (np.float64(200.0), np.float64(97.0)), (np.float64(201.0), np.float64(97.0))]
+deque([(np.float64(171.0), np.float64(113.0)), (np.float64(172.0), np.float64(112.0)), (np.float64(173.0), np.float64(111.0)), (np.float64(174.0), np.float64(110.0)), (np.float64(175.0), np.float64(109.0)), (np.float64(176.0), np.float64(108.0)), (np.float64(177.0), np.float64(107.0)), (np.float64(178.0), np.float64(106.0)), (np.float64(179.0), np.float64(105.0)), (np.float64(180.0), np.float64(104.0)), (np.float64(181.0), np.float64(103.0)), (np.float64(182.0), np.float64(102.0)), (np.float64(183.0), np.float64(101.0)), (np.float64(184.0), np.float64(100.0)), (np.float64(185.0), np.float64(100.0)), (np.float64(186.0), np.float64(100.0)), (np.float64(187.0), np.float64(100.0)), (np.float64(188.0), np.float64(100.0)), (np.float64(189.0), np.float64(100.0)), (np.float64(190.0), np.float64(100.0)), (np.float64(191.0), np.float64(100.0)), (np.float64(192.0), np.float64(100.0)), (np.float64(193.0), np.float64(100.0)), (np.float64(194.0), np.float64(100.0)), (np.float64(195.0), np.float64(100.0)), (np.float64(196.0), np.float64(100.0)), (np.float64(197.0), np.float64(99.0)), (np.float64(198.0), np.float64(98.0)), (np.float64(199.0), np.float64(97.0)), (np.float64(200.0), np.float64(97.0)), (np.float64(201.0), np.float64(97.0))])
+micro step: 11
+agent pose: 113.0 171.0 2.356194490192345
+current.pose: 113.0 171.0
+goal: 97 212
+reward: 0.9303499831090782
+step: 11
+path_local frontier: [(31, 32)]
+path_global frontier: [(np.float64(170.0), np.float64(113.0))]
+deque([(np.float64(170.0), np.float64(113.0))])
+micro step: 12
+agent pose: 113.0 170.0 2.356194490192345
+current.pose: 113.0 170.0
+goal: 97 212
+reward: -2.0370067220792336
+step: 12
+path_local frontier: []
+path_global frontier: []
+can not obtain path from astar!
+path_global backup: [(np.float64(171.0), np.float64(112.0)), (np.float64(172.0), np.float64(111.0)), (np.float64(173.0), np.float64(110.0)), (np.float64(174.0), np.float64(109.0)), (np.float64(175.0), np.float64(108.0)), (np.float64(176.0), np.float64(107.0)), (np.float64(177.0), np.float64(106.0)), (np.float64(178.0), np.float64(105.0)), (np.float64(179.0), np.float64(104.0)), (np.float64(180.0), np.float64(103.0)), (np.float64(181.0), np.float64(102.0)), (np.float64(182.0), np.float64(101.0)), (np.float64(183.0), np.float64(100.0)), (np.float64(184.0), np.float64(99.0)), (np.float64(185.0), np.float64(98.0)), (np.float64(186.0), np.float64(98.0)), (np.float64(187.0), np.float64(98.0)), (np.float64(188.0), np.float64(98.0)), (np.float64(189.0), np.float64(98.0)), (np.float64(190.0), np.float64(98.0)), (np.float64(191.0), np.float64(98.0)), (np.float64(192.0), np.float64(98.0)), (np.float64(193.0), np.float64(98.0)), (np.float64(194.0), np.float64(98.0)), (np.float64(195.0), np.float64(98.0)), (np.float64(196.0), np.float64(98.0)), (np.float64(197.0), np.float64(97.0)), (np.float64(198.0), np.float64(97.0)), (np.float64(199.0), np.float64(97.0)), (np.float64(200.0), np.float64(97.0)), (np.float64(201.0), np.float64(97.0))]
+deque([(np.float64(171.0), np.float64(112.0)), (np.float64(172.0), np.float64(111.0)), (np.float64(173.0), np.float64(110.0)), (np.float64(174.0), np.float64(109.0)), (np.float64(175.0), np.float64(108.0)), (np.float64(176.0), np.float64(107.0)), (np.float64(177.0), np.float64(106.0)), (np.float64(178.0), np.float64(105.0)), (np.float64(179.0), np.float64(104.0)), (np.float64(180.0), np.float64(103.0)), (np.float64(181.0), np.float64(102.0)), (np.float64(182.0), np.float64(101.0)), (np.float64(183.0), np.float64(100.0)), (np.float64(184.0), np.float64(99.0)), (np.float64(185.0), np.float64(98.0)), (np.float64(186.0), np.float64(98.0)), (np.float64(187.0), np.float64(98.0)), (np.float64(188.0), np.float64(98.0)), (np.float64(189.0), np.float64(98.0)), (np.float64(190.0), np.float64(98.0)), (np.float64(191.0), np.float64(98.0)), (np.float64(192.0), np.float64(98.0)), (np.float64(193.0), np.float64(98.0)), (np.float64(194.0), np.float64(98.0)), (np.float64(195.0), np.float64(98.0)), (np.float64(196.0), np.float64(98.0)), (np.float64(197.0), np.float64(97.0)), (np.float64(198.0), np.float64(97.0)), (np.float64(199.0), np.float64(97.0)), (np.float64(200.0), np.float64(97.0)), (np.float64(201.0), np.float64(97.0))])
+micro step: 13
+agent pose: 112.0 171.0 2.356194490192345
+current.pose: 112.0 171.0
+goal: 97 212
+reward: 0.7776864259189584
+step: 13
+path_local frontier: [(31, 32)]
+path_global frontier: [(np.float64(170.0), np.float64(112.0))]
+deque([(np.float64(170.0), np.float64(112.0))])
+micro step: 14
+agent pose: 112.0 170.0 2.356194490192345
+current.pose: 112.0 170.0
+goal: 97 212
+reward: -2.1830989074705993
+step: 14
+path_local frontier: []
+path_global frontier: []
+can not obtain path from astar!
+path_global backup: [(np.float64(171.0), np.float64(111.0)), (np.float64(172.0), np.float64(110.0)), (np.float64(173.0), np.float64(109.0)), (np.float64(174.0), np.float64(108.0)), (np.float64(175.0), np.float64(107.0)), (np.float64(176.0), np.float64(106.0)), (np.float64(177.0), np.float64(105.0)), (np.float64(178.0), np.float64(104.0)), (np.float64(179.0), np.float64(103.0)), (np.float64(180.0), np.float64(102.0)), (np.float64(181.0), np.float64(101.0)), (np.float64(182.0), np.float64(100.0)), (np.float64(183.0), np.float64(100.0)), (np.float64(184.0), np.float64(100.0)), (np.float64(185.0), np.float64(100.0)), (np.float64(186.0), np.float64(100.0)), (np.float64(187.0), np.float64(100.0)), (np.float64(188.0), np.float64(100.0)), (np.float64(189.0), np.float64(100.0)), (np.float64(190.0), np.float64(100.0)), (np.float64(191.0), np.float64(100.0)), (np.float64(192.0), np.float64(100.0)), (np.float64(193.0), np.float64(100.0)), (np.float64(194.0), np.float64(100.0)), (np.float64(195.0), np.float64(100.0)), (np.float64(196.0), np.float64(100.0)), (np.float64(197.0), np.float64(100.0)), (np.float64(198.0), np.float64(100.0)), (np.float64(199.0), np.float64(99.0)), (np.float64(200.0), np.float64(98.0)), (np.float64(201.0), np.float64(97.0))]
+deque([(np.float64(171.0), np.float64(111.0)), (np.float64(172.0), np.float64(110.0)), (np.float64(173.0), np.float64(109.0)), (np.float64(174.0), np.float64(108.0)), (np.float64(175.0), np.float64(107.0)), (np.float64(176.0), np.float64(106.0)), (np.float64(177.0), np.float64(105.0)), (np.float64(178.0), np.float64(104.0)), (np.float64(179.0), np.float64(103.0)), (np.float64(180.0), np.float64(102.0)), (np.float64(181.0), np.float64(101.0)), (np.float64(182.0), np.float64(100.0)), (np.float64(183.0), np.float64(100.0)), (np.float64(184.0), np.float64(100.0)), (np.float64(185.0), np.float64(100.0)), (np.float64(186.0), np.float64(100.0)), (np.float64(187.0), np.float64(100.0)), (np.float64(188.0), np.float64(100.0)), (np.float64(189.0), np.float64(100.0)), (np.float64(190.0), np.float64(100.0)), (np.float64(191.0), np.float64(100.0)), (np.float64(192.0), np.float64(100.0)), (np.float64(193.0), np.float64(100.0)), (np.float64(194.0), np.float64(100.0)), (np.float64(195.0), np.float64(100.0)), (np.float64(196.0), np.float64(100.0)), (np.float64(197.0), np.float64(100.0)), (np.float64(198.0), np.float64(100.0)), (np.float64(199.0), np.float64(99.0)), (np.float64(200.0), np.float64(98.0)), (np.float64(201.0), np.float64(97.0))])
+micro step: 15
+agent pose: 111.0 171.0 2.356194490192345
+current.pose: 111.0 171.0
+goal: 97 212
+reward: 0.6240155334223707
+step: 15
+path_local frontier: [(31, 32)]
+path_global frontier: [(np.float64(170.0), np.float64(111.0))]
+deque([(np.float64(170.0), np.float64(111.0))])
+micro step: 16
+agent pose: 111.0 170.0 2.356194490192345
+current.pose: 111.0 170.0
+goal: 97 212
+reward: -2.3287708602900654
+step: 16
+path_local frontier: []
+path_global frontier: []
+can not obtain path from astar!
+path_global backup: [(np.float64(171.0), np.float64(110.0)), (np.float64(172.0), np.float64(109.0)), (np.float64(173.0), np.float64(108.0)), (np.float64(174.0), np.float64(107.0)), (np.float64(175.0), np.float64(106.0)), (np.float64(176.0), np.float64(105.0)), (np.float64(177.0), np.float64(104.0)), (np.float64(178.0), np.float64(103.0)), (np.float64(179.0), np.float64(102.0)), (np.float64(180.0), np.float64(101.0)), (np.float64(181.0), np.float64(100.0)), (np.float64(182.0), np.float64(99.0)), (np.float64(183.0), np.float64(99.0)), (np.float64(184.0), np.float64(99.0)), (np.float64(185.0), np.float64(99.0)), (np.float64(186.0), np.float64(99.0)), (np.float64(187.0), np.float64(99.0)), (np.float64(188.0), np.float64(99.0)), (np.float64(189.0), np.float64(99.0)), (np.float64(190.0), np.float64(99.0)), (np.float64(191.0), np.float64(99.0)), (np.float64(192.0), np.float64(99.0)), (np.float64(193.0), np.float64(99.0)), (np.float64(194.0), np.float64(99.0)), (np.float64(195.0), np.float64(99.0)), (np.float64(196.0), np.float64(99.0)), (np.float64(197.0), np.float64(99.0)), (np.float64(198.0), np.float64(99.0)), (np.float64(199.0), np.float64(98.0)), (np.float64(200.0), np.float64(97.0)), (np.float64(201.0), np.float64(97.0))]
+deque([(np.float64(171.0), np.float64(110.0)), (np.float64(172.0), np.float64(109.0)), (np.float64(173.0), np.float64(108.0)), (np.float64(174.0), np.float64(107.0)), (np.float64(175.0), np.float64(106.0)), (np.float64(176.0), np.float64(105.0)), (np.float64(177.0), np.float64(104.0)), (np.float64(178.0), np.float64(103.0)), (np.float64(179.0), np.float64(102.0)), (np.float64(180.0), np.float64(101.0)), (np.float64(181.0), np.float64(100.0)), (np.float64(182.0), np.float64(99.0)), (np.float64(183.0), np.float64(99.0)), (np.float64(184.0), np.float64(99.0)), (np.float64(185.0), np.float64(99.0)), (np.float64(186.0), np.float64(99.0)), (np.float64(187.0), np.float64(99.0)), (np.float64(188.0), np.float64(99.0)), (np.float64(189.0), np.float64(99.0)), (np.float64(190.0), np.float64(99.0)), (np.float64(191.0), np.float64(99.0)), (np.float64(192.0), np.float64(99.0)), (np.float64(193.0), np.float64(99.0)), (np.float64(194.0), np.float64(99.0)), (np.float64(195.0), np.float64(99.0)), (np.float64(196.0), np.float64(99.0)), (np.float64(197.0), np.float64(99.0)), (np.float64(198.0), np.float64(99.0)), (np.float64(199.0), np.float64(98.0)), (np.float64(200.0), np.float64(97.0)), (np.float64(201.0), np.float64(97.0))])
+micro step: 17
+agent pose: 110.0 171.0 2.356194490192345
+current.pose: 110.0 171.0
+goal: 97 212
+reward: 0.46932010143183134
+step: 17
+path_local frontier: [(31, 32)]
+path_global frontier: [(np.float64(170.0), np.float64(110.0))]
+deque([(np.float64(170.0), np.float64(110.0))])
+micro step: 18
+agent pose: 110.0 170.0 2.356194490192345
+current.pose: 110.0 170.0
+goal: 97 212
+reward: -2.473987680966842
+step: 18
+path_local frontier: []
+path_global frontier: []
+can not obtain path from astar!
+path_global backup: [(np.float64(171.0), np.float64(109.0)), (np.float64(172.0), np.float64(108.0)), (np.float64(173.0), np.float64(107.0)), (np.float64(174.0), np.float64(106.0)), (np.float64(175.0), np.float64(105.0)), (np.float64(176.0), np.float64(104.0)), (np.float64(177.0), np.float64(103.0)), (np.float64(178.0), np.float64(102.0)), (np.float64(179.0), np.float64(101.0)), (np.float64(180.0), np.float64(100.0)), (np.float64(181.0), np.float64(99.0)), (np.float64(182.0), np.float64(99.0)), (np.float64(183.0), np.float64(99.0)), (np.float64(184.0), np.float64(99.0)), (np.float64(185.0), np.float64(99.0)), (np.float64(186.0), np.float64(99.0)), (np.float64(187.0), np.float64(99.0)), (np.float64(188.0), np.float64(99.0)), (np.float64(189.0), np.float64(99.0)), (np.float64(190.0), np.float64(99.0)), (np.float64(191.0), np.float64(99.0)), (np.float64(192.0), np.float64(99.0)), (np.float64(193.0), np.float64(99.0)), (np.float64(194.0), np.float64(99.0)), (np.float64(195.0), np.float64(99.0)), (np.float64(196.0), np.float64(99.0)), (np.float64(197.0), np.float64(99.0)), (np.float64(198.0), np.float64(99.0)), (np.float64(199.0), np.float64(98.0)), (np.float64(200.0), np.float64(97.0)), (np.float64(201.0), np.float64(97.0))]
+deque([(np.float64(171.0), np.float64(109.0)), (np.float64(172.0), np.float64(108.0)), (np.float64(173.0), np.float64(107.0)), (np.float64(174.0), np.float64(106.0)), (np.float64(175.0), np.float64(105.0)), (np.float64(176.0), np.float64(104.0)), (np.float64(177.0), np.float64(103.0)), (np.float64(178.0), np.float64(102.0)), (np.float64(179.0), np.float64(101.0)), (np.float64(180.0), np.float64(100.0)), (np.float64(181.0), np.float64(99.0)), (np.float64(182.0), np.float64(99.0)), (np.float64(183.0), np.float64(99.0)), (np.float64(184.0), np.float64(99.0)), (np.float64(185.0), np.float64(99.0)), (np.float64(186.0), np.float64(99.0)), (np.float64(187.0), np.float64(99.0)), (np.float64(188.0), np.float64(99.0)), (np.float64(189.0), np.float64(99.0)), (np.float64(190.0), np.float64(99.0)), (np.float64(191.0), np.float64(99.0)), (np.float64(192.0), np.float64(99.0)), (np.float64(193.0), np.float64(99.0)), (np.float64(194.0), np.float64(99.0)), (np.float64(195.0), np.float64(99.0)), (np.float64(196.0), np.float64(99.0)), (np.float64(197.0), np.float64(99.0)), (np.float64(198.0), np.float64(99.0)), (np.float64(199.0), np.float64(98.0)), (np.float64(200.0), np.float64(97.0)), (np.float64(201.0), np.float64(97.0))])
+micro step: 19
+agent pose: 109.0 171.0 2.356194490192345
+current.pose: 109.0 171.0
+goal: 97 212
+reward: 0.31358659209859807
+step: 19
+path_local frontier: []
+path_global frontier: []
+can not obtain path from astar!
+path_global backup: [(np.float64(172.0), np.float64(108.0)), (np.float64(173.0), np.float64(107.0)), (np.float64(174.0), np.float64(106.0)), (np.float64(175.0), np.float64(105.0)), (np.float64(176.0), np.float64(104.0)), (np.float64(177.0), np.float64(103.0)), (np.float64(178.0), np.float64(102.0)), (np.float64(179.0), np.float64(101.0)), (np.float64(180.0), np.float64(100.0)), (np.float64(181.0), np.float64(100.0)), (np.float64(182.0), np.float64(100.0)), (np.float64(183.0), np.float64(100.0)), (np.float64(184.0), np.float64(100.0)), (np.float64(185.0), np.float64(100.0)), (np.float64(186.0), np.float64(100.0)), (np.float64(187.0), np.float64(100.0)), (np.float64(188.0), np.float64(100.0)), (np.float64(189.0), np.float64(100.0)), (np.float64(190.0), np.float64(100.0)), (np.float64(191.0), np.float64(100.0)), (np.float64(192.0), np.float64(100.0)), (np.float64(193.0), np.float64(100.0)), (np.float64(194.0), np.float64(100.0)), (np.float64(195.0), np.float64(100.0)), (np.float64(196.0), np.float64(100.0)), (np.float64(197.0), np.float64(100.0)), (np.float64(198.0), np.float64(100.0)), (np.float64(199.0), np.float64(100.0)), (np.float64(200.0), np.float64(99.0)), (np.float64(201.0), np.float64(98.0)), (np.float64(202.0), np.float64(97.0))]
+deque([(np.float64(172.0), np.float64(108.0)), (np.float64(173.0), np.float64(107.0)), (np.float64(174.0), np.float64(106.0)), (np.float64(175.0), np.float64(105.0)), (np.float64(176.0), np.float64(104.0)), (np.float64(177.0), np.float64(103.0)), (np.float64(178.0), np.float64(102.0)), (np.float64(179.0), np.float64(101.0)), (np.float64(180.0), np.float64(100.0)), (np.float64(181.0), np.float64(100.0)), (np.float64(182.0), np.float64(100.0)), (np.float64(183.0), np.float64(100.0)), (np.float64(184.0), np.float64(100.0)), (np.float64(185.0), np.float64(100.0)), (np.float64(186.0), np.float64(100.0)), (np.float64(187.0), np.float64(100.0)), (np.float64(188.0), np.float64(100.0)), (np.float64(189.0), np.float64(100.0)), (np.float64(190.0), np.float64(100.0)), (np.float64(191.0), np.float64(100.0)), (np.float64(192.0), np.float64(100.0)), (np.float64(193.0), np.float64(100.0)), (np.float64(194.0), np.float64(100.0)), (np.float64(195.0), np.float64(100.0)), (np.float64(196.0), np.float64(100.0)), (np.float64(197.0), np.float64(100.0)), (np.float64(198.0), np.float64(100.0)), (np.float64(199.0), np.float64(100.0)), (np.float64(200.0), np.float64(99.0)), (np.float64(201.0), np.float64(98.0)), (np.float64(202.0), np.float64(97.0))])
+micro step: 20
+agent pose: 108.0 172.0 2.356194490192345
+current.pose: 108.0 172.0
+goal: 97 212
+reward: 0.23075743109087266
+step: 20
+path_local frontier: [(31, 32)]
+path_global frontier: [(np.float64(171.0), np.float64(108.0))]
+deque([(np.float64(171.0), np.float64(108.0))])
+micro step: 21
+agent pose: 108.0 171.0 2.356194490192345
+current.pose: 108.0 171.0
+goal: 97 212
+reward: -2.692666771479131
+step: 21
+path_local frontier: []
+path_global frontier: []
+can not obtain path from astar!
+path_global backup: [(np.float64(172.0), np.float64(107.0)), (np.float64(173.0), np.float64(106.0)), (np.float64(174.0), np.float64(105.0)), (np.float64(175.0), np.float64(104.0)), (np.float64(176.0), np.float64(103.0)), (np.float64(177.0), np.float64(102.0)), (np.float64(178.0), np.float64(101.0)), (np.float64(179.0), np.float64(100.0)), (np.float64(180.0), np.float64(99.0)), (np.float64(181.0), np.float64(99.0)), (np.float64(182.0), np.float64(99.0)), (np.float64(183.0), np.float64(99.0)), (np.float64(184.0), np.float64(99.0)), (np.float64(185.0), np.float64(99.0)), (np.float64(186.0), np.float64(99.0)), (np.float64(187.0), np.float64(99.0)), (np.float64(188.0), np.float64(99.0)), (np.float64(189.0), np.float64(99.0)), (np.float64(190.0), np.float64(99.0)), (np.float64(191.0), np.float64(99.0)), (np.float64(192.0), np.float64(99.0)), (np.float64(193.0), np.float64(99.0)), (np.float64(194.0), np.float64(99.0)), (np.float64(195.0), np.float64(99.0)), (np.float64(196.0), np.float64(99.0)), (np.float64(197.0), np.float64(99.0)), (np.float64(198.0), np.float64(99.0)), (np.float64(199.0), np.float64(99.0)), (np.float64(200.0), np.float64(99.0)), (np.float64(201.0), np.float64(98.0)), (np.float64(202.0), np.float64(97.0))]
+deque([(np.float64(172.0), np.float64(107.0)), (np.float64(173.0), np.float64(106.0)), (np.float64(174.0), np.float64(105.0)), (np.float64(175.0), np.float64(104.0)), (np.float64(176.0), np.float64(103.0)), (np.float64(177.0), np.float64(102.0)), (np.float64(178.0), np.float64(101.0)), (np.float64(179.0), np.float64(100.0)), (np.float64(180.0), np.float64(99.0)), (np.float64(181.0), np.float64(99.0)), (np.float64(182.0), np.float64(99.0)), (np.float64(183.0), np.float64(99.0)), (np.float64(184.0), np.float64(99.0)), (np.float64(185.0), np.float64(99.0)), (np.float64(186.0), np.float64(99.0)), (np.float64(187.0), np.float64(99.0)), (np.float64(188.0), np.float64(99.0)), (np.float64(189.0), np.float64(99.0)), (np.float64(190.0), np.float64(99.0)), (np.float64(191.0), np.float64(99.0)), (np.float64(192.0), np.float64(99.0)), (np.float64(193.0), np.float64(99.0)), (np.float64(194.0), np.float64(99.0)), (np.float64(195.0), np.float64(99.0)), (np.float64(196.0), np.float64(99.0)), (np.float64(197.0), np.float64(99.0)), (np.float64(198.0), np.float64(99.0)), (np.float64(199.0), np.float64(99.0)), (np.float64(200.0), np.float64(99.0)), (np.float64(201.0), np.float64(98.0)), (np.float64(202.0), np.float64(97.0))])
+micro step: 22
+agent pose: 107.0 172.0 2.356194490192345
+current.pose: 107.0 172.0
+goal: 97 212
+reward: 0.07268466422469388
+step: 22
+path_local frontier: [(31, 32)]
+path_global frontier: [(np.float64(171.0), np.float64(107.0))]
+deque([(np.float64(171.0), np.float64(107.0))])
+micro step: 23
+agent pose: 107.0 171.0 2.356194490192345
+current.pose: 107.0 171.0
+goal: 97 212
+reward: -2.8366314648425757
+step: 23
+path_local frontier: []
+path_global frontier: []
+can not obtain path from astar!
+path_global backup: [(np.float64(172.0), np.float64(106.0)), (np.float64(173.0), np.float64(105.0)), (np.float64(174.0), np.float64(104.0)), (np.float64(175.0), np.float64(103.0)), (np.float64(176.0), np.float64(102.0)), (np.float64(177.0), np.float64(101.0)), (np.float64(178.0), np.float64(100.0)), (np.float64(179.0), np.float64(99.0)), (np.float64(180.0), np.float64(98.0)), (np.float64(181.0), np.float64(98.0)), (np.float64(182.0), np.float64(98.0)), (np.float64(183.0), np.float64(98.0)), (np.float64(184.0), np.float64(98.0)), (np.float64(185.0), np.float64(98.0)), (np.float64(186.0), np.float64(98.0)), (np.float64(187.0), np.float64(98.0)), (np.float64(188.0), np.float64(98.0)), (np.float64(189.0), np.float64(98.0)), (np.float64(190.0), np.float64(98.0)), (np.float64(191.0), np.float64(98.0)), (np.float64(192.0), np.float64(98.0)), (np.float64(193.0), np.float64(98.0)), (np.float64(194.0), np.float64(98.0)), (np.float64(195.0), np.float64(98.0)), (np.float64(196.0), np.float64(98.0)), (np.float64(197.0), np.float64(98.0)), (np.float64(198.0), np.float64(98.0)), (np.float64(199.0), np.float64(98.0)), (np.float64(200.0), np.float64(98.0)), (np.float64(201.0), np.float64(97.0)), (np.float64(202.0), np.float64(97.0))]
+deque([(np.float64(172.0), np.float64(106.0)), (np.float64(173.0), np.float64(105.0)), (np.float64(174.0), np.float64(104.0)), (np.float64(175.0), np.float64(103.0)), (np.float64(176.0), np.float64(102.0)), (np.float64(177.0), np.float64(101.0)), (np.float64(178.0), np.float64(100.0)), (np.float64(179.0), np.float64(99.0)), (np.float64(180.0), np.float64(98.0)), (np.float64(181.0), np.float64(98.0)), (np.float64(182.0), np.float64(98.0)), (np.float64(183.0), np.float64(98.0)), (np.float64(184.0), np.float64(98.0)), (np.float64(185.0), np.float64(98.0)), (np.float64(186.0), np.float64(98.0)), (np.float64(187.0), np.float64(98.0)), (np.float64(188.0), np.float64(98.0)), (np.float64(189.0), np.float64(98.0)), (np.float64(190.0), np.float64(98.0)), (np.float64(191.0), np.float64(98.0)), (np.float64(192.0), np.float64(98.0)), (np.float64(193.0), np.float64(98.0)), (np.float64(194.0), np.float64(98.0)), (np.float64(195.0), np.float64(98.0)), (np.float64(196.0), np.float64(98.0)), (np.float64(197.0), np.float64(98.0)), (np.float64(198.0), np.float64(98.0)), (np.float64(199.0), np.float64(98.0)), (np.float64(200.0), np.float64(98.0)), (np.float64(201.0), np.float64(97.0)), (np.float64(202.0), np.float64(97.0))])
+micro step: 24
+agent pose: 106.0 172.0 2.356194490192345
+current.pose: 106.0 172.0
+goal: 97 212
+reward: -0.08649417918403746
+step: 24
+path_local frontier: [(31, 32)]
+path_global frontier: [(np.float64(171.0), np.float64(106.0))]
+deque([(np.float64(171.0), np.float64(106.0))])
+micro step: 25
+agent pose: 106.0 171.0 2.356194490192345
+current.pose: 106.0 171.0
+goal: 97 212
+reward: -2.979986909078761
+step: 25
+path_local frontier: []
+path_global frontier: []
+can not obtain path from astar!
+path_global backup: [(np.float64(172.0), np.float64(105.0)), (np.float64(173.0), np.float64(104.0)), (np.float64(174.0), np.float64(103.0)), (np.float64(175.0), np.float64(102.0)), (np.float64(176.0), np.float64(101.0)), (np.float64(177.0), np.float64(100.0)), (np.float64(178.0), np.float64(99.0)), (np.float64(179.0), np.float64(98.0)), (np.float64(180.0), np.float64(97.0)), (np.float64(181.0), np.float64(97.0)), (np.float64(182.0), np.float64(97.0)), (np.float64(183.0), np.float64(97.0)), (np.float64(184.0), np.float64(97.0)), (np.float64(185.0), np.float64(97.0)), (np.float64(186.0), np.float64(97.0)), (np.float64(187.0), np.float64(97.0)), (np.float64(188.0), np.float64(97.0)), (np.float64(189.0), np.float64(97.0)), (np.float64(190.0), np.float64(97.0)), (np.float64(191.0), np.float64(97.0)), (np.float64(192.0), np.float64(97.0)), (np.float64(193.0), np.float64(97.0)), (np.float64(194.0), np.float64(97.0)), (np.float64(195.0), np.float64(97.0)), (np.float64(196.0), np.float64(97.0)), (np.float64(197.0), np.float64(97.0)), (np.float64(198.0), np.float64(97.0)), (np.float64(199.0), np.float64(97.0)), (np.float64(200.0), np.float64(97.0)), (np.float64(201.0), np.float64(96.0)), (np.float64(202.0), np.float64(97.0))]
+deque([(np.float64(172.0), np.float64(105.0)), (np.float64(173.0), np.float64(104.0)), (np.float64(174.0), np.float64(103.0)), (np.float64(175.0), np.float64(102.0)), (np.float64(176.0), np.float64(101.0)), (np.float64(177.0), np.float64(100.0)), (np.float64(178.0), np.float64(99.0)), (np.float64(179.0), np.float64(98.0)), (np.float64(180.0), np.float64(97.0)), (np.float64(181.0), np.float64(97.0)), (np.float64(182.0), np.float64(97.0)), (np.float64(183.0), np.float64(97.0)), (np.float64(184.0), np.float64(97.0)), (np.float64(185.0), np.float64(97.0)), (np.float64(186.0), np.float64(97.0)), (np.float64(187.0), np.float64(97.0)), (np.float64(188.0), np.float64(97.0)), (np.float64(189.0), np.float64(97.0)), (np.float64(190.0), np.float64(97.0)), (np.float64(191.0), np.float64(97.0)), (np.float64(192.0), np.float64(97.0)), (np.float64(193.0), np.float64(97.0)), (np.float64(194.0), np.float64(97.0)), (np.float64(195.0), np.float64(97.0)), (np.float64(196.0), np.float64(97.0)), (np.float64(197.0), np.float64(97.0)), (np.float64(198.0), np.float64(97.0)), (np.float64(199.0), np.float64(97.0)), (np.float64(200.0), np.float64(97.0)), (np.float64(201.0), np.float64(96.0)), (np.float64(202.0), np.float64(97.0))])
+micro step: 26
+agent pose: 105.0 172.0 2.356194490192345
+current.pose: 105.0 172.0
+goal: 97 212
+reward: -0.2467754735351535
+step: 26
+path_local frontier: [(31, 32)]
+path_global frontier: [(np.float64(171.0), np.float64(105.0))]
+deque([(np.float64(171.0), np.float64(105.0))])
+micro step: 27
+agent pose: 105.0 171.0 2.356194490192345
+current.pose: 105.0 171.0
+goal: 97 212
+reward: -3.1227007521628862
+step: 27
+path_local frontier: []
+path_global frontier: []
+can not obtain path from astar!
+path_global backup: [(np.float64(172.0), np.float64(104.0)), (np.float64(173.0), np.float64(103.0)), (np.float64(174.0), np.float64(102.0)), (np.float64(175.0), np.float64(101.0)), (np.float64(176.0), np.float64(100.0)), (np.float64(177.0), np.float64(100.0)), (np.float64(178.0), np.float64(100.0)), (np.float64(179.0), np.float64(100.0)), (np.float64(180.0), np.float64(100.0)), (np.float64(181.0), np.float64(100.0)), (np.float64(182.0), np.float64(100.0)), (np.float64(183.0), np.float64(100.0)), (np.float64(184.0), np.float64(100.0)), (np.float64(185.0), np.float64(100.0)), (np.float64(186.0), np.float64(100.0)), (np.float64(187.0), np.float64(100.0)), (np.float64(188.0), np.float64(100.0)), (np.float64(189.0), np.float64(100.0)), (np.float64(190.0), np.float64(100.0)), (np.float64(191.0), np.float64(100.0)), (np.float64(192.0), np.float64(100.0)), (np.float64(193.0), np.float64(100.0)), (np.float64(194.0), np.float64(100.0)), (np.float64(195.0), np.float64(100.0)), (np.float64(196.0), np.float64(100.0)), (np.float64(197.0), np.float64(100.0)), (np.float64(198.0), np.float64(100.0)), (np.float64(199.0), np.float64(100.0)), (np.float64(200.0), np.float64(100.0)), (np.float64(201.0), np.float64(100.0)), (np.float64(202.0), np.float64(99.0)), (np.float64(202.0), np.float64(98.0)), (np.float64(202.0), np.float64(97.0))]
+deque([(np.float64(172.0), np.float64(104.0)), (np.float64(173.0), np.float64(103.0)), (np.float64(174.0), np.float64(102.0)), (np.float64(175.0), np.float64(101.0)), (np.float64(176.0), np.float64(100.0)), (np.float64(177.0), np.float64(100.0)), (np.float64(178.0), np.float64(100.0)), (np.float64(179.0), np.float64(100.0)), (np.float64(180.0), np.float64(100.0)), (np.float64(181.0), np.float64(100.0)), (np.float64(182.0), np.float64(100.0)), (np.float64(183.0), np.float64(100.0)), (np.float64(184.0), np.float64(100.0)), (np.float64(185.0), np.float64(100.0)), (np.float64(186.0), np.float64(100.0)), (np.float64(187.0), np.float64(100.0)), (np.float64(188.0), np.float64(100.0)), (np.float64(189.0), np.float64(100.0)), (np.float64(190.0), np.float64(100.0)), (np.float64(191.0), np.float64(100.0)), (np.float64(192.0), np.float64(100.0)), (np.float64(193.0), np.float64(100.0)), (np.float64(194.0), np.float64(100.0)), (np.float64(195.0), np.float64(100.0)), (np.float64(196.0), np.float64(100.0)), (np.float64(197.0), np.float64(100.0)), (np.float64(198.0), np.float64(100.0)), (np.float64(199.0), np.float64(100.0)), (np.float64(200.0), np.float64(100.0)), (np.float64(201.0), np.float64(100.0)), (np.float64(202.0), np.float64(99.0)), (np.float64(202.0), np.float64(98.0)), (np.float64(202.0), np.float64(97.0))])
+micro step: 28
+agent pose: 104.0 172.0 2.356194490192345
+current.pose: 104.0 172.0
+goal: 97 212
+reward: -0.4081498975463227
+step: 28
+path_local frontier: []
+path_global frontier: []
+can not obtain path from astar!
+path_global backup: [(np.float64(173.0), np.float64(103.0)), (np.float64(174.0), np.float64(102.0)), (np.float64(175.0), np.float64(101.0)), (np.float64(176.0), np.float64(100.0)), (np.float64(177.0), np.float64(99.0)), (np.float64(178.0), np.float64(99.0)), (np.float64(179.0), np.float64(99.0)), (np.float64(180.0), np.float64(99.0)), (np.float64(181.0), np.float64(99.0)), (np.float64(182.0), np.float64(99.0)), (np.float64(183.0), np.float64(99.0)), (np.float64(184.0), np.float64(99.0)), (np.float64(185.0), np.float64(99.0)), (np.float64(186.0), np.float64(99.0)), (np.float64(187.0), np.float64(99.0)), (np.float64(188.0), np.float64(99.0)), (np.float64(189.0), np.float64(99.0)), (np.float64(190.0), np.float64(99.0)), (np.float64(191.0), np.float64(99.0)), (np.float64(192.0), np.float64(99.0)), (np.float64(193.0), np.float64(99.0)), (np.float64(194.0), np.float64(99.0)), (np.float64(195.0), np.float64(99.0)), (np.float64(196.0), np.float64(99.0)), (np.float64(197.0), np.float64(99.0)), (np.float64(198.0), np.float64(99.0)), (np.float64(199.0), np.float64(99.0)), (np.float64(200.0), np.float64(99.0)), (np.float64(201.0), np.float64(99.0)), (np.float64(202.0), np.float64(98.0)), (np.float64(203.0), np.float64(97.0))]
+deque([(np.float64(173.0), np.float64(103.0)), (np.float64(174.0), np.float64(102.0)), (np.float64(175.0), np.float64(101.0)), (np.float64(176.0), np.float64(100.0)), (np.float64(177.0), np.float64(99.0)), (np.float64(178.0), np.float64(99.0)), (np.float64(179.0), np.float64(99.0)), (np.float64(180.0), np.float64(99.0)), (np.float64(181.0), np.float64(99.0)), (np.float64(182.0), np.float64(99.0)), (np.float64(183.0), np.float64(99.0)), (np.float64(184.0), np.float64(99.0)), (np.float64(185.0), np.float64(99.0)), (np.float64(186.0), np.float64(99.0)), (np.float64(187.0), np.float64(99.0)), (np.float64(188.0), np.float64(99.0)), (np.float64(189.0), np.float64(99.0)), (np.float64(190.0), np.float64(99.0)), (np.float64(191.0), np.float64(99.0)), (np.float64(192.0), np.float64(99.0)), (np.float64(193.0), np.float64(99.0)), (np.float64(194.0), np.float64(99.0)), (np.float64(195.0), np.float64(99.0)), (np.float64(196.0), np.float64(99.0)), (np.float64(197.0), np.float64(99.0)), (np.float64(198.0), np.float64(99.0)), (np.float64(199.0), np.float64(99.0)), (np.float64(200.0), np.float64(99.0)), (np.float64(201.0), np.float64(99.0)), (np.float64(202.0), np.float64(98.0)), (np.float64(203.0), np.float64(97.0))])
+micro step: 29
+agent pose: 103.0 173.0 2.356194490192345
+current.pose: 103.0 173.0
+goal: 97 212
+reward: -0.49821063272017563
+step: 29
+path_local frontier: [(31, 32)]
+path_global frontier: [(np.float64(172.0), np.float64(103.0))]
+deque([(np.float64(172.0), np.float64(103.0))])
+micro step: 30
+agent pose: 103.0 172.0 2.356194490192345
+current.pose: 103.0 172.0
+goal: 97 212
+reward: -3.337134464333229
+step: 30
+path_local frontier: []
+path_global frontier: []
+can not obtain path from astar!
+path_global backup: [(np.float64(173.0), np.float64(102.0)), (np.float64(174.0), np.float64(101.0)), (np.float64(175.0), np.float64(100.0)), (np.float64(176.0), np.float64(99.0)), (np.float64(177.0), np.float64(98.0)), (np.float64(178.0), np.float64(97.0)), (np.float64(179.0), np.float64(97.0)), (np.float64(180.0), np.float64(97.0)), (np.float64(181.0), np.float64(97.0)), (np.float64(182.0), np.float64(97.0)), (np.float64(183.0), np.float64(97.0)), (np.float64(184.0), np.float64(97.0)), (np.float64(185.0), np.float64(97.0)), (np.float64(186.0), np.float64(97.0)), (np.float64(187.0), np.float64(97.0)), (np.float64(188.0), np.float64(97.0)), (np.float64(189.0), np.float64(97.0)), (np.float64(190.0), np.float64(97.0)), (np.float64(191.0), np.float64(97.0)), (np.float64(192.0), np.float64(97.0)), (np.float64(193.0), np.float64(97.0)), (np.float64(194.0), np.float64(97.0)), (np.float64(195.0), np.float64(97.0)), (np.float64(196.0), np.float64(97.0)), (np.float64(197.0), np.float64(97.0)), (np.float64(198.0), np.float64(97.0)), (np.float64(199.0), np.float64(97.0)), (np.float64(200.0), np.float64(97.0)), (np.float64(201.0), np.float64(97.0)), (np.float64(202.0), np.float64(97.0)), (np.float64(203.0), np.float64(97.0))]
+deque([(np.float64(173.0), np.float64(102.0)), (np.float64(174.0), np.float64(101.0)), (np.float64(175.0), np.float64(100.0)), (np.float64(176.0), np.float64(99.0)), (np.float64(177.0), np.float64(98.0)), (np.float64(178.0), np.float64(97.0)), (np.float64(179.0), np.float64(97.0)), (np.float64(180.0), np.float64(97.0)), (np.float64(181.0), np.float64(97.0)), (np.float64(182.0), np.float64(97.0)), (np.float64(183.0), np.float64(97.0)), (np.float64(184.0), np.float64(97.0)), (np.float64(185.0), np.float64(97.0)), (np.float64(186.0), np.float64(97.0)), (np.float64(187.0), np.float64(97.0)), (np.float64(188.0), np.float64(97.0)), (np.float64(189.0), np.float64(97.0)), (np.float64(190.0), np.float64(97.0)), (np.float64(191.0), np.float64(97.0)), (np.float64(192.0), np.float64(97.0)), (np.float64(193.0), np.float64(97.0)), (np.float64(194.0), np.float64(97.0)), (np.float64(195.0), np.float64(97.0)), (np.float64(196.0), np.float64(97.0)), (np.float64(197.0), np.float64(97.0)), (np.float64(198.0), np.float64(97.0)), (np.float64(199.0), np.float64(97.0)), (np.float64(200.0), np.float64(97.0)), (np.float64(201.0), np.float64(97.0)), (np.float64(202.0), np.float64(97.0)), (np.float64(203.0), np.float64(97.0))])
+micro step: 31
+agent pose: 102.0 173.0 2.356194490192345
+current.pose: 102.0 173.0
+goal: 97 212
+reward: -0.6622460995005841
+step: 31
+path_local frontier: [(31, 32)]
+path_global frontier: [(np.float64(172.0), np.float64(102.0))]
+deque([(np.float64(172.0), np.float64(102.0))])
+micro step: 32
+agent pose: 102.0 172.0 2.356194490192345
+current.pose: 102.0 172.0
+goal: 97 212
+reward: -3.4779508589639727
+step: 32
+path_local frontier: []
+path_global frontier: []
+can not obtain path from astar!
+path_global backup: [(np.float64(173.0), np.float64(101.0)), (np.float64(174.0), np.float64(100.0)), (np.float64(175.0), np.float64(99.0)), (np.float64(176.0), np.float64(98.0)), (np.float64(177.0), np.float64(97.0)), (np.float64(178.0), np.float64(97.0)), (np.float64(179.0), np.float64(97.0)), (np.float64(180.0), np.float64(97.0)), (np.float64(181.0), np.float64(97.0)), (np.float64(182.0), np.float64(97.0)), (np.float64(183.0), np.float64(97.0)), (np.float64(184.0), np.float64(97.0)), (np.float64(185.0), np.float64(97.0)), (np.float64(186.0), np.float64(97.0)), (np.float64(187.0), np.float64(97.0)), (np.float64(188.0), np.float64(97.0)), (np.float64(189.0), np.float64(97.0)), (np.float64(190.0), np.float64(97.0)), (np.float64(191.0), np.float64(97.0)), (np.float64(192.0), np.float64(97.0)), (np.float64(193.0), np.float64(97.0)), (np.float64(194.0), np.float64(97.0)), (np.float64(195.0), np.float64(97.0)), (np.float64(196.0), np.float64(97.0)), (np.float64(197.0), np.float64(97.0)), (np.float64(198.0), np.float64(97.0)), (np.float64(199.0), np.float64(97.0)), (np.float64(200.0), np.float64(97.0)), (np.float64(201.0), np.float64(97.0)), (np.float64(202.0), np.float64(97.0))]
+deque([(np.float64(173.0), np.float64(101.0)), (np.float64(174.0), np.float64(100.0)), (np.float64(175.0), np.float64(99.0)), (np.float64(176.0), np.float64(98.0)), (np.float64(177.0), np.float64(97.0)), (np.float64(178.0), np.float64(97.0)), (np.float64(179.0), np.float64(97.0)), (np.float64(180.0), np.float64(97.0)), (np.float64(181.0), np.float64(97.0)), (np.float64(182.0), np.float64(97.0)), (np.float64(183.0), np.float64(97.0)), (np.float64(184.0), np.float64(97.0)), (np.float64(185.0), np.float64(97.0)), (np.float64(186.0), np.float64(97.0)), (np.float64(187.0), np.float64(97.0)), (np.float64(188.0), np.float64(97.0)), (np.float64(189.0), np.float64(97.0)), (np.float64(190.0), np.float64(97.0)), (np.float64(191.0), np.float64(97.0)), (np.float64(192.0), np.float64(97.0)), (np.float64(193.0), np.float64(97.0)), (np.float64(194.0), np.float64(97.0)), (np.float64(195.0), np.float64(97.0)), (np.float64(196.0), np.float64(97.0)), (np.float64(197.0), np.float64(97.0)), (np.float64(198.0), np.float64(97.0)), (np.float64(199.0), np.float64(97.0)), (np.float64(200.0), np.float64(97.0)), (np.float64(201.0), np.float64(97.0)), (np.float64(202.0), np.float64(97.0))])
+micro step: 33
+agent pose: 101.0 173.0 2.356194490192345
+current.pose: 101.0 173.0
+goal: 97 212
+reward: -0.827367812452098
+step: 33
+path_local frontier: [(31, 32)]
+path_global frontier: [(np.float64(172.0), np.float64(101.0))]
+deque([(np.float64(172.0), np.float64(101.0))])
+micro step: 34
+agent pose: 101.0 172.0 2.356194490192345
+current.pose: 101.0 172.0
+goal: 97 212
+reward: -3.617986557797093
+step: 34
+path_local frontier: []
+path_global frontier: []
+can not obtain path from astar!
+path_global backup: [(np.float64(173.0), np.float64(100.0)), (np.float64(174.0), np.float64(99.0)), (np.float64(175.0), np.float64(98.0)), (np.float64(176.0), np.float64(97.0)), (np.float64(177.0), np.float64(97.0)), (np.float64(178.0), np.float64(97.0)), (np.float64(179.0), np.float64(97.0)), (np.float64(180.0), np.float64(97.0)), (np.float64(181.0), np.float64(97.0)), (np.float64(182.0), np.float64(97.0)), (np.float64(183.0), np.float64(97.0)), (np.float64(184.0), np.float64(97.0)), (np.float64(185.0), np.float64(97.0)), (np.float64(186.0), np.float64(97.0)), (np.float64(187.0), np.float64(97.0)), (np.float64(188.0), np.float64(97.0)), (np.float64(189.0), np.float64(97.0)), (np.float64(190.0), np.float64(97.0)), (np.float64(191.0), np.float64(97.0)), (np.float64(192.0), np.float64(97.0)), (np.float64(193.0), np.float64(97.0)), (np.float64(194.0), np.float64(97.0)), (np.float64(195.0), np.float64(97.0)), (np.float64(196.0), np.float64(97.0)), (np.float64(197.0), np.float64(97.0)), (np.float64(198.0), np.float64(97.0)), (np.float64(199.0), np.float64(97.0)), (np.float64(200.0), np.float64(97.0)), (np.float64(201.0), np.float64(97.0)), (np.float64(202.0), np.float64(97.0))]
+deque([(np.float64(173.0), np.float64(100.0)), (np.float64(174.0), np.float64(99.0)), (np.float64(175.0), np.float64(98.0)), (np.float64(176.0), np.float64(97.0)), (np.float64(177.0), np.float64(97.0)), (np.float64(178.0), np.float64(97.0)), (np.float64(179.0), np.float64(97.0)), (np.float64(180.0), np.float64(97.0)), (np.float64(181.0), np.float64(97.0)), (np.float64(182.0), np.float64(97.0)), (np.float64(183.0), np.float64(97.0)), (np.float64(184.0), np.float64(97.0)), (np.float64(185.0), np.float64(97.0)), (np.float64(186.0), np.float64(97.0)), (np.float64(187.0), np.float64(97.0)), (np.float64(188.0), np.float64(97.0)), (np.float64(189.0), np.float64(97.0)), (np.float64(190.0), np.float64(97.0)), (np.float64(191.0), np.float64(97.0)), (np.float64(192.0), np.float64(97.0)), (np.float64(193.0), np.float64(97.0)), (np.float64(194.0), np.float64(97.0)), (np.float64(195.0), np.float64(97.0)), (np.float64(196.0), np.float64(97.0)), (np.float64(197.0), np.float64(97.0)), (np.float64(198.0), np.float64(97.0)), (np.float64(199.0), np.float64(97.0)), (np.float64(200.0), np.float64(97.0)), (np.float64(201.0), np.float64(97.0)), (np.float64(202.0), np.float64(97.0))])
+micro step: 35
+agent pose: 100.0 173.0 2.356194490192345
+current.pose: 100.0 173.0
+goal: 97 212
+reward: -0.9935405780293873
+step: 35
+path_local frontier: []
+path_global frontier: []
+can not obtain path from astar!
+path_global backup: [(np.float64(174.0), np.float64(99.0)), (np.float64(175.0), np.float64(98.0)), (np.float64(176.0), np.float64(98.0)), (np.float64(177.0), np.float64(98.0)), (np.float64(178.0), np.float64(98.0)), (np.float64(179.0), np.float64(98.0)), (np.float64(180.0), np.float64(98.0)), (np.float64(181.0), np.float64(98.0)), (np.float64(182.0), np.float64(98.0)), (np.float64(183.0), np.float64(98.0)), (np.float64(184.0), np.float64(98.0)), (np.float64(185.0), np.float64(98.0)), (np.float64(186.0), np.float64(98.0)), (np.float64(187.0), np.float64(98.0)), (np.float64(188.0), np.float64(98.0)), (np.float64(189.0), np.float64(98.0)), (np.float64(190.0), np.float64(98.0)), (np.float64(191.0), np.float64(98.0)), (np.float64(192.0), np.float64(98.0)), (np.float64(193.0), np.float64(98.0)), (np.float64(194.0), np.float64(98.0)), (np.float64(195.0), np.float64(98.0)), (np.float64(196.0), np.float64(98.0)), (np.float64(197.0), np.float64(98.0)), (np.float64(198.0), np.float64(98.0)), (np.float64(199.0), np.float64(98.0)), (np.float64(200.0), np.float64(98.0)), (np.float64(201.0), np.float64(98.0)), (np.float64(202.0), np.float64(98.0)), (np.float64(203.0), np.float64(99.0)), (np.float64(204.0), np.float64(98.0)), (np.float64(204.0), np.float64(97.0))]
+deque([(np.float64(174.0), np.float64(99.0)), (np.float64(175.0), np.float64(98.0)), (np.float64(176.0), np.float64(98.0)), (np.float64(177.0), np.float64(98.0)), (np.float64(178.0), np.float64(98.0)), (np.float64(179.0), np.float64(98.0)), (np.float64(180.0), np.float64(98.0)), (np.float64(181.0), np.float64(98.0)), (np.float64(182.0), np.float64(98.0)), (np.float64(183.0), np.float64(98.0)), (np.float64(184.0), np.float64(98.0)), (np.float64(185.0), np.float64(98.0)), (np.float64(186.0), np.float64(98.0)), (np.float64(187.0), np.float64(98.0)), (np.float64(188.0), np.float64(98.0)), (np.float64(189.0), np.float64(98.0)), (np.float64(190.0), np.float64(98.0)), (np.float64(191.0), np.float64(98.0)), (np.float64(192.0), np.float64(98.0)), (np.float64(193.0), np.float64(98.0)), (np.float64(194.0), np.float64(98.0)), (np.float64(195.0), np.float64(98.0)), (np.float64(196.0), np.float64(98.0)), (np.float64(197.0), np.float64(98.0)), (np.float64(198.0), np.float64(98.0)), (np.float64(199.0), np.float64(98.0)), (np.float64(200.0), np.float64(98.0)), (np.float64(201.0), np.float64(98.0)), (np.float64(202.0), np.float64(98.0)), (np.float64(203.0), np.float64(99.0)), (np.float64(204.0), np.float64(98.0)), (np.float64(204.0), np.float64(97.0))])
+micro step: 36
+agent pose: 99.0 174.0 2.356194490192345
+current.pose: 99.0 174.0
+goal: 97 212
+reward: -1.090689389393922
+step: 36
+path_local frontier: [(31, 32)]
+path_global frontier: [(np.float64(173.0), np.float64(99.0))]
+deque([(np.float64(173.0), np.float64(99.0))])
+micro step: 37
+agent pose: 99.0 173.0 2.356194490192345
+current.pose: 99.0 173.0
+goal: 97 212
+reward: -3.827255438685185
+step: 37
+path_local frontier: []
+path_global frontier: []
+can not obtain path from astar!
+path_global backup: [(np.float64(174.0), np.float64(98.0)), (np.float64(175.0), np.float64(98.0)), (np.float64(176.0), np.float64(98.0)), (np.float64(177.0), np.float64(98.0)), (np.float64(178.0), np.float64(98.0)), (np.float64(179.0), np.float64(98.0)), (np.float64(180.0), np.float64(98.0)), (np.float64(181.0), np.float64(98.0)), (np.float64(182.0), np.float64(98.0)), (np.float64(183.0), np.float64(98.0)), (np.float64(184.0), np.float64(98.0)), (np.float64(185.0), np.float64(98.0)), (np.float64(186.0), np.float64(98.0)), (np.float64(187.0), np.float64(98.0)), (np.float64(188.0), np.float64(98.0)), (np.float64(189.0), np.float64(98.0)), (np.float64(190.0), np.float64(98.0)), (np.float64(191.0), np.float64(98.0)), (np.float64(192.0), np.float64(98.0)), (np.float64(193.0), np.float64(98.0)), (np.float64(194.0), np.float64(98.0)), (np.float64(195.0), np.float64(98.0)), (np.float64(196.0), np.float64(98.0)), (np.float64(197.0), np.float64(98.0)), (np.float64(198.0), np.float64(98.0)), (np.float64(199.0), np.float64(98.0)), (np.float64(200.0), np.float64(98.0)), (np.float64(201.0), np.float64(98.0)), (np.float64(202.0), np.float64(98.0)), (np.float64(203.0), np.float64(99.0)), (np.float64(204.0), np.float64(98.0)), (np.float64(204.0), np.float64(97.0))]
+deque([(np.float64(174.0), np.float64(98.0)), (np.float64(175.0), np.float64(98.0)), (np.float64(176.0), np.float64(98.0)), (np.float64(177.0), np.float64(98.0)), (np.float64(178.0), np.float64(98.0)), (np.float64(179.0), np.float64(98.0)), (np.float64(180.0), np.float64(98.0)), (np.float64(181.0), np.float64(98.0)), (np.float64(182.0), np.float64(98.0)), (np.float64(183.0), np.float64(98.0)), (np.float64(184.0), np.float64(98.0)), (np.float64(185.0), np.float64(98.0)), (np.float64(186.0), np.float64(98.0)), (np.float64(187.0), np.float64(98.0)), (np.float64(188.0), np.float64(98.0)), (np.float64(189.0), np.float64(98.0)), (np.float64(190.0), np.float64(98.0)), (np.float64(191.0), np.float64(98.0)), (np.float64(192.0), np.float64(98.0)), (np.float64(193.0), np.float64(98.0)), (np.float64(194.0), np.float64(98.0)), (np.float64(195.0), np.float64(98.0)), (np.float64(196.0), np.float64(98.0)), (np.float64(197.0), np.float64(98.0)), (np.float64(198.0), np.float64(98.0)), (np.float64(199.0), np.float64(98.0)), (np.float64(200.0), np.float64(98.0)), (np.float64(201.0), np.float64(98.0)), (np.float64(202.0), np.float64(98.0)), (np.float64(203.0), np.float64(99.0)), (np.float64(204.0), np.float64(98.0)), (np.float64(204.0), np.float64(97.0))])
+micro step: 38
+agent pose: 98.0 174.0 1.5707963267948966
+current.pose: 98.0 174.0
+goal: 97 212
+reward: -0.8932204366482122
+step: 38
+path_local frontier: [(31, 32)]
+path_global frontier: [(np.float64(173.0), np.float64(98.0))]
+deque([(np.float64(173.0), np.float64(98.0))])
+micro step: 39
+agent pose: 98.0 173.0 1.5707963267948966
+current.pose: 98.0 173.0
+goal: 97 212
+reward: -3.9642244710300423
+step: 39
+path_local frontier: []
+path_global frontier: []
+can not obtain path from astar!
+path_global backup: [(np.float64(174.0), np.float64(97.0)), (np.float64(175.0), np.float64(97.0)), (np.float64(176.0), np.float64(97.0)), (np.float64(177.0), np.float64(97.0)), (np.float64(178.0), np.float64(97.0)), (np.float64(179.0), np.float64(97.0)), (np.float64(180.0), np.float64(97.0)), (np.float64(181.0), np.float64(97.0)), (np.float64(182.0), np.float64(97.0)), (np.float64(183.0), np.float64(97.0)), (np.float64(184.0), np.float64(97.0)), (np.float64(185.0), np.float64(97.0)), (np.float64(186.0), np.float64(97.0)), (np.float64(187.0), np.float64(97.0)), (np.float64(188.0), np.float64(97.0)), (np.float64(189.0), np.float64(97.0)), (np.float64(190.0), np.float64(97.0)), (np.float64(191.0), np.float64(97.0)), (np.float64(192.0), np.float64(97.0)), (np.float64(193.0), np.float64(97.0)), (np.float64(194.0), np.float64(97.0)), (np.float64(195.0), np.float64(97.0)), (np.float64(196.0), np.float64(97.0)), (np.float64(197.0), np.float64(97.0)), (np.float64(198.0), np.float64(97.0)), (np.float64(199.0), np.float64(97.0)), (np.float64(200.0), np.float64(97.0)), (np.float64(201.0), np.float64(97.0)), (np.float64(202.0), np.float64(97.0)), (np.float64(203.0), np.float64(97.0)), (np.float64(204.0), np.float64(97.0))]
+deque([(np.float64(174.0), np.float64(97.0)), (np.float64(175.0), np.float64(97.0)), (np.float64(176.0), np.float64(97.0)), (np.float64(177.0), np.float64(97.0)), (np.float64(178.0), np.float64(97.0)), (np.float64(179.0), np.float64(97.0)), (np.float64(180.0), np.float64(97.0)), (np.float64(181.0), np.float64(97.0)), (np.float64(182.0), np.float64(97.0)), (np.float64(183.0), np.float64(97.0)), (np.float64(184.0), np.float64(97.0)), (np.float64(185.0), np.float64(97.0)), (np.float64(186.0), np.float64(97.0)), (np.float64(187.0), np.float64(97.0)), (np.float64(188.0), np.float64(97.0)), (np.float64(189.0), np.float64(97.0)), (np.float64(190.0), np.float64(97.0)), (np.float64(191.0), np.float64(97.0)), (np.float64(192.0), np.float64(97.0)), (np.float64(193.0), np.float64(97.0)), (np.float64(194.0), np.float64(97.0)), (np.float64(195.0), np.float64(97.0)), (np.float64(196.0), np.float64(97.0)), (np.float64(197.0), np.float64(97.0)), (np.float64(198.0), np.float64(97.0)), (np.float64(199.0), np.float64(97.0)), (np.float64(200.0), np.float64(97.0)), (np.float64(201.0), np.float64(97.0)), (np.float64(202.0), np.float64(97.0)), (np.float64(203.0), np.float64(97.0)), (np.float64(204.0), np.float64(97.0))])
+micro step: 40
+agent pose: 97.0 174.0 1.5707963267948966
+current.pose: 97.0 174.0
+goal: 97 212
+reward: -1.40385170093148
+step: 40
+path_local frontier: [(31, 32)]
+path_global frontier: [(np.float64(173.0), np.float64(97.0))]
+deque([(np.float64(173.0), np.float64(97.0))])
+micro step: 41
+agent pose: 97.0 173.0 1.5707963267948966
+current.pose: 97.0 173.0
+goal: 97 212
+reward: -4.101666666666667
+step: 41
+path_local frontier: []
+path_global frontier: []
+can not obtain path from astar!
+path_global backup: [(np.float64(174.0), np.float64(97.0)), (np.float64(175.0), np.float64(97.0)), (np.float64(176.0), np.float64(97.0)), (np.float64(177.0), np.float64(97.0)), (np.float64(178.0), np.float64(97.0)), (np.float64(179.0), np.float64(97.0)), (np.float64(180.0), np.float64(97.0)), (np.float64(181.0), np.float64(97.0)), (np.float64(182.0), np.float64(97.0)), (np.float64(183.0), np.float64(97.0)), (np.float64(184.0), np.float64(97.0)), (np.float64(185.0), np.float64(97.0)), (np.float64(186.0), np.float64(97.0)), (np.float64(187.0), np.float64(97.0)), (np.float64(188.0), np.float64(97.0)), (np.float64(189.0), np.float64(97.0)), (np.float64(190.0), np.float64(97.0)), (np.float64(191.0), np.float64(97.0)), (np.float64(192.0), np.float64(97.0)), (np.float64(193.0), np.float64(97.0)), (np.float64(194.0), np.float64(97.0)), (np.float64(195.0), np.float64(97.0)), (np.float64(196.0), np.float64(97.0)), (np.float64(197.0), np.float64(97.0)), (np.float64(198.0), np.float64(97.0)), (np.float64(199.0), np.float64(97.0)), (np.float64(200.0), np.float64(97.0)), (np.float64(201.0), np.float64(97.0)), (np.float64(202.0), np.float64(97.0)), (np.float64(203.0), np.float64(97.0))]
+deque([(np.float64(174.0), np.float64(97.0)), (np.float64(175.0), np.float64(97.0)), (np.float64(176.0), np.float64(97.0)), (np.float64(177.0), np.float64(97.0)), (np.float64(178.0), np.float64(97.0)), (np.float64(179.0), np.float64(97.0)), (np.float64(180.0), np.float64(97.0)), (np.float64(181.0), np.float64(97.0)), (np.float64(182.0), np.float64(97.0)), (np.float64(183.0), np.float64(97.0)), (np.float64(184.0), np.float64(97.0)), (np.float64(185.0), np.float64(97.0)), (np.float64(186.0), np.float64(97.0)), (np.float64(187.0), np.float64(97.0)), (np.float64(188.0), np.float64(97.0)), (np.float64(189.0), np.float64(97.0)), (np.float64(190.0), np.float64(97.0)), (np.float64(191.0), np.float64(97.0)), (np.float64(192.0), np.float64(97.0)), (np.float64(193.0), np.float64(97.0)), (np.float64(194.0), np.float64(97.0)), (np.float64(195.0), np.float64(97.0)), (np.float64(196.0), np.float64(97.0)), (np.float64(197.0), np.float64(97.0)), (np.float64(198.0), np.float64(97.0)), (np.float64(199.0), np.float64(97.0)), (np.float64(200.0), np.float64(97.0)), (np.float64(201.0), np.float64(97.0)), (np.float64(202.0), np.float64(97.0)), (np.float64(203.0), np.float64(97.0))])
+micro step: 42
+agent pose: 97.0 174.0 1.5707963267948966
+current.pose: 97.0 174.0
+goal: 97 212
+reward: -2.0700000000000003
+step: 42
+path_local frontier: [(33, 32), (34, 32), (35, 32), (36, 32), (37, 32), (38, 32), (39, 32), (40, 32), (41, 32), (42, 32), (43, 32), (44, 32), (45, 32), (46, 32), (47, 32), (48, 32), (49, 32), (50, 32), (51, 32), (52, 32), (53, 32), (54, 32), (55, 32), (56, 32), (57, 32), (58, 32), (59, 32), (60, 32), (61, 32)]
+path_global frontier: [(np.float64(175.0), np.float64(97.0)), (np.float64(176.0), np.float64(97.0)), (np.float64(177.0), np.float64(97.0)), (np.float64(178.0), np.float64(97.0)), (np.float64(179.0), np.float64(97.0)), (np.float64(180.0), np.float64(97.0)), (np.float64(181.0), np.float64(97.0)), (np.float64(182.0), np.float64(97.0)), (np.float64(183.0), np.float64(97.0)), (np.float64(184.0), np.float64(97.0)), (np.float64(185.0), np.float64(97.0)), (np.float64(186.0), np.float64(97.0)), (np.float64(187.0), np.float64(97.0)), (np.float64(188.0), np.float64(97.0)), (np.float64(189.0), np.float64(97.0)), (np.float64(190.0), np.float64(97.0)), (np.float64(191.0), np.float64(97.0)), (np.float64(192.0), np.float64(97.0)), (np.float64(193.0), np.float64(97.0)), (np.float64(194.0), np.float64(97.0)), (np.float64(195.0), np.float64(97.0)), (np.float64(196.0), np.float64(97.0)), (np.float64(197.0), np.float64(97.0)), (np.float64(198.0), np.float64(97.0)), (np.float64(199.0), np.float64(97.0)), (np.float64(200.0), np.float64(97.0)), (np.float64(201.0), np.float64(97.0)), (np.float64(202.0), np.float64(97.0)), (np.float64(203.0), np.float64(97.0))]
+deque([(np.float64(175.0), np.float64(97.0)), (np.float64(176.0), np.float64(97.0)), (np.float64(177.0), np.float64(97.0)), (np.float64(178.0), np.float64(97.0)), (np.float64(179.0), np.float64(97.0)), (np.float64(180.0), np.float64(97.0)), (np.float64(181.0), np.float64(97.0)), (np.float64(182.0), np.float64(97.0)), (np.float64(183.0), np.float64(97.0)), (np.float64(184.0), np.float64(97.0)), (np.float64(185.0), np.float64(97.0)), (np.float64(186.0), np.float64(97.0)), (np.float64(187.0), np.float64(97.0)), (np.float64(188.0), np.float64(97.0)), (np.float64(189.0), np.float64(97.0)), (np.float64(190.0), np.float64(97.0)), (np.float64(191.0), np.float64(97.0)), (np.float64(192.0), np.float64(97.0)), (np.float64(193.0), np.float64(97.0)), (np.float64(194.0), np.float64(97.0)), (np.float64(195.0), np.float64(97.0)), (np.float64(196.0), np.float64(97.0)), (np.float64(197.0), np.float64(97.0)), (np.float64(198.0), np.float64(97.0)), (np.float64(199.0), np.float64(97.0)), (np.float64(200.0), np.float64(97.0)), (np.float64(201.0), np.float64(97.0)), (np.float64(202.0), np.float64(97.0)), (np.float64(203.0), np.float64(97.0))])
+micro step: 43
+agent pose: 97.0 175.0 1.5707963267948966
+current.pose: 97.0 175.0
+goal: 97 212
+reward: -1.6383333333333334
+step: 43
+path_local frontier: [(31, 32), (30, 32)]
+path_global frontier: [(np.float64(174.0), np.float64(97.0)), (np.float64(173.0), np.float64(97.0))]
+deque([(np.float64(174.0), np.float64(97.0)), (np.float64(173.0), np.float64(97.0))])
+micro step: 44
+agent pose: 97.0 174.0 -1.5707963267948966
+current.pose: 97.0 174.0
+goal: 97 212
+reward: -6.877462993461563
+step: 44
+path_local frontier: [(31, 31)]
+path_global frontier: [(np.float64(173.0), np.float64(96.0))]
+deque([(np.float64(173.0), np.float64(96.0))])
+micro step: 45
+agent pose: 96.0 173.0 -1.5707963267948966
+current.pose: 96.0 173.0
+goal: 97 212
+reward: -4.378846223880176
+step: 45
+path_local frontier: []
+path_global frontier: []
+can not obtain path from astar!
+path_global backup: [(np.float64(174.0), np.float64(97.0)), (np.float64(175.0), np.float64(97.0)), (np.float64(176.0), np.float64(97.0)), (np.float64(177.0), np.float64(97.0)), (np.float64(178.0), np.float64(97.0)), (np.float64(179.0), np.float64(97.0)), (np.float64(180.0), np.float64(97.0)), (np.float64(181.0), np.float64(97.0)), (np.float64(182.0), np.float64(97.0)), (np.float64(183.0), np.float64(97.0)), (np.float64(184.0), np.float64(97.0)), (np.float64(185.0), np.float64(97.0)), (np.float64(186.0), np.float64(97.0)), (np.float64(187.0), np.float64(97.0)), (np.float64(188.0), np.float64(97.0)), (np.float64(189.0), np.float64(97.0)), (np.float64(190.0), np.float64(97.0)), (np.float64(191.0), np.float64(97.0)), (np.float64(192.0), np.float64(97.0)), (np.float64(193.0), np.float64(97.0)), (np.float64(194.0), np.float64(97.0)), (np.float64(195.0), np.float64(97.0)), (np.float64(196.0), np.float64(97.0)), (np.float64(197.0), np.float64(97.0)), (np.float64(198.0), np.float64(97.0)), (np.float64(199.0), np.float64(97.0)), (np.float64(200.0), np.float64(97.0)), (np.float64(201.0), np.float64(97.0)), (np.float64(202.0), np.float64(97.0)), (np.float64(203.0), np.float64(97.0)), (np.float64(204.0), np.float64(97.0))]
+deque([(np.float64(174.0), np.float64(97.0)), (np.float64(175.0), np.float64(97.0)), (np.float64(176.0), np.float64(97.0)), (np.float64(177.0), np.float64(97.0)), (np.float64(178.0), np.float64(97.0)), (np.float64(179.0), np.float64(97.0)), (np.float64(180.0), np.float64(97.0)), (np.float64(181.0), np.float64(97.0)), (np.float64(182.0), np.float64(97.0)), (np.float64(183.0), np.float64(97.0)), (np.float64(184.0), np.float64(97.0)), (np.float64(185.0), np.float64(97.0)), (np.float64(186.0), np.float64(97.0)), (np.float64(187.0), np.float64(97.0)), (np.float64(188.0), np.float64(97.0)), (np.float64(189.0), np.float64(97.0)), (np.float64(190.0), np.float64(97.0)), (np.float64(191.0), np.float64(97.0)), (np.float64(192.0), np.float64(97.0)), (np.float64(193.0), np.float64(97.0)), (np.float64(194.0), np.float64(97.0)), (np.float64(195.0), np.float64(97.0)), (np.float64(196.0), np.float64(97.0)), (np.float64(197.0), np.float64(97.0)), (np.float64(198.0), np.float64(97.0)), (np.float64(199.0), np.float64(97.0)), (np.float64(200.0), np.float64(97.0)), (np.float64(201.0), np.float64(97.0)), (np.float64(202.0), np.float64(97.0)), (np.float64(203.0), np.float64(97.0)), (np.float64(204.0), np.float64(97.0))])
+micro step: 46
+agent pose: 97.0 174.0 1.5707963267948966
+current.pose: 97.0 174.0
+goal: 97 212
+reward: -1.7686907826582603
+step: 46
+path_local frontier: [(31, 31)]
+path_global frontier: [(np.float64(173.0), np.float64(96.0))]
+deque([(np.float64(173.0), np.float64(96.0))])
+micro step: 47
+agent pose: 96.0 173.0 1.5707963267948966
+current.pose: 96.0 173.0
+goal: 97 212
+reward: -5.041148299068521
+step: 47
+path_local frontier: [(33, 33), (34, 34), (35, 35), (36, 36), (37, 37), (38, 38), (39, 38), (40, 38), (41, 38), (42, 38), (43, 38), (44, 38), (45, 38), (46, 38), (47, 38), (48, 38), (49, 38), (50, 38), (51, 38), (52, 38), (53, 38), (54, 38), (55, 38), (56, 38), (57, 38), (58, 38), (59, 38), (60, 38), (61, 38), (62, 38)]
+path_global frontier: [(np.float64(174.0), np.float64(97.0)), (np.float64(175.0), np.float64(98.0)), (np.float64(176.0), np.float64(99.0)), (np.float64(177.0), np.float64(100.0)), (np.float64(178.0), np.float64(101.0)), (np.float64(179.0), np.float64(102.0)), (np.float64(180.0), np.float64(102.0)), (np.float64(181.0), np.float64(102.0)), (np.float64(182.0), np.float64(102.0)), (np.float64(183.0), np.float64(102.0)), (np.float64(184.0), np.float64(102.0)), (np.float64(185.0), np.float64(102.0)), (np.float64(186.0), np.float64(102.0)), (np.float64(187.0), np.float64(102.0)), (np.float64(188.0), np.float64(102.0)), (np.float64(189.0), np.float64(102.0)), (np.float64(190.0), np.float64(102.0)), (np.float64(191.0), np.float64(102.0)), (np.float64(192.0), np.float64(102.0)), (np.float64(193.0), np.float64(102.0)), (np.float64(194.0), np.float64(102.0)), (np.float64(195.0), np.float64(102.0)), (np.float64(196.0), np.float64(102.0)), (np.float64(197.0), np.float64(102.0)), (np.float64(198.0), np.float64(102.0)), (np.float64(199.0), np.float64(102.0)), (np.float64(200.0), np.float64(102.0)), (np.float64(201.0), np.float64(102.0)), (np.float64(202.0), np.float64(102.0)), (np.float64(203.0), np.float64(102.0))]
+deque([(np.float64(174.0), np.float64(97.0)), (np.float64(175.0), np.float64(98.0)), (np.float64(176.0), np.float64(99.0)), (np.float64(177.0), np.float64(100.0)), (np.float64(178.0), np.float64(101.0)), (np.float64(179.0), np.float64(102.0)), (np.float64(180.0), np.float64(102.0)), (np.float64(181.0), np.float64(102.0)), (np.float64(182.0), np.float64(102.0)), (np.float64(183.0), np.float64(102.0)), (np.float64(184.0), np.float64(102.0)), (np.float64(185.0), np.float64(102.0)), (np.float64(186.0), np.float64(102.0)), (np.float64(187.0), np.float64(102.0)), (np.float64(188.0), np.float64(102.0)), (np.float64(189.0), np.float64(102.0)), (np.float64(190.0), np.float64(102.0)), (np.float64(191.0), np.float64(102.0)), (np.float64(192.0), np.float64(102.0)), (np.float64(193.0), np.float64(102.0)), (np.float64(194.0), np.float64(102.0)), (np.float64(195.0), np.float64(102.0)), (np.float64(196.0), np.float64(102.0)), (np.float64(197.0), np.float64(102.0)), (np.float64(198.0), np.float64(102.0)), (np.float64(199.0), np.float64(102.0)), (np.float64(200.0), np.float64(102.0)), (np.float64(201.0), np.float64(102.0)), (np.float64(202.0), np.float64(102.0)), (np.float64(203.0), np.float64(102.0))])
+micro step: 48
+agent pose: 97.0 174.0 0.7853981633974483
+current.pose: 97.0 174.0
+goal: 97 212
+reward: -4.343217449296871
+step: 48
+path_local frontier: [(31, 31)]
+path_global frontier: [(np.float64(173.0), np.float64(96.0))]
+deque([(np.float64(173.0), np.float64(96.0))])
+micro step: 49
+agent pose: 96.0 173.0 0.7853981633974483
+current.pose: 96.0 173.0
+goal: 97 212
+reward: -5.652179557213509
+step: 49
+path_local frontier: []
+path_global frontier: []
+can not obtain path from astar!
+path_global backup: [(np.float64(174.0), np.float64(97.0)), (np.float64(175.0), np.float64(97.0)), (np.float64(176.0), np.float64(97.0)), (np.float64(177.0), np.float64(97.0)), (np.float64(178.0), np.float64(97.0)), (np.float64(179.0), np.float64(97.0)), (np.float64(180.0), np.float64(97.0)), (np.float64(181.0), np.float64(97.0)), (np.float64(182.0), np.float64(97.0)), (np.float64(183.0), np.float64(97.0)), (np.float64(184.0), np.float64(97.0)), (np.float64(185.0), np.float64(97.0)), (np.float64(186.0), np.float64(97.0)), (np.float64(187.0), np.float64(97.0)), (np.float64(188.0), np.float64(97.0)), (np.float64(189.0), np.float64(97.0)), (np.float64(190.0), np.float64(97.0)), (np.float64(191.0), np.float64(97.0)), (np.float64(192.0), np.float64(97.0)), (np.float64(193.0), np.float64(97.0)), (np.float64(194.0), np.float64(97.0)), (np.float64(195.0), np.float64(97.0)), (np.float64(196.0), np.float64(97.0)), (np.float64(197.0), np.float64(97.0)), (np.float64(198.0), np.float64(97.0)), (np.float64(199.0), np.float64(97.0)), (np.float64(200.0), np.float64(97.0)), (np.float64(201.0), np.float64(97.0)), (np.float64(202.0), np.float64(97.0)), (np.float64(203.0), np.float64(97.0)), (np.float64(204.0), np.float64(97.0))]
+deque([(np.float64(174.0), np.float64(97.0)), (np.float64(175.0), np.float64(97.0)), (np.float64(176.0), np.float64(97.0)), (np.float64(177.0), np.float64(97.0)), (np.float64(178.0), np.float64(97.0)), (np.float64(179.0), np.float64(97.0)), (np.float64(180.0), np.float64(97.0)), (np.float64(181.0), np.float64(97.0)), (np.float64(182.0), np.float64(97.0)), (np.float64(183.0), np.float64(97.0)), (np.float64(184.0), np.float64(97.0)), (np.float64(185.0), np.float64(97.0)), (np.float64(186.0), np.float64(97.0)), (np.float64(187.0), np.float64(97.0)), (np.float64(188.0), np.float64(97.0)), (np.float64(189.0), np.float64(97.0)), (np.float64(190.0), np.float64(97.0)), (np.float64(191.0), np.float64(97.0)), (np.float64(192.0), np.float64(97.0)), (np.float64(193.0), np.float64(97.0)), (np.float64(194.0), np.float64(97.0)), (np.float64(195.0), np.float64(97.0)), (np.float64(196.0), np.float64(97.0)), (np.float64(197.0), np.float64(97.0)), (np.float64(198.0), np.float64(97.0)), (np.float64(199.0), np.float64(97.0)), (np.float64(200.0), np.float64(97.0)), (np.float64(201.0), np.float64(97.0)), (np.float64(202.0), np.float64(97.0)), (np.float64(203.0), np.float64(97.0)), (np.float64(204.0), np.float64(97.0))])
+micro step: 50
+agent pose: 97.0 174.0 1.5707963267948966
+current.pose: 97.0 174.0
+goal: 97 212
+reward: -4.220121361087767
+step: 50
+path_local frontier: [(31, 31)]
+path_global frontier: [(np.float64(173.0), np.float64(96.0))]
+deque([(np.float64(173.0), np.float64(96.0))])
+micro step: 51
+agent pose: 96.0 173.0 1.5707963267948966
+current.pose: 96.0 173.0
+goal: 97 212
+reward: -6.314481632401854
+step: 51
+path_local frontier: []
+path_global frontier: []
+can not obtain path from astar!
+path_global backup: [(np.float64(174.0), np.float64(97.0)), (np.float64(175.0), np.float64(97.0)), (np.float64(176.0), np.float64(97.0)), (np.float64(177.0), np.float64(97.0)), (np.float64(178.0), np.float64(97.0)), (np.float64(179.0), np.float64(97.0)), (np.float64(180.0), np.float64(97.0)), (np.float64(181.0), np.float64(97.0)), (np.float64(182.0), np.float64(97.0)), (np.float64(183.0), np.float64(97.0)), (np.float64(184.0), np.float64(97.0)), (np.float64(185.0), np.float64(97.0)), (np.float64(186.0), np.float64(97.0)), (np.float64(187.0), np.float64(97.0)), (np.float64(188.0), np.float64(97.0)), (np.float64(189.0), np.float64(97.0)), (np.float64(190.0), np.float64(97.0)), (np.float64(191.0), np.float64(97.0)), (np.float64(192.0), np.float64(97.0)), (np.float64(193.0), np.float64(97.0)), (np.float64(194.0), np.float64(97.0)), (np.float64(195.0), np.float64(97.0)), (np.float64(196.0), np.float64(97.0)), (np.float64(197.0), np.float64(97.0)), (np.float64(198.0), np.float64(97.0)), (np.float64(199.0), np.float64(97.0)), (np.float64(200.0), np.float64(97.0)), (np.float64(201.0), np.float64(97.0)), (np.float64(202.0), np.float64(97.0)), (np.float64(203.0), np.float64(97.0)), (np.float64(204.0), np.float64(97.0))]
+deque([(np.float64(174.0), np.float64(97.0)), (np.float64(175.0), np.float64(97.0)), (np.float64(176.0), np.float64(97.0)), (np.float64(177.0), np.float64(97.0)), (np.float64(178.0), np.float64(97.0)), (np.float64(179.0), np.float64(97.0)), (np.float64(180.0), np.float64(97.0)), (np.float64(181.0), np.float64(97.0)), (np.float64(182.0), np.float64(97.0)), (np.float64(183.0), np.float64(97.0)), (np.float64(184.0), np.float64(97.0)), (np.float64(185.0), np.float64(97.0)), (np.float64(186.0), np.float64(97.0)), (np.float64(187.0), np.float64(97.0)), (np.float64(188.0), np.float64(97.0)), (np.float64(189.0), np.float64(97.0)), (np.float64(190.0), np.float64(97.0)), (np.float64(191.0), np.float64(97.0)), (np.float64(192.0), np.float64(97.0)), (np.float64(193.0), np.float64(97.0)), (np.float64(194.0), np.float64(97.0)), (np.float64(195.0), np.float64(97.0)), (np.float64(196.0), np.float64(97.0)), (np.float64(197.0), np.float64(97.0)), (np.float64(198.0), np.float64(97.0)), (np.float64(199.0), np.float64(97.0)), (np.float64(200.0), np.float64(97.0)), (np.float64(201.0), np.float64(97.0)), (np.float64(202.0), np.float64(97.0)), (np.float64(203.0), np.float64(97.0)), (np.float64(204.0), np.float64(97.0))])
+micro step: 52
+agent pose: 97.0 174.0 1.5707963267948966
+current.pose: 97.0 174.0
+goal: 97 212
+reward: -5.22385170093148
+step: 52
+path_local frontier: [(31, 31)]
+path_global frontier: [(np.float64(173.0), np.float64(96.0))]
+deque([(np.float64(173.0), np.float64(96.0))])
+micro step: 53
+agent pose: 96.0 173.0 1.5707963267948966
+current.pose: 96.0 173.0
+goal: 97 212
+reward: -6.95114829906852
+step: 53
+path_local frontier: [(33, 33), (34, 34), (35, 35), (36, 36), (37, 37), (38, 38), (39, 38), (40, 38), (41, 38), (42, 38), (43, 38), (44, 38), (45, 38), (46, 38), (47, 38), (48, 38), (49, 38), (50, 38), (51, 38), (52, 38), (53, 38), (54, 38), (55, 38), (56, 38), (57, 38), (58, 38), (59, 38), (60, 38), (61, 38), (62, 38)]
+path_global frontier: [(np.float64(174.0), np.float64(97.0)), (np.float64(175.0), np.float64(98.0)), (np.float64(176.0), np.float64(99.0)), (np.float64(177.0), np.float64(100.0)), (np.float64(178.0), np.float64(101.0)), (np.float64(179.0), np.float64(102.0)), (np.float64(180.0), np.float64(102.0)), (np.float64(181.0), np.float64(102.0)), (np.float64(182.0), np.float64(102.0)), (np.float64(183.0), np.float64(102.0)), (np.float64(184.0), np.float64(102.0)), (np.float64(185.0), np.float64(102.0)), (np.float64(186.0), np.float64(102.0)), (np.float64(187.0), np.float64(102.0)), (np.float64(188.0), np.float64(102.0)), (np.float64(189.0), np.float64(102.0)), (np.float64(190.0), np.float64(102.0)), (np.float64(191.0), np.float64(102.0)), (np.float64(192.0), np.float64(102.0)), (np.float64(193.0), np.float64(102.0)), (np.float64(194.0), np.float64(102.0)), (np.float64(195.0), np.float64(102.0)), (np.float64(196.0), np.float64(102.0)), (np.float64(197.0), np.float64(102.0)), (np.float64(198.0), np.float64(102.0)), (np.float64(199.0), np.float64(102.0)), (np.float64(200.0), np.float64(102.0)), (np.float64(201.0), np.float64(102.0)), (np.float64(202.0), np.float64(102.0)), (np.float64(203.0), np.float64(102.0))]
+deque([(np.float64(174.0), np.float64(97.0)), (np.float64(175.0), np.float64(98.0)), (np.float64(176.0), np.float64(99.0)), (np.float64(177.0), np.float64(100.0)), (np.float64(178.0), np.float64(101.0)), (np.float64(179.0), np.float64(102.0)), (np.float64(180.0), np.float64(102.0)), (np.float64(181.0), np.float64(102.0)), (np.float64(182.0), np.float64(102.0)), (np.float64(183.0), np.float64(102.0)), (np.float64(184.0), np.float64(102.0)), (np.float64(185.0), np.float64(102.0)), (np.float64(186.0), np.float64(102.0)), (np.float64(187.0), np.float64(102.0)), (np.float64(188.0), np.float64(102.0)), (np.float64(189.0), np.float64(102.0)), (np.float64(190.0), np.float64(102.0)), (np.float64(191.0), np.float64(102.0)), (np.float64(192.0), np.float64(102.0)), (np.float64(193.0), np.float64(102.0)), (np.float64(194.0), np.float64(102.0)), (np.float64(195.0), np.float64(102.0)), (np.float64(196.0), np.float64(102.0)), (np.float64(197.0), np.float64(102.0)), (np.float64(198.0), np.float64(102.0)), (np.float64(199.0), np.float64(102.0)), (np.float64(200.0), np.float64(102.0)), (np.float64(201.0), np.float64(102.0)), (np.float64(202.0), np.float64(102.0)), (np.float64(203.0), np.float64(102.0))])
+micro step: 54
+agent pose: 97.0 174.0 0.7853981633974483
+current.pose: 97.0 174.0
+goal: 97 212
+reward: -6.253217449296871
+step: 54
+path_local frontier: [(33, 33), (34, 34), (35, 35), (36, 36), (37, 37), (38, 38), (39, 39), (40, 40), (41, 41), (42, 42), (43, 43), (44, 44), (45, 45), (46, 46), (47, 47), (48, 47), (49, 47), (50, 47), (51, 47), (52, 47), (53, 47), (54, 47), (55, 47), (56, 47), (57, 47)]
+path_global frontier: [(np.float64(175.0), np.float64(98.0)), (np.float64(176.0), np.float64(99.0)), (np.float64(177.0), np.float64(100.0)), (np.float64(178.0), np.float64(101.0)), (np.float64(179.0), np.float64(102.0)), (np.float64(180.0), np.float64(103.0)), (np.float64(181.0), np.float64(104.0)), (np.float64(182.0), np.float64(105.0)), (np.float64(183.0), np.float64(106.0)), (np.float64(184.0), np.float64(107.0)), (np.float64(185.0), np.float64(108.0)), (np.float64(186.0), np.float64(109.0)), (np.float64(187.0), np.float64(110.0)), (np.float64(188.0), np.float64(111.0)), (np.float64(189.0), np.float64(112.0)), (np.float64(190.0), np.float64(112.0)), (np.float64(191.0), np.float64(112.0)), (np.float64(192.0), np.float64(112.0)), (np.float64(193.0), np.float64(112.0)), (np.float64(194.0), np.float64(112.0)), (np.float64(195.0), np.float64(112.0)), (np.float64(196.0), np.float64(112.0)), (np.float64(197.0), np.float64(112.0)), (np.float64(198.0), np.float64(112.0)), (np.float64(199.0), np.float64(112.0))]
+deque([(np.float64(175.0), np.float64(98.0)), (np.float64(176.0), np.float64(99.0)), (np.float64(177.0), np.float64(100.0)), (np.float64(178.0), np.float64(101.0)), (np.float64(179.0), np.float64(102.0)), (np.float64(180.0), np.float64(103.0)), (np.float64(181.0), np.float64(104.0)), (np.float64(182.0), np.float64(105.0)), (np.float64(183.0), np.float64(106.0)), (np.float64(184.0), np.float64(107.0)), (np.float64(185.0), np.float64(108.0)), (np.float64(186.0), np.float64(109.0)), (np.float64(187.0), np.float64(110.0)), (np.float64(188.0), np.float64(111.0)), (np.float64(189.0), np.float64(112.0)), (np.float64(190.0), np.float64(112.0)), (np.float64(191.0), np.float64(112.0)), (np.float64(192.0), np.float64(112.0)), (np.float64(193.0), np.float64(112.0)), (np.float64(194.0), np.float64(112.0)), (np.float64(195.0), np.float64(112.0)), (np.float64(196.0), np.float64(112.0)), (np.float64(197.0), np.float64(112.0)), (np.float64(198.0), np.float64(112.0)), (np.float64(199.0), np.float64(112.0))])
+micro step: 55
+agent pose: 98.0 175.0 0.7853981633974483
+current.pose: 98.0 175.0
+goal: 97 212
+reward: -2.489407918563507
+step: 55
+path_local frontier: [(31, 32), (30, 32)]
+path_global frontier: [(np.float64(174.0), np.float64(98.0)), (np.float64(173.0), np.float64(98.0))]
+deque([(np.float64(174.0), np.float64(98.0)), (np.float64(173.0), np.float64(98.0))])
+micro step: 56
+agent pose: 98.0 174.0 -1.5707963267948966
+current.pose: 98.0 174.0
+goal: 97 212
+reward: -6.777636770651554
+step: 56
+path_local frontier: [(31, 33), (30, 33)]
+path_global frontier: [(np.float64(173.0), np.float64(99.0)), (np.float64(172.0), np.float64(99.0))]
+deque([(np.float64(173.0), np.float64(99.0)), (np.float64(172.0), np.float64(99.0))])
+micro step: 57
+agent pose: 99.0 173.0 -1.5707963267948966
+current.pose: 99.0 173.0
+goal: 97 212
+reward: -5.732056865572653
+step: 57
+path_local frontier: [(31, 33)]
+path_global frontier: [(np.float64(172.0), np.float64(100.0))]
+deque([(np.float64(172.0), np.float64(100.0))])
+micro step: 58
+agent pose: 100.0 172.0 -1.5707963267948966
+current.pose: 100.0 172.0
+goal: 97 212
+reward: -5.3309440121285165
+step: 58
+path_local frontier: []
+path_global frontier: []
+can not obtain path from astar!
+path_global backup: [(np.float64(173.0), np.float64(99.0)), (np.float64(174.0), np.float64(98.0)), (np.float64(175.0), np.float64(97.0)), (np.float64(176.0), np.float64(97.0)), (np.float64(177.0), np.float64(97.0)), (np.float64(178.0), np.float64(97.0)), (np.float64(179.0), np.float64(97.0)), (np.float64(180.0), np.float64(97.0)), (np.float64(181.0), np.float64(97.0)), (np.float64(182.0), np.float64(97.0)), (np.float64(183.0), np.float64(97.0)), (np.float64(184.0), np.float64(97.0)), (np.float64(185.0), np.float64(97.0)), (np.float64(186.0), np.float64(97.0)), (np.float64(187.0), np.float64(97.0)), (np.float64(188.0), np.float64(97.0)), (np.float64(189.0), np.float64(97.0)), (np.float64(190.0), np.float64(97.0)), (np.float64(191.0), np.float64(97.0)), (np.float64(192.0), np.float64(97.0)), (np.float64(193.0), np.float64(97.0)), (np.float64(194.0), np.float64(97.0)), (np.float64(195.0), np.float64(97.0)), (np.float64(196.0), np.float64(97.0)), (np.float64(197.0), np.float64(97.0)), (np.float64(198.0), np.float64(97.0)), (np.float64(199.0), np.float64(97.0)), (np.float64(200.0), np.float64(97.0)), (np.float64(201.0), np.float64(97.0)), (np.float64(202.0), np.float64(97.0)), (np.float64(203.0), np.float64(97.0))]
+deque([(np.float64(173.0), np.float64(99.0)), (np.float64(174.0), np.float64(98.0)), (np.float64(175.0), np.float64(97.0)), (np.float64(176.0), np.float64(97.0)), (np.float64(177.0), np.float64(97.0)), (np.float64(178.0), np.float64(97.0)), (np.float64(179.0), np.float64(97.0)), (np.float64(180.0), np.float64(97.0)), (np.float64(181.0), np.float64(97.0)), (np.float64(182.0), np.float64(97.0)), (np.float64(183.0), np.float64(97.0)), (np.float64(184.0), np.float64(97.0)), (np.float64(185.0), np.float64(97.0)), (np.float64(186.0), np.float64(97.0)), (np.float64(187.0), np.float64(97.0)), (np.float64(188.0), np.float64(97.0)), (np.float64(189.0), np.float64(97.0)), (np.float64(190.0), np.float64(97.0)), (np.float64(191.0), np.float64(97.0)), (np.float64(192.0), np.float64(97.0)), (np.float64(193.0), np.float64(97.0)), (np.float64(194.0), np.float64(97.0)), (np.float64(195.0), np.float64(97.0)), (np.float64(196.0), np.float64(97.0)), (np.float64(197.0), np.float64(97.0)), (np.float64(198.0), np.float64(97.0)), (np.float64(199.0), np.float64(97.0)), (np.float64(200.0), np.float64(97.0)), (np.float64(201.0), np.float64(97.0)), (np.float64(202.0), np.float64(97.0)), (np.float64(203.0), np.float64(97.0))])
+micro step: 59
+agent pose: 99.0 173.0 2.356194490192345
+current.pose: 99.0 173.0
+goal: 97 212
+reward: -2.4859587427753107
+step: 59
+path_local frontier: [(33, 31), (34, 30), (35, 29), (36, 28), (37, 27), (38, 26), (39, 25), (40, 24), (41, 23), (42, 22), (43, 21), (44, 20), (44, 19), (44, 18), (44, 17), (44, 16), (44, 15), (44, 14), (44, 13), (44, 12), (44, 11), (44, 10), (44, 9), (44, 8), (44, 7), (44, 6)]
+path_global frontier: [(np.float64(174.0), np.float64(98.0)), (np.float64(175.0), np.float64(97.0)), (np.float64(176.0), np.float64(96.0)), (np.float64(177.0), np.float64(95.0)), (np.float64(178.0), np.float64(94.0)), (np.float64(179.0), np.float64(93.0)), (np.float64(180.0), np.float64(92.0)), (np.float64(181.0), np.float64(91.0)), (np.float64(182.0), np.float64(90.0)), (np.float64(183.0), np.float64(89.0)), (np.float64(184.0), np.float64(88.0)), (np.float64(185.0), np.float64(87.0)), (np.float64(185.0), np.float64(86.0)), (np.float64(185.0), np.float64(85.0)), (np.float64(185.0), np.float64(84.0)), (np.float64(185.0), np.float64(83.0)), (np.float64(185.0), np.float64(82.0)), (np.float64(185.0), np.float64(81.0)), (np.float64(185.0), np.float64(80.0)), (np.float64(185.0), np.float64(79.0)), (np.float64(185.0), np.float64(78.0)), (np.float64(185.0), np.float64(77.0)), (np.float64(185.0), np.float64(76.0)), (np.float64(185.0), np.float64(75.0)), (np.float64(185.0), np.float64(74.0)), (np.float64(185.0), np.float64(73.0))]
+deque([(np.float64(174.0), np.float64(98.0)), (np.float64(175.0), np.float64(97.0)), (np.float64(176.0), np.float64(96.0)), (np.float64(177.0), np.float64(95.0)), (np.float64(178.0), np.float64(94.0)), (np.float64(179.0), np.float64(93.0)), (np.float64(180.0), np.float64(92.0)), (np.float64(181.0), np.float64(91.0)), (np.float64(182.0), np.float64(90.0)), (np.float64(183.0), np.float64(89.0)), (np.float64(184.0), np.float64(88.0)), (np.float64(185.0), np.float64(87.0)), (np.float64(185.0), np.float64(86.0)), (np.float64(185.0), np.float64(85.0)), (np.float64(185.0), np.float64(84.0)), (np.float64(185.0), np.float64(83.0)), (np.float64(185.0), np.float64(82.0)), (np.float64(185.0), np.float64(81.0)), (np.float64(185.0), np.float64(80.0)), (np.float64(185.0), np.float64(79.0)), (np.float64(185.0), np.float64(78.0)), (np.float64(185.0), np.float64(77.0)), (np.float64(185.0), np.float64(76.0)), (np.float64(185.0), np.float64(75.0)), (np.float64(185.0), np.float64(74.0)), (np.float64(185.0), np.float64(73.0))])
+micro step: 60
+agent pose: 98.0 174.0 2.356194490192345
+current.pose: 98.0 174.0
+goal: 97 212
+reward: -3.762943134427348
+step: 60
+path_local frontier: [(31, 31), (31, 30)]
+path_global frontier: [(np.float64(173.0), np.float64(97.0)), (np.float64(173.0), np.float64(96.0))]
+deque([(np.float64(173.0), np.float64(97.0)), (np.float64(173.0), np.float64(96.0))])
+micro step: 61
+agent pose: 97.0 173.0 3.141592653589793
+current.pose: 97.0 173.0
+goal: 97 212
+reward: -6.357084970913168
+step: 61
+path_local frontier: [(31, 31), (31, 30)]
+path_global frontier: [(np.float64(172.0), np.float64(96.0)), (np.float64(172.0), np.float64(95.0))]
+deque([(np.float64(172.0), np.float64(96.0)), (np.float64(172.0), np.float64(95.0))])
+micro step: 62
+agent pose: 96.0 172.0 3.141592653589793
+current.pose: 96.0 172.0
+goal: 97 212
+reward: -5.56541152520677
+step: 62
+path_local frontier: [(31, 31), (31, 30)]
+path_global frontier: [(np.float64(171.0), np.float64(95.0)), (np.float64(171.0), np.float64(94.0))]
+deque([(np.float64(171.0), np.float64(95.0)), (np.float64(171.0), np.float64(94.0))])
+micro step: 63
+agent pose: 95.0 171.0 3.141592653589793
+current.pose: 95.0 171.0
+goal: 97 212
+reward: -5.664003021726723
+step: 63
+path_local frontier: [(31, 31)]
+path_global frontier: [(np.float64(170.0), np.float64(94.0))]
+deque([(np.float64(170.0), np.float64(94.0))])
+micro step: 64
+agent pose: 94.0 170.0 3.141592653589793
+current.pose: 94.0 170.0
+goal: 97 212
+reward: -5.760347691170131
+step: 64
+path_local frontier: []
+path_global frontier: []
+can not obtain path from astar!
+path_global backup: [(np.float64(171.0), np.float64(95.0)), (np.float64(172.0), np.float64(96.0)), (np.float64(173.0), np.float64(97.0)), (np.float64(174.0), np.float64(97.0)), (np.float64(175.0), np.float64(97.0)), (np.float64(176.0), np.float64(97.0)), (np.float64(177.0), np.float64(97.0)), (np.float64(178.0), np.float64(97.0)), (np.float64(179.0), np.float64(97.0)), (np.float64(180.0), np.float64(97.0)), (np.float64(181.0), np.float64(97.0)), (np.float64(182.0), np.float64(97.0)), (np.float64(183.0), np.float64(97.0)), (np.float64(184.0), np.float64(97.0)), (np.float64(185.0), np.float64(97.0)), (np.float64(186.0), np.float64(97.0)), (np.float64(187.0), np.float64(97.0)), (np.float64(188.0), np.float64(97.0)), (np.float64(189.0), np.float64(97.0)), (np.float64(190.0), np.float64(97.0)), (np.float64(191.0), np.float64(97.0)), (np.float64(192.0), np.float64(97.0)), (np.float64(193.0), np.float64(97.0)), (np.float64(194.0), np.float64(97.0)), (np.float64(195.0), np.float64(97.0)), (np.float64(196.0), np.float64(97.0)), (np.float64(197.0), np.float64(97.0)), (np.float64(198.0), np.float64(97.0)), (np.float64(199.0), np.float64(97.0)), (np.float64(200.0), np.float64(97.0)), (np.float64(201.0), np.float64(97.0))]
+deque([(np.float64(171.0), np.float64(95.0)), (np.float64(172.0), np.float64(96.0)), (np.float64(173.0), np.float64(97.0)), (np.float64(174.0), np.float64(97.0)), (np.float64(175.0), np.float64(97.0)), (np.float64(176.0), np.float64(97.0)), (np.float64(177.0), np.float64(97.0)), (np.float64(178.0), np.float64(97.0)), (np.float64(179.0), np.float64(97.0)), (np.float64(180.0), np.float64(97.0)), (np.float64(181.0), np.float64(97.0)), (np.float64(182.0), np.float64(97.0)), (np.float64(183.0), np.float64(97.0)), (np.float64(184.0), np.float64(97.0)), (np.float64(185.0), np.float64(97.0)), (np.float64(186.0), np.float64(97.0)), (np.float64(187.0), np.float64(97.0)), (np.float64(188.0), np.float64(97.0)), (np.float64(189.0), np.float64(97.0)), (np.float64(190.0), np.float64(97.0)), (np.float64(191.0), np.float64(97.0)), (np.float64(192.0), np.float64(97.0)), (np.float64(193.0), np.float64(97.0)), (np.float64(194.0), np.float64(97.0)), (np.float64(195.0), np.float64(97.0)), (np.float64(196.0), np.float64(97.0)), (np.float64(197.0), np.float64(97.0)), (np.float64(198.0), np.float64(97.0)), (np.float64(199.0), np.float64(97.0)), (np.float64(200.0), np.float64(97.0)), (np.float64(201.0), np.float64(97.0))])
+micro step: 65
+agent pose: 95.0 171.0 0.7853981633974483
+current.pose: 95.0 171.0
+goal: 97 212
+reward: -3.113211375821214
+step: 65
+path_local frontier: [(33, 31), (34, 30), (35, 29), (36, 28), (37, 27), (38, 26), (39, 25), (40, 24), (41, 23), (42, 22), (43, 21), (44, 20), (45, 19), (46, 18), (47, 17), (48, 16), (49, 15), (50, 14), (51, 13), (52, 12)]
+path_global frontier: [(np.float64(172.0), np.float64(94.0)), (np.float64(173.0), np.float64(93.0)), (np.float64(174.0), np.float64(92.0)), (np.float64(175.0), np.float64(91.0)), (np.float64(176.0), np.float64(90.0)), (np.float64(177.0), np.float64(89.0)), (np.float64(178.0), np.float64(88.0)), (np.float64(179.0), np.float64(87.0)), (np.float64(180.0), np.float64(86.0)), (np.float64(181.0), np.float64(85.0)), (np.float64(182.0), np.float64(84.0)), (np.float64(183.0), np.float64(83.0)), (np.float64(184.0), np.float64(82.0)), (np.float64(185.0), np.float64(81.0)), (np.float64(186.0), np.float64(80.0)), (np.float64(187.0), np.float64(79.0)), (np.float64(188.0), np.float64(78.0)), (np.float64(189.0), np.float64(77.0)), (np.float64(190.0), np.float64(76.0)), (np.float64(191.0), np.float64(75.0))]
+deque([(np.float64(172.0), np.float64(94.0)), (np.float64(173.0), np.float64(93.0)), (np.float64(174.0), np.float64(92.0)), (np.float64(175.0), np.float64(91.0)), (np.float64(176.0), np.float64(90.0)), (np.float64(177.0), np.float64(89.0)), (np.float64(178.0), np.float64(88.0)), (np.float64(179.0), np.float64(87.0)), (np.float64(180.0), np.float64(86.0)), (np.float64(181.0), np.float64(85.0)), (np.float64(182.0), np.float64(84.0)), (np.float64(183.0), np.float64(83.0)), (np.float64(184.0), np.float64(82.0)), (np.float64(185.0), np.float64(81.0)), (np.float64(186.0), np.float64(80.0)), (np.float64(187.0), np.float64(79.0)), (np.float64(188.0), np.float64(78.0)), (np.float64(189.0), np.float64(77.0)), (np.float64(190.0), np.float64(76.0)), (np.float64(191.0), np.float64(75.0))])
+micro step: 66
+agent pose: 94.0 172.0 2.356194490192345
+current.pose: 94.0 172.0
+goal: 97 212
+reward: -3.354468807240597
+step: 66
+path_local frontier: [(33, 33), (34, 34), (35, 35), (36, 36), (37, 37), (38, 38), (39, 39), (40, 40), (41, 41), (42, 42), (43, 43), (44, 44), (45, 45), (46, 45), (47, 45), (48, 45), (49, 45), (50, 45), (51, 45), (52, 45), (53, 45), (54, 45), (55, 45), (56, 45), (57, 45), (58, 45), (59, 45), (60, 45), (61, 45), (62, 45)]
+path_global frontier: [(np.float64(173.0), np.float64(95.0)), (np.float64(174.0), np.float64(96.0)), (np.float64(175.0), np.float64(97.0)), (np.float64(176.0), np.float64(98.0)), (np.float64(177.0), np.float64(99.0)), (np.float64(178.0), np.float64(100.0)), (np.float64(179.0), np.float64(101.0)), (np.float64(180.0), np.float64(102.0)), (np.float64(181.0), np.float64(103.0)), (np.float64(182.0), np.float64(104.0)), (np.float64(183.0), np.float64(105.0)), (np.float64(184.0), np.float64(106.0)), (np.float64(185.0), np.float64(107.0)), (np.float64(186.0), np.float64(107.0)), (np.float64(187.0), np.float64(107.0)), (np.float64(188.0), np.float64(107.0)), (np.float64(189.0), np.float64(107.0)), (np.float64(190.0), np.float64(107.0)), (np.float64(191.0), np.float64(107.0)), (np.float64(192.0), np.float64(107.0)), (np.float64(193.0), np.float64(107.0)), (np.float64(194.0), np.float64(107.0)), (np.float64(195.0), np.float64(107.0)), (np.float64(196.0), np.float64(107.0)), (np.float64(197.0), np.float64(107.0)), (np.float64(198.0), np.float64(107.0)), (np.float64(199.0), np.float64(107.0)), (np.float64(200.0), np.float64(107.0)), (np.float64(201.0), np.float64(107.0)), (np.float64(202.0), np.float64(107.0))]
+deque([(np.float64(173.0), np.float64(95.0)), (np.float64(174.0), np.float64(96.0)), (np.float64(175.0), np.float64(97.0)), (np.float64(176.0), np.float64(98.0)), (np.float64(177.0), np.float64(99.0)), (np.float64(178.0), np.float64(100.0)), (np.float64(179.0), np.float64(101.0)), (np.float64(180.0), np.float64(102.0)), (np.float64(181.0), np.float64(103.0)), (np.float64(182.0), np.float64(104.0)), (np.float64(183.0), np.float64(105.0)), (np.float64(184.0), np.float64(106.0)), (np.float64(185.0), np.float64(107.0)), (np.float64(186.0), np.float64(107.0)), (np.float64(187.0), np.float64(107.0)), (np.float64(188.0), np.float64(107.0)), (np.float64(189.0), np.float64(107.0)), (np.float64(190.0), np.float64(107.0)), (np.float64(191.0), np.float64(107.0)), (np.float64(192.0), np.float64(107.0)), (np.float64(193.0), np.float64(107.0)), (np.float64(194.0), np.float64(107.0)), (np.float64(195.0), np.float64(107.0)), (np.float64(196.0), np.float64(107.0)), (np.float64(197.0), np.float64(107.0)), (np.float64(198.0), np.float64(107.0)), (np.float64(199.0), np.float64(107.0)), (np.float64(200.0), np.float64(107.0)), (np.float64(201.0), np.float64(107.0)), (np.float64(202.0), np.float64(107.0))])
+micro step: 67
+agent pose: 95.0 173.0 0.7853981633974483
+current.pose: 95.0 173.0
+goal: 97 212
+reward: -3.135862806827383
+step: 67
+path_local frontier: [(33, 33), (34, 34), (35, 35), (36, 36), (37, 37), (38, 38), (39, 39), (40, 39), (41, 39), (42, 39), (43, 39), (44, 39), (45, 39), (46, 39), (47, 39), (48, 39), (49, 39), (50, 39), (51, 39), (52, 39), (53, 39), (54, 39), (55, 39), (56, 39), (57, 39), (58, 39), (59, 39), (60, 39), (61, 39), (62, 39)]
+path_global frontier: [(np.float64(174.0), np.float64(96.0)), (np.float64(175.0), np.float64(97.0)), (np.float64(176.0), np.float64(98.0)), (np.float64(177.0), np.float64(99.0)), (np.float64(178.0), np.float64(100.0)), (np.float64(179.0), np.float64(101.0)), (np.float64(180.0), np.float64(102.0)), (np.float64(181.0), np.float64(102.0)), (np.float64(182.0), np.float64(102.0)), (np.float64(183.0), np.float64(102.0)), (np.float64(184.0), np.float64(102.0)), (np.float64(185.0), np.float64(102.0)), (np.float64(186.0), np.float64(102.0)), (np.float64(187.0), np.float64(102.0)), (np.float64(188.0), np.float64(102.0)), (np.float64(189.0), np.float64(102.0)), (np.float64(190.0), np.float64(102.0)), (np.float64(191.0), np.float64(102.0)), (np.float64(192.0), np.float64(102.0)), (np.float64(193.0), np.float64(102.0)), (np.float64(194.0), np.float64(102.0)), (np.float64(195.0), np.float64(102.0)), (np.float64(196.0), np.float64(102.0)), (np.float64(197.0), np.float64(102.0)), (np.float64(198.0), np.float64(102.0)), (np.float64(199.0), np.float64(102.0)), (np.float64(200.0), np.float64(102.0)), (np.float64(201.0), np.float64(102.0)), (np.float64(202.0), np.float64(102.0)), (np.float64(203.0), np.float64(102.0))]
+deque([(np.float64(174.0), np.float64(96.0)), (np.float64(175.0), np.float64(97.0)), (np.float64(176.0), np.float64(98.0)), (np.float64(177.0), np.float64(99.0)), (np.float64(178.0), np.float64(100.0)), (np.float64(179.0), np.float64(101.0)), (np.float64(180.0), np.float64(102.0)), (np.float64(181.0), np.float64(102.0)), (np.float64(182.0), np.float64(102.0)), (np.float64(183.0), np.float64(102.0)), (np.float64(184.0), np.float64(102.0)), (np.float64(185.0), np.float64(102.0)), (np.float64(186.0), np.float64(102.0)), (np.float64(187.0), np.float64(102.0)), (np.float64(188.0), np.float64(102.0)), (np.float64(189.0), np.float64(102.0)), (np.float64(190.0), np.float64(102.0)), (np.float64(191.0), np.float64(102.0)), (np.float64(192.0), np.float64(102.0)), (np.float64(193.0), np.float64(102.0)), (np.float64(194.0), np.float64(102.0)), (np.float64(195.0), np.float64(102.0)), (np.float64(196.0), np.float64(102.0)), (np.float64(197.0), np.float64(102.0)), (np.float64(198.0), np.float64(102.0)), (np.float64(199.0), np.float64(102.0)), (np.float64(200.0), np.float64(102.0)), (np.float64(201.0), np.float64(102.0)), (np.float64(202.0), np.float64(102.0)), (np.float64(203.0), np.float64(102.0))])
+micro step: 68
+agent pose: 96.0 174.0 0.7853981633974483
+current.pose: 96.0 174.0
+goal: 97 212
+reward: -3.309609801094014
+step: 68
+path_local frontier: [(31, 31), (30, 30), (29, 30), (28, 30)]
+path_global frontier: [(np.float64(173.0), np.float64(95.0)), (np.float64(172.0), np.float64(94.0)), (np.float64(171.0), np.float64(94.0)), (np.float64(170.0), np.float64(94.0))]
+deque([(np.float64(173.0), np.float64(95.0)), (np.float64(172.0), np.float64(94.0)), (np.float64(171.0), np.float64(94.0)), (np.float64(170.0), np.float64(94.0))])
+micro step: 69
+agent pose: 95.0 173.0 -2.356194490192345
+current.pose: 95.0 173.0
+goal: 97 212
+reward: -7.388692196373519
+step: 69
+path_local frontier: [(31, 33), (31, 34), (31, 35), (31, 36), (31, 37)]
+path_global frontier: [(np.float64(172.0), np.float64(96.0)), (np.float64(172.0), np.float64(97.0)), (np.float64(172.0), np.float64(98.0)), (np.float64(172.0), np.float64(99.0)), (np.float64(172.0), np.float64(100.0))]
+deque([(np.float64(172.0), np.float64(96.0)), (np.float64(172.0), np.float64(97.0)), (np.float64(172.0), np.float64(98.0)), (np.float64(172.0), np.float64(99.0)), (np.float64(172.0), np.float64(100.0))])
+micro step: 70
+agent pose: 96.0 172.0 0.0
+current.pose: 96.0 172.0
+goal: 97 212
+reward: -6.102142839460832
+step: 70
+path_local frontier: [(31, 33), (30, 34), (29, 35), (28, 36), (27, 37), (27, 38), (27, 39)]
+path_global frontier: [(np.float64(171.0), np.float64(97.0)), (np.float64(170.0), np.float64(98.0)), (np.float64(169.0), np.float64(99.0)), (np.float64(168.0), np.float64(100.0)), (np.float64(167.0), np.float64(101.0)), (np.float64(167.0), np.float64(102.0)), (np.float64(167.0), np.float64(103.0))]
+deque([(np.float64(171.0), np.float64(97.0)), (np.float64(170.0), np.float64(98.0)), (np.float64(169.0), np.float64(99.0)), (np.float64(168.0), np.float64(100.0)), (np.float64(167.0), np.float64(101.0)), (np.float64(167.0), np.float64(102.0)), (np.float64(167.0), np.float64(103.0))])
+micro step: 71
+agent pose: 97.0 171.0 -0.7853981633974483
+current.pose: 97.0 171.0
+goal: 97 212
+reward: -6.540615683444208
+step: 71
+path_local frontier: [(31, 31), (30, 30), (29, 29), (28, 28), (27, 27), (26, 26), (25, 25), (24, 25), (23, 25), (22, 25), (21, 25), (20, 25), (19, 25), (18, 25), (17, 25), (16, 25), (15, 25), (14, 25), (13, 25), (12, 25), (11, 25), (10, 25), (9, 25), (8, 25), (7, 25), (6, 25)]
+path_global frontier: [(np.float64(170.0), np.float64(96.0)), (np.float64(169.0), np.float64(95.0)), (np.float64(168.0), np.float64(94.0)), (np.float64(167.0), np.float64(93.0)), (np.float64(166.0), np.float64(92.0)), (np.float64(165.0), np.float64(91.0)), (np.float64(164.0), np.float64(90.0)), (np.float64(163.0), np.float64(90.0)), (np.float64(162.0), np.float64(90.0)), (np.float64(161.0), np.float64(90.0)), (np.float64(160.0), np.float64(90.0)), (np.float64(159.0), np.float64(90.0)), (np.float64(158.0), np.float64(90.0)), (np.float64(157.0), np.float64(90.0)), (np.float64(156.0), np.float64(90.0)), (np.float64(155.0), np.float64(90.0)), (np.float64(154.0), np.float64(90.0)), (np.float64(153.0), np.float64(90.0)), (np.float64(152.0), np.float64(90.0)), (np.float64(151.0), np.float64(90.0)), (np.float64(150.0), np.float64(90.0)), (np.float64(149.0), np.float64(90.0)), (np.float64(148.0), np.float64(90.0)), (np.float64(147.0), np.float64(90.0)), (np.float64(146.0), np.float64(90.0)), (np.float64(145.0), np.float64(90.0))]
+deque([(np.float64(170.0), np.float64(96.0)), (np.float64(169.0), np.float64(95.0)), (np.float64(168.0), np.float64(94.0)), (np.float64(167.0), np.float64(93.0)), (np.float64(166.0), np.float64(92.0)), (np.float64(165.0), np.float64(91.0)), (np.float64(164.0), np.float64(90.0)), (np.float64(163.0), np.float64(90.0)), (np.float64(162.0), np.float64(90.0)), (np.float64(161.0), np.float64(90.0)), (np.float64(160.0), np.float64(90.0)), (np.float64(159.0), np.float64(90.0)), (np.float64(158.0), np.float64(90.0)), (np.float64(157.0), np.float64(90.0)), (np.float64(156.0), np.float64(90.0)), (np.float64(155.0), np.float64(90.0)), (np.float64(154.0), np.float64(90.0)), (np.float64(153.0), np.float64(90.0)), (np.float64(152.0), np.float64(90.0)), (np.float64(151.0), np.float64(90.0)), (np.float64(150.0), np.float64(90.0)), (np.float64(149.0), np.float64(90.0)), (np.float64(148.0), np.float64(90.0)), (np.float64(147.0), np.float64(90.0)), (np.float64(146.0), np.float64(90.0)), (np.float64(145.0), np.float64(90.0))])
+micro step: 72
+agent pose: 96.0 170.0 -2.356194490192345
+current.pose: 96.0 170.0
+goal: 97 212
+reward: -6.247376510852548
+step: 72
+path_local frontier: [(31, 31), (30, 30), (29, 30), (28, 30), (27, 30), (26, 30), (25, 30), (24, 30), (23, 30), (22, 30), (21, 30), (20, 30), (19, 30), (18, 30), (17, 30), (16, 30), (15, 30), (14, 30), (13, 30), (12, 30), (11, 30), (10, 30), (9, 30), (8, 30), (7, 30), (6, 30)]
+path_global frontier: [(np.float64(169.0), np.float64(95.0)), (np.float64(168.0), np.float64(94.0)), (np.float64(167.0), np.float64(94.0)), (np.float64(166.0), np.float64(94.0)), (np.float64(165.0), np.float64(94.0)), (np.float64(164.0), np.float64(94.0)), (np.float64(163.0), np.float64(94.0)), (np.float64(162.0), np.float64(94.0)), (np.float64(161.0), np.float64(94.0)), (np.float64(160.0), np.float64(94.0)), (np.float64(159.0), np.float64(94.0)), (np.float64(158.0), np.float64(94.0)), (np.float64(157.0), np.float64(94.0)), (np.float64(156.0), np.float64(94.0)), (np.float64(155.0), np.float64(94.0)), (np.float64(154.0), np.float64(94.0)), (np.float64(153.0), np.float64(94.0)), (np.float64(152.0), np.float64(94.0)), (np.float64(151.0), np.float64(94.0)), (np.float64(150.0), np.float64(94.0)), (np.float64(149.0), np.float64(94.0)), (np.float64(148.0), np.float64(94.0)), (np.float64(147.0), np.float64(94.0)), (np.float64(146.0), np.float64(94.0)), (np.float64(145.0), np.float64(94.0)), (np.float64(144.0), np.float64(94.0))]
+deque([(np.float64(169.0), np.float64(95.0)), (np.float64(168.0), np.float64(94.0)), (np.float64(167.0), np.float64(94.0)), (np.float64(166.0), np.float64(94.0)), (np.float64(165.0), np.float64(94.0)), (np.float64(164.0), np.float64(94.0)), (np.float64(163.0), np.float64(94.0)), (np.float64(162.0), np.float64(94.0)), (np.float64(161.0), np.float64(94.0)), (np.float64(160.0), np.float64(94.0)), (np.float64(159.0), np.float64(94.0)), (np.float64(158.0), np.float64(94.0)), (np.float64(157.0), np.float64(94.0)), (np.float64(156.0), np.float64(94.0)), (np.float64(155.0), np.float64(94.0)), (np.float64(154.0), np.float64(94.0)), (np.float64(153.0), np.float64(94.0)), (np.float64(152.0), np.float64(94.0)), (np.float64(151.0), np.float64(94.0)), (np.float64(150.0), np.float64(94.0)), (np.float64(149.0), np.float64(94.0)), (np.float64(148.0), np.float64(94.0)), (np.float64(147.0), np.float64(94.0)), (np.float64(146.0), np.float64(94.0)), (np.float64(145.0), np.float64(94.0)), (np.float64(144.0), np.float64(94.0))])
+micro step: 73
+agent pose: 95.0 169.0 -2.356194490192345
+current.pose: 95.0 169.0
+goal: 97 212
+reward: -6.344628338236586
+step: 73
+path_local frontier: [(33, 33), (34, 34), (35, 35), (36, 36), (37, 37), (38, 38), (39, 39), (40, 40), (41, 41), (42, 42), (43, 43), (44, 44), (45, 45), (46, 46), (47, 47), (47, 48), (47, 49), (47, 50), (47, 51), (47, 52), (47, 53), (47, 54), (47, 55), (47, 56), (47, 57), (47, 58), (47, 59), (47, 60), (47, 61), (47, 62)]
+path_global frontier: [(np.float64(170.0), np.float64(96.0)), (np.float64(171.0), np.float64(97.0)), (np.float64(172.0), np.float64(98.0)), (np.float64(173.0), np.float64(99.0)), (np.float64(174.0), np.float64(100.0)), (np.float64(175.0), np.float64(101.0)), (np.float64(176.0), np.float64(102.0)), (np.float64(177.0), np.float64(103.0)), (np.float64(178.0), np.float64(104.0)), (np.float64(179.0), np.float64(105.0)), (np.float64(180.0), np.float64(106.0)), (np.float64(181.0), np.float64(107.0)), (np.float64(182.0), np.float64(108.0)), (np.float64(183.0), np.float64(109.0)), (np.float64(184.0), np.float64(110.0)), (np.float64(184.0), np.float64(111.0)), (np.float64(184.0), np.float64(112.0)), (np.float64(184.0), np.float64(113.0)), (np.float64(184.0), np.float64(114.0)), (np.float64(184.0), np.float64(115.0)), (np.float64(184.0), np.float64(116.0)), (np.float64(184.0), np.float64(117.0)), (np.float64(184.0), np.float64(118.0)), (np.float64(184.0), np.float64(119.0)), (np.float64(184.0), np.float64(120.0)), (np.float64(184.0), np.float64(121.0)), (np.float64(184.0), np.float64(122.0)), (np.float64(184.0), np.float64(123.0)), (np.float64(184.0), np.float64(124.0)), (np.float64(184.0), np.float64(125.0))]
+deque([(np.float64(170.0), np.float64(96.0)), (np.float64(171.0), np.float64(97.0)), (np.float64(172.0), np.float64(98.0)), (np.float64(173.0), np.float64(99.0)), (np.float64(174.0), np.float64(100.0)), (np.float64(175.0), np.float64(101.0)), (np.float64(176.0), np.float64(102.0)), (np.float64(177.0), np.float64(103.0)), (np.float64(178.0), np.float64(104.0)), (np.float64(179.0), np.float64(105.0)), (np.float64(180.0), np.float64(106.0)), (np.float64(181.0), np.float64(107.0)), (np.float64(182.0), np.float64(108.0)), (np.float64(183.0), np.float64(109.0)), (np.float64(184.0), np.float64(110.0)), (np.float64(184.0), np.float64(111.0)), (np.float64(184.0), np.float64(112.0)), (np.float64(184.0), np.float64(113.0)), (np.float64(184.0), np.float64(114.0)), (np.float64(184.0), np.float64(115.0)), (np.float64(184.0), np.float64(116.0)), (np.float64(184.0), np.float64(117.0)), (np.float64(184.0), np.float64(118.0)), (np.float64(184.0), np.float64(119.0)), (np.float64(184.0), np.float64(120.0)), (np.float64(184.0), np.float64(121.0)), (np.float64(184.0), np.float64(122.0)), (np.float64(184.0), np.float64(123.0)), (np.float64(184.0), np.float64(124.0)), (np.float64(184.0), np.float64(125.0))])
+micro step: 74
+agent pose: 96.0 170.0 0.7853981633974483
+current.pose: 96.0 170.0
+goal: 97 212
+reward: -3.3911684721808966
+step: 74
+path_local frontier: [(31, 31), (30, 30), (29, 30), (28, 30), (27, 30), (26, 30), (25, 30), (24, 30), (23, 30), (22, 30), (21, 30), (20, 30), (19, 30), (18, 30), (17, 30), (16, 30), (15, 30), (14, 30), (13, 30), (12, 30), (11, 30), (10, 30), (9, 30), (8, 30), (7, 30), (6, 30)]
+path_global frontier: [(np.float64(169.0), np.float64(95.0)), (np.float64(168.0), np.float64(94.0)), (np.float64(167.0), np.float64(94.0)), (np.float64(166.0), np.float64(94.0)), (np.float64(165.0), np.float64(94.0)), (np.float64(164.0), np.float64(94.0)), (np.float64(163.0), np.float64(94.0)), (np.float64(162.0), np.float64(94.0)), (np.float64(161.0), np.float64(94.0)), (np.float64(160.0), np.float64(94.0)), (np.float64(159.0), np.float64(94.0)), (np.float64(158.0), np.float64(94.0)), (np.float64(157.0), np.float64(94.0)), (np.float64(156.0), np.float64(94.0)), (np.float64(155.0), np.float64(94.0)), (np.float64(154.0), np.float64(94.0)), (np.float64(153.0), np.float64(94.0)), (np.float64(152.0), np.float64(94.0)), (np.float64(151.0), np.float64(94.0)), (np.float64(150.0), np.float64(94.0)), (np.float64(149.0), np.float64(94.0)), (np.float64(148.0), np.float64(94.0)), (np.float64(147.0), np.float64(94.0)), (np.float64(146.0), np.float64(94.0)), (np.float64(145.0), np.float64(94.0)), (np.float64(144.0), np.float64(94.0))]
+deque([(np.float64(169.0), np.float64(95.0)), (np.float64(168.0), np.float64(94.0)), (np.float64(167.0), np.float64(94.0)), (np.float64(166.0), np.float64(94.0)), (np.float64(165.0), np.float64(94.0)), (np.float64(164.0), np.float64(94.0)), (np.float64(163.0), np.float64(94.0)), (np.float64(162.0), np.float64(94.0)), (np.float64(161.0), np.float64(94.0)), (np.float64(160.0), np.float64(94.0)), (np.float64(159.0), np.float64(94.0)), (np.float64(158.0), np.float64(94.0)), (np.float64(157.0), np.float64(94.0)), (np.float64(156.0), np.float64(94.0)), (np.float64(155.0), np.float64(94.0)), (np.float64(154.0), np.float64(94.0)), (np.float64(153.0), np.float64(94.0)), (np.float64(152.0), np.float64(94.0)), (np.float64(151.0), np.float64(94.0)), (np.float64(150.0), np.float64(94.0)), (np.float64(149.0), np.float64(94.0)), (np.float64(148.0), np.float64(94.0)), (np.float64(147.0), np.float64(94.0)), (np.float64(146.0), np.float64(94.0)), (np.float64(145.0), np.float64(94.0)), (np.float64(144.0), np.float64(94.0))])
+micro step: 75
+agent pose: 95.0 169.0 -2.356194490192345
+current.pose: 95.0 169.0
+goal: 97 212
+reward: -7.79049819448577
+step: 75
+path_local frontier: [(31, 31), (30, 31), (29, 31), (28, 31), (27, 31), (26, 31), (25, 31), (24, 31), (23, 31), (22, 31), (21, 31), (20, 31), (19, 31), (18, 31), (17, 31), (16, 31), (15, 31), (14, 31), (13, 31), (12, 31), (11, 31), (10, 31), (9, 31), (8, 31), (7, 31)]
+path_global frontier: [(np.float64(168.0), np.float64(94.0)), (np.float64(167.0), np.float64(94.0)), (np.float64(166.0), np.float64(94.0)), (np.float64(165.0), np.float64(94.0)), (np.float64(164.0), np.float64(94.0)), (np.float64(163.0), np.float64(94.0)), (np.float64(162.0), np.float64(94.0)), (np.float64(161.0), np.float64(94.0)), (np.float64(160.0), np.float64(94.0)), (np.float64(159.0), np.float64(94.0)), (np.float64(158.0), np.float64(94.0)), (np.float64(157.0), np.float64(94.0)), (np.float64(156.0), np.float64(94.0)), (np.float64(155.0), np.float64(94.0)), (np.float64(154.0), np.float64(94.0)), (np.float64(153.0), np.float64(94.0)), (np.float64(152.0), np.float64(94.0)), (np.float64(151.0), np.float64(94.0)), (np.float64(150.0), np.float64(94.0)), (np.float64(149.0), np.float64(94.0)), (np.float64(148.0), np.float64(94.0)), (np.float64(147.0), np.float64(94.0)), (np.float64(146.0), np.float64(94.0)), (np.float64(145.0), np.float64(94.0)), (np.float64(144.0), np.float64(94.0))]
+deque([(np.float64(168.0), np.float64(94.0)), (np.float64(167.0), np.float64(94.0)), (np.float64(166.0), np.float64(94.0)), (np.float64(165.0), np.float64(94.0)), (np.float64(164.0), np.float64(94.0)), (np.float64(163.0), np.float64(94.0)), (np.float64(162.0), np.float64(94.0)), (np.float64(161.0), np.float64(94.0)), (np.float64(160.0), np.float64(94.0)), (np.float64(159.0), np.float64(94.0)), (np.float64(158.0), np.float64(94.0)), (np.float64(157.0), np.float64(94.0)), (np.float64(156.0), np.float64(94.0)), (np.float64(155.0), np.float64(94.0)), (np.float64(154.0), np.float64(94.0)), (np.float64(153.0), np.float64(94.0)), (np.float64(152.0), np.float64(94.0)), (np.float64(151.0), np.float64(94.0)), (np.float64(150.0), np.float64(94.0)), (np.float64(149.0), np.float64(94.0)), (np.float64(148.0), np.float64(94.0)), (np.float64(147.0), np.float64(94.0)), (np.float64(146.0), np.float64(94.0)), (np.float64(145.0), np.float64(94.0)), (np.float64(144.0), np.float64(94.0))])
+micro step: 76
+agent pose: 94.0 168.0 -1.5707963267948966
+current.pose: 94.0 168.0
+goal: 97 212
+reward: -6.901123055267115
+step: 76
+path_local frontier: [(33, 33), (34, 34), (35, 35), (36, 36), (37, 37), (38, 38), (39, 39), (40, 40), (41, 41), (42, 42), (43, 43), (44, 44), (45, 45), (46, 46), (47, 47), (48, 48), (49, 49), (50, 50), (51, 51), (52, 52), (53, 53), (54, 54), (55, 55), (56, 55), (57, 55), (58, 55), (59, 55), (60, 55)]
+path_global frontier: [(np.float64(169.0), np.float64(95.0)), (np.float64(170.0), np.float64(96.0)), (np.float64(171.0), np.float64(97.0)), (np.float64(172.0), np.float64(98.0)), (np.float64(173.0), np.float64(99.0)), (np.float64(174.0), np.float64(100.0)), (np.float64(175.0), np.float64(101.0)), (np.float64(176.0), np.float64(102.0)), (np.float64(177.0), np.float64(103.0)), (np.float64(178.0), np.float64(104.0)), (np.float64(179.0), np.float64(105.0)), (np.float64(180.0), np.float64(106.0)), (np.float64(181.0), np.float64(107.0)), (np.float64(182.0), np.float64(108.0)), (np.float64(183.0), np.float64(109.0)), (np.float64(184.0), np.float64(110.0)), (np.float64(185.0), np.float64(111.0)), (np.float64(186.0), np.float64(112.0)), (np.float64(187.0), np.float64(113.0)), (np.float64(188.0), np.float64(114.0)), (np.float64(189.0), np.float64(115.0)), (np.float64(190.0), np.float64(116.0)), (np.float64(191.0), np.float64(117.0)), (np.float64(192.0), np.float64(117.0)), (np.float64(193.0), np.float64(117.0)), (np.float64(194.0), np.float64(117.0)), (np.float64(195.0), np.float64(117.0)), (np.float64(196.0), np.float64(117.0))]
+deque([(np.float64(169.0), np.float64(95.0)), (np.float64(170.0), np.float64(96.0)), (np.float64(171.0), np.float64(97.0)), (np.float64(172.0), np.float64(98.0)), (np.float64(173.0), np.float64(99.0)), (np.float64(174.0), np.float64(100.0)), (np.float64(175.0), np.float64(101.0)), (np.float64(176.0), np.float64(102.0)), (np.float64(177.0), np.float64(103.0)), (np.float64(178.0), np.float64(104.0)), (np.float64(179.0), np.float64(105.0)), (np.float64(180.0), np.float64(106.0)), (np.float64(181.0), np.float64(107.0)), (np.float64(182.0), np.float64(108.0)), (np.float64(183.0), np.float64(109.0)), (np.float64(184.0), np.float64(110.0)), (np.float64(185.0), np.float64(111.0)), (np.float64(186.0), np.float64(112.0)), (np.float64(187.0), np.float64(113.0)), (np.float64(188.0), np.float64(114.0)), (np.float64(189.0), np.float64(115.0)), (np.float64(190.0), np.float64(116.0)), (np.float64(191.0), np.float64(117.0)), (np.float64(192.0), np.float64(117.0)), (np.float64(193.0), np.float64(117.0)), (np.float64(194.0), np.float64(117.0)), (np.float64(195.0), np.float64(117.0)), (np.float64(196.0), np.float64(117.0))])
+micro step: 77
+agent pose: 95.0 169.0 0.7853981633974483
+current.pose: 95.0 169.0
+goal: 97 212
+reward: -3.722000649984434
+step: 77
+path_local frontier: [(33, 33), (34, 34), (35, 35), (36, 36), (37, 37), (38, 38), (39, 39), (40, 40), (41, 41), (42, 42), (43, 43), (44, 44), (45, 45), (46, 46), (47, 47), (47, 48), (47, 49), (47, 50), (47, 51), (47, 52), (47, 53), (47, 54), (47, 55), (47, 56), (47, 57), (47, 58), (47, 59), (47, 60), (47, 61), (47, 62)]
+path_global frontier: [(np.float64(170.0), np.float64(96.0)), (np.float64(171.0), np.float64(97.0)), (np.float64(172.0), np.float64(98.0)), (np.float64(173.0), np.float64(99.0)), (np.float64(174.0), np.float64(100.0)), (np.float64(175.0), np.float64(101.0)), (np.float64(176.0), np.float64(102.0)), (np.float64(177.0), np.float64(103.0)), (np.float64(178.0), np.float64(104.0)), (np.float64(179.0), np.float64(105.0)), (np.float64(180.0), np.float64(106.0)), (np.float64(181.0), np.float64(107.0)), (np.float64(182.0), np.float64(108.0)), (np.float64(183.0), np.float64(109.0)), (np.float64(184.0), np.float64(110.0)), (np.float64(184.0), np.float64(111.0)), (np.float64(184.0), np.float64(112.0)), (np.float64(184.0), np.float64(113.0)), (np.float64(184.0), np.float64(114.0)), (np.float64(184.0), np.float64(115.0)), (np.float64(184.0), np.float64(116.0)), (np.float64(184.0), np.float64(117.0)), (np.float64(184.0), np.float64(118.0)), (np.float64(184.0), np.float64(119.0)), (np.float64(184.0), np.float64(120.0)), (np.float64(184.0), np.float64(121.0)), (np.float64(184.0), np.float64(122.0)), (np.float64(184.0), np.float64(123.0)), (np.float64(184.0), np.float64(124.0)), (np.float64(184.0), np.float64(125.0))]
+deque([(np.float64(170.0), np.float64(96.0)), (np.float64(171.0), np.float64(97.0)), (np.float64(172.0), np.float64(98.0)), (np.float64(173.0), np.float64(99.0)), (np.float64(174.0), np.float64(100.0)), (np.float64(175.0), np.float64(101.0)), (np.float64(176.0), np.float64(102.0)), (np.float64(177.0), np.float64(103.0)), (np.float64(178.0), np.float64(104.0)), (np.float64(179.0), np.float64(105.0)), (np.float64(180.0), np.float64(106.0)), (np.float64(181.0), np.float64(107.0)), (np.float64(182.0), np.float64(108.0)), (np.float64(183.0), np.float64(109.0)), (np.float64(184.0), np.float64(110.0)), (np.float64(184.0), np.float64(111.0)), (np.float64(184.0), np.float64(112.0)), (np.float64(184.0), np.float64(113.0)), (np.float64(184.0), np.float64(114.0)), (np.float64(184.0), np.float64(115.0)), (np.float64(184.0), np.float64(116.0)), (np.float64(184.0), np.float64(117.0)), (np.float64(184.0), np.float64(118.0)), (np.float64(184.0), np.float64(119.0)), (np.float64(184.0), np.float64(120.0)), (np.float64(184.0), np.float64(121.0)), (np.float64(184.0), np.float64(122.0)), (np.float64(184.0), np.float64(123.0)), (np.float64(184.0), np.float64(124.0)), (np.float64(184.0), np.float64(125.0))])
+micro step: 78
+agent pose: 96.0 170.0 0.7853981633974483
+current.pose: 96.0 170.0
+goal: 97 212
+reward: -4.996378100262682
+step: 78
+path_local frontier: [(33, 31), (34, 30), (35, 29), (36, 28), (37, 27), (38, 26), (39, 25), (40, 24), (41, 23), (42, 22), (43, 21), (44, 20), (45, 19), (46, 18), (47, 18), (48, 18), (49, 18), (50, 18), (51, 18), (52, 18), (53, 18), (54, 18), (55, 18), (56, 18), (57, 18), (58, 18), (59, 18), (60, 18), (61, 18)]
+path_global frontier: [(np.float64(171.0), np.float64(95.0)), (np.float64(172.0), np.float64(94.0)), (np.float64(173.0), np.float64(93.0)), (np.float64(174.0), np.float64(92.0)), (np.float64(175.0), np.float64(91.0)), (np.float64(176.0), np.float64(90.0)), (np.float64(177.0), np.float64(89.0)), (np.float64(178.0), np.float64(88.0)), (np.float64(179.0), np.float64(87.0)), (np.float64(180.0), np.float64(86.0)), (np.float64(181.0), np.float64(85.0)), (np.float64(182.0), np.float64(84.0)), (np.float64(183.0), np.float64(83.0)), (np.float64(184.0), np.float64(82.0)), (np.float64(185.0), np.float64(82.0)), (np.float64(186.0), np.float64(82.0)), (np.float64(187.0), np.float64(82.0)), (np.float64(188.0), np.float64(82.0)), (np.float64(189.0), np.float64(82.0)), (np.float64(190.0), np.float64(82.0)), (np.float64(191.0), np.float64(82.0)), (np.float64(192.0), np.float64(82.0)), (np.float64(193.0), np.float64(82.0)), (np.float64(194.0), np.float64(82.0)), (np.float64(195.0), np.float64(82.0)), (np.float64(196.0), np.float64(82.0)), (np.float64(197.0), np.float64(82.0)), (np.float64(198.0), np.float64(82.0)), (np.float64(199.0), np.float64(82.0))]
+deque([(np.float64(171.0), np.float64(95.0)), (np.float64(172.0), np.float64(94.0)), (np.float64(173.0), np.float64(93.0)), (np.float64(174.0), np.float64(92.0)), (np.float64(175.0), np.float64(91.0)), (np.float64(176.0), np.float64(90.0)), (np.float64(177.0), np.float64(89.0)), (np.float64(178.0), np.float64(88.0)), (np.float64(179.0), np.float64(87.0)), (np.float64(180.0), np.float64(86.0)), (np.float64(181.0), np.float64(85.0)), (np.float64(182.0), np.float64(84.0)), (np.float64(183.0), np.float64(83.0)), (np.float64(184.0), np.float64(82.0)), (np.float64(185.0), np.float64(82.0)), (np.float64(186.0), np.float64(82.0)), (np.float64(187.0), np.float64(82.0)), (np.float64(188.0), np.float64(82.0)), (np.float64(189.0), np.float64(82.0)), (np.float64(190.0), np.float64(82.0)), (np.float64(191.0), np.float64(82.0)), (np.float64(192.0), np.float64(82.0)), (np.float64(193.0), np.float64(82.0)), (np.float64(194.0), np.float64(82.0)), (np.float64(195.0), np.float64(82.0)), (np.float64(196.0), np.float64(82.0)), (np.float64(197.0), np.float64(82.0)), (np.float64(198.0), np.float64(82.0)), (np.float64(199.0), np.float64(82.0))])
+micro step: 79
+agent pose: 95.0 171.0 2.356194490192345
+current.pose: 95.0 171.0
+goal: 97 212
+reward: -5.182509728932681
+step: 79
+path_local frontier: [(31, 33), (30, 34), (29, 35), (28, 36), (28, 37), (28, 38), (28, 39), (28, 40), (28, 41), (28, 42), (28, 43), (28, 44), (28, 45), (28, 46), (28, 47), (28, 48), (28, 49), (28, 50), (28, 51), (28, 52), (28, 53), (28, 54), (28, 55), (28, 56), (28, 57), (28, 58), (28, 59), (28, 60), (28, 61)]
+path_global frontier: [(np.float64(170.0), np.float64(96.0)), (np.float64(169.0), np.float64(97.0)), (np.float64(168.0), np.float64(98.0)), (np.float64(167.0), np.float64(99.0)), (np.float64(167.0), np.float64(100.0)), (np.float64(167.0), np.float64(101.0)), (np.float64(167.0), np.float64(102.0)), (np.float64(167.0), np.float64(103.0)), (np.float64(167.0), np.float64(104.0)), (np.float64(167.0), np.float64(105.0)), (np.float64(167.0), np.float64(106.0)), (np.float64(167.0), np.float64(107.0)), (np.float64(167.0), np.float64(108.0)), (np.float64(167.0), np.float64(109.0)), (np.float64(167.0), np.float64(110.0)), (np.float64(167.0), np.float64(111.0)), (np.float64(167.0), np.float64(112.0)), (np.float64(167.0), np.float64(113.0)), (np.float64(167.0), np.float64(114.0)), (np.float64(167.0), np.float64(115.0)), (np.float64(167.0), np.float64(116.0)), (np.float64(167.0), np.float64(117.0)), (np.float64(167.0), np.float64(118.0)), (np.float64(167.0), np.float64(119.0)), (np.float64(167.0), np.float64(120.0)), (np.float64(167.0), np.float64(121.0)), (np.float64(167.0), np.float64(122.0)), (np.float64(167.0), np.float64(123.0)), (np.float64(167.0), np.float64(124.0))]
+deque([(np.float64(170.0), np.float64(96.0)), (np.float64(169.0), np.float64(97.0)), (np.float64(168.0), np.float64(98.0)), (np.float64(167.0), np.float64(99.0)), (np.float64(167.0), np.float64(100.0)), (np.float64(167.0), np.float64(101.0)), (np.float64(167.0), np.float64(102.0)), (np.float64(167.0), np.float64(103.0)), (np.float64(167.0), np.float64(104.0)), (np.float64(167.0), np.float64(105.0)), (np.float64(167.0), np.float64(106.0)), (np.float64(167.0), np.float64(107.0)), (np.float64(167.0), np.float64(108.0)), (np.float64(167.0), np.float64(109.0)), (np.float64(167.0), np.float64(110.0)), (np.float64(167.0), np.float64(111.0)), (np.float64(167.0), np.float64(112.0)), (np.float64(167.0), np.float64(113.0)), (np.float64(167.0), np.float64(114.0)), (np.float64(167.0), np.float64(115.0)), (np.float64(167.0), np.float64(116.0)), (np.float64(167.0), np.float64(117.0)), (np.float64(167.0), np.float64(118.0)), (np.float64(167.0), np.float64(119.0)), (np.float64(167.0), np.float64(120.0)), (np.float64(167.0), np.float64(121.0)), (np.float64(167.0), np.float64(122.0)), (np.float64(167.0), np.float64(123.0)), (np.float64(167.0), np.float64(124.0))])
+micro step: 80
+agent pose: 96.0 170.0 -0.7853981633974483
+current.pose: 96.0 170.0
+goal: 97 212
+reward: -8.967888434464767
+step: 80
+path_local frontier: [(31, 33), (30, 34), (29, 35), (29, 36), (29, 37), (29, 38), (29, 39), (29, 40), (29, 41), (29, 42), (29, 43), (29, 44), (29, 45), (29, 46), (29, 47), (29, 48), (29, 49), (29, 50), (29, 51), (29, 52), (29, 53), (29, 54), (29, 55), (29, 56), (29, 57), (29, 58), (29, 59), (29, 60)]
+path_global frontier: [(np.float64(169.0), np.float64(97.0)), (np.float64(168.0), np.float64(98.0)), (np.float64(167.0), np.float64(99.0)), (np.float64(167.0), np.float64(100.0)), (np.float64(167.0), np.float64(101.0)), (np.float64(167.0), np.float64(102.0)), (np.float64(167.0), np.float64(103.0)), (np.float64(167.0), np.float64(104.0)), (np.float64(167.0), np.float64(105.0)), (np.float64(167.0), np.float64(106.0)), (np.float64(167.0), np.float64(107.0)), (np.float64(167.0), np.float64(108.0)), (np.float64(167.0), np.float64(109.0)), (np.float64(167.0), np.float64(110.0)), (np.float64(167.0), np.float64(111.0)), (np.float64(167.0), np.float64(112.0)), (np.float64(167.0), np.float64(113.0)), (np.float64(167.0), np.float64(114.0)), (np.float64(167.0), np.float64(115.0)), (np.float64(167.0), np.float64(116.0)), (np.float64(167.0), np.float64(117.0)), (np.float64(167.0), np.float64(118.0)), (np.float64(167.0), np.float64(119.0)), (np.float64(167.0), np.float64(120.0)), (np.float64(167.0), np.float64(121.0)), (np.float64(167.0), np.float64(122.0)), (np.float64(167.0), np.float64(123.0)), (np.float64(167.0), np.float64(124.0))]
+deque([(np.float64(169.0), np.float64(97.0)), (np.float64(168.0), np.float64(98.0)), (np.float64(167.0), np.float64(99.0)), (np.float64(167.0), np.float64(100.0)), (np.float64(167.0), np.float64(101.0)), (np.float64(167.0), np.float64(102.0)), (np.float64(167.0), np.float64(103.0)), (np.float64(167.0), np.float64(104.0)), (np.float64(167.0), np.float64(105.0)), (np.float64(167.0), np.float64(106.0)), (np.float64(167.0), np.float64(107.0)), (np.float64(167.0), np.float64(108.0)), (np.float64(167.0), np.float64(109.0)), (np.float64(167.0), np.float64(110.0)), (np.float64(167.0), np.float64(111.0)), (np.float64(167.0), np.float64(112.0)), (np.float64(167.0), np.float64(113.0)), (np.float64(167.0), np.float64(114.0)), (np.float64(167.0), np.float64(115.0)), (np.float64(167.0), np.float64(116.0)), (np.float64(167.0), np.float64(117.0)), (np.float64(167.0), np.float64(118.0)), (np.float64(167.0), np.float64(119.0)), (np.float64(167.0), np.float64(120.0)), (np.float64(167.0), np.float64(121.0)), (np.float64(167.0), np.float64(122.0)), (np.float64(167.0), np.float64(123.0)), (np.float64(167.0), np.float64(124.0))])
+micro step: 81
+agent pose: 97.0 169.0 -0.7853981633974483
+current.pose: 97.0 169.0
+goal: 97 212
+reward: -6.831428515332522
+step: 81
+path_local frontier: [(31, 31), (30, 30), (29, 29), (29, 28), (29, 27), (29, 26), (29, 25), (29, 24), (29, 23), (29, 22), (29, 21), (29, 20), (29, 19), (29, 18), (29, 17), (29, 16), (29, 15), (29, 14), (29, 13), (29, 12), (29, 11), (29, 10), (29, 9), (29, 8), (29, 7), (29, 6), (29, 5), (29, 4), (29, 3), (29, 2), (29, 1)]
+path_global frontier: [(np.float64(168.0), np.float64(96.0)), (np.float64(167.0), np.float64(95.0)), (np.float64(166.0), np.float64(94.0)), (np.float64(166.0), np.float64(93.0)), (np.float64(166.0), np.float64(92.0)), (np.float64(166.0), np.float64(91.0)), (np.float64(166.0), np.float64(90.0)), (np.float64(166.0), np.float64(89.0)), (np.float64(166.0), np.float64(88.0)), (np.float64(166.0), np.float64(87.0)), (np.float64(166.0), np.float64(86.0)), (np.float64(166.0), np.float64(85.0)), (np.float64(166.0), np.float64(84.0)), (np.float64(166.0), np.float64(83.0)), (np.float64(166.0), np.float64(82.0)), (np.float64(166.0), np.float64(81.0)), (np.float64(166.0), np.float64(80.0)), (np.float64(166.0), np.float64(79.0)), (np.float64(166.0), np.float64(78.0)), (np.float64(166.0), np.float64(77.0)), (np.float64(166.0), np.float64(76.0)), (np.float64(166.0), np.float64(75.0)), (np.float64(166.0), np.float64(74.0)), (np.float64(166.0), np.float64(73.0)), (np.float64(166.0), np.float64(72.0)), (np.float64(166.0), np.float64(71.0)), (np.float64(166.0), np.float64(70.0)), (np.float64(166.0), np.float64(69.0)), (np.float64(166.0), np.float64(68.0)), (np.float64(166.0), np.float64(67.0)), (np.float64(166.0), np.float64(66.0))]
+deque([(np.float64(168.0), np.float64(96.0)), (np.float64(167.0), np.float64(95.0)), (np.float64(166.0), np.float64(94.0)), (np.float64(166.0), np.float64(93.0)), (np.float64(166.0), np.float64(92.0)), (np.float64(166.0), np.float64(91.0)), (np.float64(166.0), np.float64(90.0)), (np.float64(166.0), np.float64(89.0)), (np.float64(166.0), np.float64(88.0)), (np.float64(166.0), np.float64(87.0)), (np.float64(166.0), np.float64(86.0)), (np.float64(166.0), np.float64(85.0)), (np.float64(166.0), np.float64(84.0)), (np.float64(166.0), np.float64(83.0)), (np.float64(166.0), np.float64(82.0)), (np.float64(166.0), np.float64(81.0)), (np.float64(166.0), np.float64(80.0)), (np.float64(166.0), np.float64(79.0)), (np.float64(166.0), np.float64(78.0)), (np.float64(166.0), np.float64(77.0)), (np.float64(166.0), np.float64(76.0)), (np.float64(166.0), np.float64(75.0)), (np.float64(166.0), np.float64(74.0)), (np.float64(166.0), np.float64(73.0)), (np.float64(166.0), np.float64(72.0)), (np.float64(166.0), np.float64(71.0)), (np.float64(166.0), np.float64(70.0)), (np.float64(166.0), np.float64(69.0)), (np.float64(166.0), np.float64(68.0)), (np.float64(166.0), np.float64(67.0)), (np.float64(166.0), np.float64(66.0))])
+micro step: 82
+agent pose: 96.0 168.0 -2.356194490192345
+current.pose: 96.0 168.0
+goal: 97 212
+reward: -6.929465833884159
+step: 82
+path_local frontier: [(31, 33), (30, 34), (29, 35), (28, 36), (27, 37), (26, 38), (25, 39), (24, 40), (23, 41), (22, 42), (21, 43), (20, 44), (19, 45), (18, 46), (17, 46), (16, 46), (15, 46), (14, 46), (13, 46), (12, 46), (11, 46), (10, 46), (9, 46), (8, 46)]
+path_global frontier: [(np.float64(167.0), np.float64(97.0)), (np.float64(166.0), np.float64(98.0)), (np.float64(165.0), np.float64(99.0)), (np.float64(164.0), np.float64(100.0)), (np.float64(163.0), np.float64(101.0)), (np.float64(162.0), np.float64(102.0)), (np.float64(161.0), np.float64(103.0)), (np.float64(160.0), np.float64(104.0)), (np.float64(159.0), np.float64(105.0)), (np.float64(158.0), np.float64(106.0)), (np.float64(157.0), np.float64(107.0)), (np.float64(156.0), np.float64(108.0)), (np.float64(155.0), np.float64(109.0)), (np.float64(154.0), np.float64(110.0)), (np.float64(153.0), np.float64(110.0)), (np.float64(152.0), np.float64(110.0)), (np.float64(151.0), np.float64(110.0)), (np.float64(150.0), np.float64(110.0)), (np.float64(149.0), np.float64(110.0)), (np.float64(148.0), np.float64(110.0)), (np.float64(147.0), np.float64(110.0)), (np.float64(146.0), np.float64(110.0)), (np.float64(145.0), np.float64(110.0)), (np.float64(144.0), np.float64(110.0))]
+deque([(np.float64(167.0), np.float64(97.0)), (np.float64(166.0), np.float64(98.0)), (np.float64(165.0), np.float64(99.0)), (np.float64(164.0), np.float64(100.0)), (np.float64(163.0), np.float64(101.0)), (np.float64(162.0), np.float64(102.0)), (np.float64(161.0), np.float64(103.0)), (np.float64(160.0), np.float64(104.0)), (np.float64(159.0), np.float64(105.0)), (np.float64(158.0), np.float64(106.0)), (np.float64(157.0), np.float64(107.0)), (np.float64(156.0), np.float64(108.0)), (np.float64(155.0), np.float64(109.0)), (np.float64(154.0), np.float64(110.0)), (np.float64(153.0), np.float64(110.0)), (np.float64(152.0), np.float64(110.0)), (np.float64(151.0), np.float64(110.0)), (np.float64(150.0), np.float64(110.0)), (np.float64(149.0), np.float64(110.0)), (np.float64(148.0), np.float64(110.0)), (np.float64(147.0), np.float64(110.0)), (np.float64(146.0), np.float64(110.0)), (np.float64(145.0), np.float64(110.0)), (np.float64(144.0), np.float64(110.0))])
+micro step: 83
+agent pose: 97.0 167.0 -0.7853981633974483
+current.pose: 97.0 167.0
+goal: 97 212
+reward: -6.9455341661158405
+step: 83
+path_local frontier: [(32, 33), (32, 34), (32, 35), (32, 36), (32, 37), (32, 38), (32, 39), (32, 40), (32, 41), (32, 42), (32, 43), (32, 44), (32, 45), (32, 46), (32, 47), (32, 48), (32, 49), (32, 50), (32, 51), (32, 52), (32, 53), (32, 54), (32, 55), (32, 56), (32, 57), (32, 58), (32, 59)]
+path_global frontier: [(np.float64(167.0), np.float64(98.0)), (np.float64(167.0), np.float64(99.0)), (np.float64(167.0), np.float64(100.0)), (np.float64(167.0), np.float64(101.0)), (np.float64(167.0), np.float64(102.0)), (np.float64(167.0), np.float64(103.0)), (np.float64(167.0), np.float64(104.0)), (np.float64(167.0), np.float64(105.0)), (np.float64(167.0), np.float64(106.0)), (np.float64(167.0), np.float64(107.0)), (np.float64(167.0), np.float64(108.0)), (np.float64(167.0), np.float64(109.0)), (np.float64(167.0), np.float64(110.0)), (np.float64(167.0), np.float64(111.0)), (np.float64(167.0), np.float64(112.0)), (np.float64(167.0), np.float64(113.0)), (np.float64(167.0), np.float64(114.0)), (np.float64(167.0), np.float64(115.0)), (np.float64(167.0), np.float64(116.0)), (np.float64(167.0), np.float64(117.0)), (np.float64(167.0), np.float64(118.0)), (np.float64(167.0), np.float64(119.0)), (np.float64(167.0), np.float64(120.0)), (np.float64(167.0), np.float64(121.0)), (np.float64(167.0), np.float64(122.0)), (np.float64(167.0), np.float64(123.0)), (np.float64(167.0), np.float64(124.0))]
+deque([(np.float64(167.0), np.float64(98.0)), (np.float64(167.0), np.float64(99.0)), (np.float64(167.0), np.float64(100.0)), (np.float64(167.0), np.float64(101.0)), (np.float64(167.0), np.float64(102.0)), (np.float64(167.0), np.float64(103.0)), (np.float64(167.0), np.float64(104.0)), (np.float64(167.0), np.float64(105.0)), (np.float64(167.0), np.float64(106.0)), (np.float64(167.0), np.float64(107.0)), (np.float64(167.0), np.float64(108.0)), (np.float64(167.0), np.float64(109.0)), (np.float64(167.0), np.float64(110.0)), (np.float64(167.0), np.float64(111.0)), (np.float64(167.0), np.float64(112.0)), (np.float64(167.0), np.float64(113.0)), (np.float64(167.0), np.float64(114.0)), (np.float64(167.0), np.float64(115.0)), (np.float64(167.0), np.float64(116.0)), (np.float64(167.0), np.float64(117.0)), (np.float64(167.0), np.float64(118.0)), (np.float64(167.0), np.float64(119.0)), (np.float64(167.0), np.float64(120.0)), (np.float64(167.0), np.float64(121.0)), (np.float64(167.0), np.float64(122.0)), (np.float64(167.0), np.float64(123.0)), (np.float64(167.0), np.float64(124.0))])
+micro step: 84
+agent pose: 98.0 167.0 0.0
+current.pose: 98.0 167.0
+goal: 97 212
+reward: -5.372852862584515
+step: 84
+path_local frontier: [(33, 31), (34, 30), (35, 29), (36, 28), (37, 27), (38, 26), (39, 25), (40, 24), (41, 23), (42, 22), (43, 21), (44, 20), (45, 19), (46, 18), (46, 17), (46, 16), (46, 15), (46, 14), (46, 13), (46, 12), (46, 11), (46, 10), (46, 9), (46, 8), (46, 7), (46, 6), (46, 5), (46, 4), (46, 3), (46, 2), (46, 1)]
+path_global frontier: [(np.float64(168.0), np.float64(97.0)), (np.float64(169.0), np.float64(96.0)), (np.float64(170.0), np.float64(95.0)), (np.float64(171.0), np.float64(94.0)), (np.float64(172.0), np.float64(93.0)), (np.float64(173.0), np.float64(92.0)), (np.float64(174.0), np.float64(91.0)), (np.float64(175.0), np.float64(90.0)), (np.float64(176.0), np.float64(89.0)), (np.float64(177.0), np.float64(88.0)), (np.float64(178.0), np.float64(87.0)), (np.float64(179.0), np.float64(86.0)), (np.float64(180.0), np.float64(85.0)), (np.float64(181.0), np.float64(84.0)), (np.float64(181.0), np.float64(83.0)), (np.float64(181.0), np.float64(82.0)), (np.float64(181.0), np.float64(81.0)), (np.float64(181.0), np.float64(80.0)), (np.float64(181.0), np.float64(79.0)), (np.float64(181.0), np.float64(78.0)), (np.float64(181.0), np.float64(77.0)), (np.float64(181.0), np.float64(76.0)), (np.float64(181.0), np.float64(75.0)), (np.float64(181.0), np.float64(74.0)), (np.float64(181.0), np.float64(73.0)), (np.float64(181.0), np.float64(72.0)), (np.float64(181.0), np.float64(71.0)), (np.float64(181.0), np.float64(70.0)), (np.float64(181.0), np.float64(69.0)), (np.float64(181.0), np.float64(68.0)), (np.float64(181.0), np.float64(67.0))]
+deque([(np.float64(168.0), np.float64(97.0)), (np.float64(169.0), np.float64(96.0)), (np.float64(170.0), np.float64(95.0)), (np.float64(171.0), np.float64(94.0)), (np.float64(172.0), np.float64(93.0)), (np.float64(173.0), np.float64(92.0)), (np.float64(174.0), np.float64(91.0)), (np.float64(175.0), np.float64(90.0)), (np.float64(176.0), np.float64(89.0)), (np.float64(177.0), np.float64(88.0)), (np.float64(178.0), np.float64(87.0)), (np.float64(179.0), np.float64(86.0)), (np.float64(180.0), np.float64(85.0)), (np.float64(181.0), np.float64(84.0)), (np.float64(181.0), np.float64(83.0)), (np.float64(181.0), np.float64(82.0)), (np.float64(181.0), np.float64(81.0)), (np.float64(181.0), np.float64(80.0)), (np.float64(181.0), np.float64(79.0)), (np.float64(181.0), np.float64(78.0)), (np.float64(181.0), np.float64(77.0)), (np.float64(181.0), np.float64(76.0)), (np.float64(181.0), np.float64(75.0)), (np.float64(181.0), np.float64(74.0)), (np.float64(181.0), np.float64(73.0)), (np.float64(181.0), np.float64(72.0)), (np.float64(181.0), np.float64(71.0)), (np.float64(181.0), np.float64(70.0)), (np.float64(181.0), np.float64(69.0)), (np.float64(181.0), np.float64(68.0)), (np.float64(181.0), np.float64(67.0))])
+micro step: 85
+agent pose: 97.0 168.0 2.356194490192345
+current.pose: 97.0 168.0
+goal: 97 212
+reward: -4.090082307351371
+step: 85
+path_local frontier: [(31, 33), (30, 34), (29, 34), (28, 34), (27, 34), (26, 34), (25, 34), (24, 34), (23, 34), (22, 34), (21, 34), (20, 34), (19, 34), (18, 34), (17, 34), (16, 34), (15, 34), (14, 34), (13, 34), (12, 34), (11, 34), (10, 34), (9, 34), (8, 34), (7, 34), (6, 34), (5, 34), (4, 34)]
+path_global frontier: [(np.float64(167.0), np.float64(98.0)), (np.float64(166.0), np.float64(99.0)), (np.float64(165.0), np.float64(99.0)), (np.float64(164.0), np.float64(99.0)), (np.float64(163.0), np.float64(99.0)), (np.float64(162.0), np.float64(99.0)), (np.float64(161.0), np.float64(99.0)), (np.float64(160.0), np.float64(99.0)), (np.float64(159.0), np.float64(99.0)), (np.float64(158.0), np.float64(99.0)), (np.float64(157.0), np.float64(99.0)), (np.float64(156.0), np.float64(99.0)), (np.float64(155.0), np.float64(99.0)), (np.float64(154.0), np.float64(99.0)), (np.float64(153.0), np.float64(99.0)), (np.float64(152.0), np.float64(99.0)), (np.float64(151.0), np.float64(99.0)), (np.float64(150.0), np.float64(99.0)), (np.float64(149.0), np.float64(99.0)), (np.float64(148.0), np.float64(99.0)), (np.float64(147.0), np.float64(99.0)), (np.float64(146.0), np.float64(99.0)), (np.float64(145.0), np.float64(99.0)), (np.float64(144.0), np.float64(99.0)), (np.float64(143.0), np.float64(99.0)), (np.float64(142.0), np.float64(99.0)), (np.float64(141.0), np.float64(99.0)), (np.float64(140.0), np.float64(99.0))]
+deque([(np.float64(167.0), np.float64(98.0)), (np.float64(166.0), np.float64(99.0)), (np.float64(165.0), np.float64(99.0)), (np.float64(164.0), np.float64(99.0)), (np.float64(163.0), np.float64(99.0)), (np.float64(162.0), np.float64(99.0)), (np.float64(161.0), np.float64(99.0)), (np.float64(160.0), np.float64(99.0)), (np.float64(159.0), np.float64(99.0)), (np.float64(158.0), np.float64(99.0)), (np.float64(157.0), np.float64(99.0)), (np.float64(156.0), np.float64(99.0)), (np.float64(155.0), np.float64(99.0)), (np.float64(154.0), np.float64(99.0)), (np.float64(153.0), np.float64(99.0)), (np.float64(152.0), np.float64(99.0)), (np.float64(151.0), np.float64(99.0)), (np.float64(150.0), np.float64(99.0)), (np.float64(149.0), np.float64(99.0)), (np.float64(148.0), np.float64(99.0)), (np.float64(147.0), np.float64(99.0)), (np.float64(146.0), np.float64(99.0)), (np.float64(145.0), np.float64(99.0)), (np.float64(144.0), np.float64(99.0)), (np.float64(143.0), np.float64(99.0)), (np.float64(142.0), np.float64(99.0)), (np.float64(141.0), np.float64(99.0)), (np.float64(140.0), np.float64(99.0))])
+micro step: 86
+agent pose: 98.0 167.0 -0.7853981633974483
+current.pose: 98.0 167.0
+goal: 97 212
+reward: -8.487616774347355
+step: 86
+path_local frontier: [(33, 31), (34, 30), (35, 29), (36, 28), (37, 27), (38, 26), (39, 25), (40, 24), (41, 23), (42, 22), (43, 21), (44, 20), (45, 19), (46, 18), (46, 17), (46, 16), (46, 15), (46, 14), (46, 13), (46, 12), (46, 11), (46, 10), (46, 9), (46, 8), (46, 7), (46, 6), (46, 5), (46, 4), (46, 3), (46, 2), (46, 1)]
+path_global frontier: [(np.float64(168.0), np.float64(97.0)), (np.float64(169.0), np.float64(96.0)), (np.float64(170.0), np.float64(95.0)), (np.float64(171.0), np.float64(94.0)), (np.float64(172.0), np.float64(93.0)), (np.float64(173.0), np.float64(92.0)), (np.float64(174.0), np.float64(91.0)), (np.float64(175.0), np.float64(90.0)), (np.float64(176.0), np.float64(89.0)), (np.float64(177.0), np.float64(88.0)), (np.float64(178.0), np.float64(87.0)), (np.float64(179.0), np.float64(86.0)), (np.float64(180.0), np.float64(85.0)), (np.float64(181.0), np.float64(84.0)), (np.float64(181.0), np.float64(83.0)), (np.float64(181.0), np.float64(82.0)), (np.float64(181.0), np.float64(81.0)), (np.float64(181.0), np.float64(80.0)), (np.float64(181.0), np.float64(79.0)), (np.float64(181.0), np.float64(78.0)), (np.float64(181.0), np.float64(77.0)), (np.float64(181.0), np.float64(76.0)), (np.float64(181.0), np.float64(75.0)), (np.float64(181.0), np.float64(74.0)), (np.float64(181.0), np.float64(73.0)), (np.float64(181.0), np.float64(72.0)), (np.float64(181.0), np.float64(71.0)), (np.float64(181.0), np.float64(70.0)), (np.float64(181.0), np.float64(69.0)), (np.float64(181.0), np.float64(68.0)), (np.float64(181.0), np.float64(67.0))]
+deque([(np.float64(168.0), np.float64(97.0)), (np.float64(169.0), np.float64(96.0)), (np.float64(170.0), np.float64(95.0)), (np.float64(171.0), np.float64(94.0)), (np.float64(172.0), np.float64(93.0)), (np.float64(173.0), np.float64(92.0)), (np.float64(174.0), np.float64(91.0)), (np.float64(175.0), np.float64(90.0)), (np.float64(176.0), np.float64(89.0)), (np.float64(177.0), np.float64(88.0)), (np.float64(178.0), np.float64(87.0)), (np.float64(179.0), np.float64(86.0)), (np.float64(180.0), np.float64(85.0)), (np.float64(181.0), np.float64(84.0)), (np.float64(181.0), np.float64(83.0)), (np.float64(181.0), np.float64(82.0)), (np.float64(181.0), np.float64(81.0)), (np.float64(181.0), np.float64(80.0)), (np.float64(181.0), np.float64(79.0)), (np.float64(181.0), np.float64(78.0)), (np.float64(181.0), np.float64(77.0)), (np.float64(181.0), np.float64(76.0)), (np.float64(181.0), np.float64(75.0)), (np.float64(181.0), np.float64(74.0)), (np.float64(181.0), np.float64(73.0)), (np.float64(181.0), np.float64(72.0)), (np.float64(181.0), np.float64(71.0)), (np.float64(181.0), np.float64(70.0)), (np.float64(181.0), np.float64(69.0)), (np.float64(181.0), np.float64(68.0)), (np.float64(181.0), np.float64(67.0))])
+micro step: 87
+agent pose: 97.0 168.0 2.356194490192345
+current.pose: 97.0 168.0
+goal: 97 212
+reward: -4.334049892319312
+step: 87
+path_local frontier: [(31, 33), (30, 34), (29, 34), (28, 34), (27, 34), (26, 34), (25, 34), (24, 34), (23, 34), (22, 34), (21, 34), (20, 34), (19, 34), (18, 34), (17, 34), (16, 34), (15, 34), (14, 34), (13, 34), (12, 34), (11, 34), (10, 34), (9, 34), (8, 34), (7, 34), (6, 34), (5, 34), (4, 34)]
+path_global frontier: [(np.float64(167.0), np.float64(98.0)), (np.float64(166.0), np.float64(99.0)), (np.float64(165.0), np.float64(99.0)), (np.float64(164.0), np.float64(99.0)), (np.float64(163.0), np.float64(99.0)), (np.float64(162.0), np.float64(99.0)), (np.float64(161.0), np.float64(99.0)), (np.float64(160.0), np.float64(99.0)), (np.float64(159.0), np.float64(99.0)), (np.float64(158.0), np.float64(99.0)), (np.float64(157.0), np.float64(99.0)), (np.float64(156.0), np.float64(99.0)), (np.float64(155.0), np.float64(99.0)), (np.float64(154.0), np.float64(99.0)), (np.float64(153.0), np.float64(99.0)), (np.float64(152.0), np.float64(99.0)), (np.float64(151.0), np.float64(99.0)), (np.float64(150.0), np.float64(99.0)), (np.float64(149.0), np.float64(99.0)), (np.float64(148.0), np.float64(99.0)), (np.float64(147.0), np.float64(99.0)), (np.float64(146.0), np.float64(99.0)), (np.float64(145.0), np.float64(99.0)), (np.float64(144.0), np.float64(99.0)), (np.float64(143.0), np.float64(99.0)), (np.float64(142.0), np.float64(99.0)), (np.float64(141.0), np.float64(99.0)), (np.float64(140.0), np.float64(99.0))]
+deque([(np.float64(167.0), np.float64(98.0)), (np.float64(166.0), np.float64(99.0)), (np.float64(165.0), np.float64(99.0)), (np.float64(164.0), np.float64(99.0)), (np.float64(163.0), np.float64(99.0)), (np.float64(162.0), np.float64(99.0)), (np.float64(161.0), np.float64(99.0)), (np.float64(160.0), np.float64(99.0)), (np.float64(159.0), np.float64(99.0)), (np.float64(158.0), np.float64(99.0)), (np.float64(157.0), np.float64(99.0)), (np.float64(156.0), np.float64(99.0)), (np.float64(155.0), np.float64(99.0)), (np.float64(154.0), np.float64(99.0)), (np.float64(153.0), np.float64(99.0)), (np.float64(152.0), np.float64(99.0)), (np.float64(151.0), np.float64(99.0)), (np.float64(150.0), np.float64(99.0)), (np.float64(149.0), np.float64(99.0)), (np.float64(148.0), np.float64(99.0)), (np.float64(147.0), np.float64(99.0)), (np.float64(146.0), np.float64(99.0)), (np.float64(145.0), np.float64(99.0)), (np.float64(144.0), np.float64(99.0)), (np.float64(143.0), np.float64(99.0)), (np.float64(142.0), np.float64(99.0)), (np.float64(141.0), np.float64(99.0)), (np.float64(140.0), np.float64(99.0))])
+micro step: 88
+agent pose: 98.0 167.0 -0.7853981633974483
+current.pose: 98.0 167.0
+goal: 97 212
+reward: -9.124283441014022
+step: 88
+path_local frontier: [(31, 33), (30, 33), (29, 33), (28, 33), (27, 33), (26, 33), (25, 33), (24, 33), (23, 33), (22, 33), (21, 33), (20, 33), (19, 33), (18, 33), (17, 33), (16, 33), (15, 33), (14, 33), (13, 33), (12, 33), (11, 33), (10, 33), (9, 33), (8, 33), (7, 33), (6, 33), (5, 33)]
+path_global frontier: [(np.float64(166.0), np.float64(99.0)), (np.float64(165.0), np.float64(99.0)), (np.float64(164.0), np.float64(99.0)), (np.float64(163.0), np.float64(99.0)), (np.float64(162.0), np.float64(99.0)), (np.float64(161.0), np.float64(99.0)), (np.float64(160.0), np.float64(99.0)), (np.float64(159.0), np.float64(99.0)), (np.float64(158.0), np.float64(99.0)), (np.float64(157.0), np.float64(99.0)), (np.float64(156.0), np.float64(99.0)), (np.float64(155.0), np.float64(99.0)), (np.float64(154.0), np.float64(99.0)), (np.float64(153.0), np.float64(99.0)), (np.float64(152.0), np.float64(99.0)), (np.float64(151.0), np.float64(99.0)), (np.float64(150.0), np.float64(99.0)), (np.float64(149.0), np.float64(99.0)), (np.float64(148.0), np.float64(99.0)), (np.float64(147.0), np.float64(99.0)), (np.float64(146.0), np.float64(99.0)), (np.float64(145.0), np.float64(99.0)), (np.float64(144.0), np.float64(99.0)), (np.float64(143.0), np.float64(99.0)), (np.float64(142.0), np.float64(99.0)), (np.float64(141.0), np.float64(99.0)), (np.float64(140.0), np.float64(99.0))]
+deque([(np.float64(166.0), np.float64(99.0)), (np.float64(165.0), np.float64(99.0)), (np.float64(164.0), np.float64(99.0)), (np.float64(163.0), np.float64(99.0)), (np.float64(162.0), np.float64(99.0)), (np.float64(161.0), np.float64(99.0)), (np.float64(160.0), np.float64(99.0)), (np.float64(159.0), np.float64(99.0)), (np.float64(158.0), np.float64(99.0)), (np.float64(157.0), np.float64(99.0)), (np.float64(156.0), np.float64(99.0)), (np.float64(155.0), np.float64(99.0)), (np.float64(154.0), np.float64(99.0)), (np.float64(153.0), np.float64(99.0)), (np.float64(152.0), np.float64(99.0)), (np.float64(151.0), np.float64(99.0)), (np.float64(150.0), np.float64(99.0)), (np.float64(149.0), np.float64(99.0)), (np.float64(148.0), np.float64(99.0)), (np.float64(147.0), np.float64(99.0)), (np.float64(146.0), np.float64(99.0)), (np.float64(145.0), np.float64(99.0)), (np.float64(144.0), np.float64(99.0)), (np.float64(143.0), np.float64(99.0)), (np.float64(142.0), np.float64(99.0)), (np.float64(141.0), np.float64(99.0)), (np.float64(140.0), np.float64(99.0))])
+micro step: 89
+agent pose: 99.0 166.0 -1.5707963267948966
+current.pose: 99.0 166.0
+goal: 97 212
+reward: -7.783583409137343
+step: 89
+path_local frontier: [(31, 33), (30, 34), (29, 35), (29, 36), (29, 37), (29, 38), (29, 39), (29, 40), (29, 41), (29, 42), (29, 43), (29, 44), (29, 45), (29, 46), (29, 47), (29, 48), (29, 49), (29, 50), (29, 51), (29, 52), (29, 53), (29, 54), (29, 55), (29, 56), (29, 57), (29, 58), (29, 59)]
+path_global frontier: [(np.float64(165.0), np.float64(100.0)), (np.float64(164.0), np.float64(101.0)), (np.float64(163.0), np.float64(102.0)), (np.float64(163.0), np.float64(103.0)), (np.float64(163.0), np.float64(104.0)), (np.float64(163.0), np.float64(105.0)), (np.float64(163.0), np.float64(106.0)), (np.float64(163.0), np.float64(107.0)), (np.float64(163.0), np.float64(108.0)), (np.float64(163.0), np.float64(109.0)), (np.float64(163.0), np.float64(110.0)), (np.float64(163.0), np.float64(111.0)), (np.float64(163.0), np.float64(112.0)), (np.float64(163.0), np.float64(113.0)), (np.float64(163.0), np.float64(114.0)), (np.float64(163.0), np.float64(115.0)), (np.float64(163.0), np.float64(116.0)), (np.float64(163.0), np.float64(117.0)), (np.float64(163.0), np.float64(118.0)), (np.float64(163.0), np.float64(119.0)), (np.float64(163.0), np.float64(120.0)), (np.float64(163.0), np.float64(121.0)), (np.float64(163.0), np.float64(122.0)), (np.float64(163.0), np.float64(123.0)), (np.float64(163.0), np.float64(124.0)), (np.float64(163.0), np.float64(125.0)), (np.float64(163.0), np.float64(126.0))]
+deque([(np.float64(165.0), np.float64(100.0)), (np.float64(164.0), np.float64(101.0)), (np.float64(163.0), np.float64(102.0)), (np.float64(163.0), np.float64(103.0)), (np.float64(163.0), np.float64(104.0)), (np.float64(163.0), np.float64(105.0)), (np.float64(163.0), np.float64(106.0)), (np.float64(163.0), np.float64(107.0)), (np.float64(163.0), np.float64(108.0)), (np.float64(163.0), np.float64(109.0)), (np.float64(163.0), np.float64(110.0)), (np.float64(163.0), np.float64(111.0)), (np.float64(163.0), np.float64(112.0)), (np.float64(163.0), np.float64(113.0)), (np.float64(163.0), np.float64(114.0)), (np.float64(163.0), np.float64(115.0)), (np.float64(163.0), np.float64(116.0)), (np.float64(163.0), np.float64(117.0)), (np.float64(163.0), np.float64(118.0)), (np.float64(163.0), np.float64(119.0)), (np.float64(163.0), np.float64(120.0)), (np.float64(163.0), np.float64(121.0)), (np.float64(163.0), np.float64(122.0)), (np.float64(163.0), np.float64(123.0)), (np.float64(163.0), np.float64(124.0)), (np.float64(163.0), np.float64(125.0)), (np.float64(163.0), np.float64(126.0))])
+micro step: 90
+agent pose: 100.0 165.0 -0.7853981633974483
+current.pose: 100.0 165.0
+goal: 97 212
+reward: -7.178744533958833
+step: 90
+path_local frontier: [(33, 31), (34, 30), (35, 29), (36, 28), (37, 27), (38, 26), (39, 25), (40, 24), (41, 23), (42, 22), (43, 21), (44, 20), (45, 19), (46, 18), (47, 17), (48, 16), (49, 15), (50, 14), (51, 13), (52, 12), (52, 11), (52, 10), (52, 9), (52, 8), (52, 7), (52, 6), (52, 5), (52, 4), (52, 3), (52, 2), (52, 1)]
+path_global frontier: [(np.float64(166.0), np.float64(99.0)), (np.float64(167.0), np.float64(98.0)), (np.float64(168.0), np.float64(97.0)), (np.float64(169.0), np.float64(96.0)), (np.float64(170.0), np.float64(95.0)), (np.float64(171.0), np.float64(94.0)), (np.float64(172.0), np.float64(93.0)), (np.float64(173.0), np.float64(92.0)), (np.float64(174.0), np.float64(91.0)), (np.float64(175.0), np.float64(90.0)), (np.float64(176.0), np.float64(89.0)), (np.float64(177.0), np.float64(88.0)), (np.float64(178.0), np.float64(87.0)), (np.float64(179.0), np.float64(86.0)), (np.float64(180.0), np.float64(85.0)), (np.float64(181.0), np.float64(84.0)), (np.float64(182.0), np.float64(83.0)), (np.float64(183.0), np.float64(82.0)), (np.float64(184.0), np.float64(81.0)), (np.float64(185.0), np.float64(80.0)), (np.float64(185.0), np.float64(79.0)), (np.float64(185.0), np.float64(78.0)), (np.float64(185.0), np.float64(77.0)), (np.float64(185.0), np.float64(76.0)), (np.float64(185.0), np.float64(75.0)), (np.float64(185.0), np.float64(74.0)), (np.float64(185.0), np.float64(73.0)), (np.float64(185.0), np.float64(72.0)), (np.float64(185.0), np.float64(71.0)), (np.float64(185.0), np.float64(70.0)), (np.float64(185.0), np.float64(69.0))]
+deque([(np.float64(166.0), np.float64(99.0)), (np.float64(167.0), np.float64(98.0)), (np.float64(168.0), np.float64(97.0)), (np.float64(169.0), np.float64(96.0)), (np.float64(170.0), np.float64(95.0)), (np.float64(171.0), np.float64(94.0)), (np.float64(172.0), np.float64(93.0)), (np.float64(173.0), np.float64(92.0)), (np.float64(174.0), np.float64(91.0)), (np.float64(175.0), np.float64(90.0)), (np.float64(176.0), np.float64(89.0)), (np.float64(177.0), np.float64(88.0)), (np.float64(178.0), np.float64(87.0)), (np.float64(179.0), np.float64(86.0)), (np.float64(180.0), np.float64(85.0)), (np.float64(181.0), np.float64(84.0)), (np.float64(182.0), np.float64(83.0)), (np.float64(183.0), np.float64(82.0)), (np.float64(184.0), np.float64(81.0)), (np.float64(185.0), np.float64(80.0)), (np.float64(185.0), np.float64(79.0)), (np.float64(185.0), np.float64(78.0)), (np.float64(185.0), np.float64(77.0)), (np.float64(185.0), np.float64(76.0)), (np.float64(185.0), np.float64(75.0)), (np.float64(185.0), np.float64(74.0)), (np.float64(185.0), np.float64(73.0)), (np.float64(185.0), np.float64(72.0)), (np.float64(185.0), np.float64(71.0)), (np.float64(185.0), np.float64(70.0)), (np.float64(185.0), np.float64(69.0))])
+micro step: 91
+agent pose: 99.0 166.0 2.356194490192345
+current.pose: 99.0 166.0
+goal: 97 212
+reward: -4.511491554278328
+step: 91
+path_local frontier: [(31, 33), (30, 34), (29, 35), (29, 36), (29, 37), (29, 38), (29, 39), (29, 40), (29, 41), (29, 42), (29, 43), (29, 44), (29, 45), (29, 46), (29, 47), (29, 48), (29, 49), (29, 50), (29, 51), (29, 52), (29, 53), (29, 54), (29, 55), (29, 56), (29, 57), (29, 58), (29, 59)]
+path_global frontier: [(np.float64(165.0), np.float64(100.0)), (np.float64(164.0), np.float64(101.0)), (np.float64(163.0), np.float64(102.0)), (np.float64(163.0), np.float64(103.0)), (np.float64(163.0), np.float64(104.0)), (np.float64(163.0), np.float64(105.0)), (np.float64(163.0), np.float64(106.0)), (np.float64(163.0), np.float64(107.0)), (np.float64(163.0), np.float64(108.0)), (np.float64(163.0), np.float64(109.0)), (np.float64(163.0), np.float64(110.0)), (np.float64(163.0), np.float64(111.0)), (np.float64(163.0), np.float64(112.0)), (np.float64(163.0), np.float64(113.0)), (np.float64(163.0), np.float64(114.0)), (np.float64(163.0), np.float64(115.0)), (np.float64(163.0), np.float64(116.0)), (np.float64(163.0), np.float64(117.0)), (np.float64(163.0), np.float64(118.0)), (np.float64(163.0), np.float64(119.0)), (np.float64(163.0), np.float64(120.0)), (np.float64(163.0), np.float64(121.0)), (np.float64(163.0), np.float64(122.0)), (np.float64(163.0), np.float64(123.0)), (np.float64(163.0), np.float64(124.0)), (np.float64(163.0), np.float64(125.0)), (np.float64(163.0), np.float64(126.0))]
+deque([(np.float64(165.0), np.float64(100.0)), (np.float64(164.0), np.float64(101.0)), (np.float64(163.0), np.float64(102.0)), (np.float64(163.0), np.float64(103.0)), (np.float64(163.0), np.float64(104.0)), (np.float64(163.0), np.float64(105.0)), (np.float64(163.0), np.float64(106.0)), (np.float64(163.0), np.float64(107.0)), (np.float64(163.0), np.float64(108.0)), (np.float64(163.0), np.float64(109.0)), (np.float64(163.0), np.float64(110.0)), (np.float64(163.0), np.float64(111.0)), (np.float64(163.0), np.float64(112.0)), (np.float64(163.0), np.float64(113.0)), (np.float64(163.0), np.float64(114.0)), (np.float64(163.0), np.float64(115.0)), (np.float64(163.0), np.float64(116.0)), (np.float64(163.0), np.float64(117.0)), (np.float64(163.0), np.float64(118.0)), (np.float64(163.0), np.float64(119.0)), (np.float64(163.0), np.float64(120.0)), (np.float64(163.0), np.float64(121.0)), (np.float64(163.0), np.float64(122.0)), (np.float64(163.0), np.float64(123.0)), (np.float64(163.0), np.float64(124.0)), (np.float64(163.0), np.float64(125.0)), (np.float64(163.0), np.float64(126.0))])
+micro step: 92
+agent pose: 100.0 165.0 -0.7853981633974483
+current.pose: 100.0 165.0
+goal: 97 212
+reward: -8.993508445721673
+step: 92
+path_local frontier: [(33, 31), (34, 30), (35, 29), (36, 28), (37, 27), (38, 26), (39, 25), (40, 24), (41, 23), (42, 22), (43, 21), (44, 20), (45, 19), (46, 18), (47, 17), (48, 16), (49, 15), (50, 14), (51, 13), (52, 12), (52, 11), (52, 10), (52, 9), (52, 8), (52, 7), (52, 6), (52, 5), (52, 4), (52, 3), (52, 2), (52, 1)]
+path_global frontier: [(np.float64(166.0), np.float64(99.0)), (np.float64(167.0), np.float64(98.0)), (np.float64(168.0), np.float64(97.0)), (np.float64(169.0), np.float64(96.0)), (np.float64(170.0), np.float64(95.0)), (np.float64(171.0), np.float64(94.0)), (np.float64(172.0), np.float64(93.0)), (np.float64(173.0), np.float64(92.0)), (np.float64(174.0), np.float64(91.0)), (np.float64(175.0), np.float64(90.0)), (np.float64(176.0), np.float64(89.0)), (np.float64(177.0), np.float64(88.0)), (np.float64(178.0), np.float64(87.0)), (np.float64(179.0), np.float64(86.0)), (np.float64(180.0), np.float64(85.0)), (np.float64(181.0), np.float64(84.0)), (np.float64(182.0), np.float64(83.0)), (np.float64(183.0), np.float64(82.0)), (np.float64(184.0), np.float64(81.0)), (np.float64(185.0), np.float64(80.0)), (np.float64(185.0), np.float64(79.0)), (np.float64(185.0), np.float64(78.0)), (np.float64(185.0), np.float64(77.0)), (np.float64(185.0), np.float64(76.0)), (np.float64(185.0), np.float64(75.0)), (np.float64(185.0), np.float64(74.0)), (np.float64(185.0), np.float64(73.0)), (np.float64(185.0), np.float64(72.0)), (np.float64(185.0), np.float64(71.0)), (np.float64(185.0), np.float64(70.0)), (np.float64(185.0), np.float64(69.0))]
+deque([(np.float64(166.0), np.float64(99.0)), (np.float64(167.0), np.float64(98.0)), (np.float64(168.0), np.float64(97.0)), (np.float64(169.0), np.float64(96.0)), (np.float64(170.0), np.float64(95.0)), (np.float64(171.0), np.float64(94.0)), (np.float64(172.0), np.float64(93.0)), (np.float64(173.0), np.float64(92.0)), (np.float64(174.0), np.float64(91.0)), (np.float64(175.0), np.float64(90.0)), (np.float64(176.0), np.float64(89.0)), (np.float64(177.0), np.float64(88.0)), (np.float64(178.0), np.float64(87.0)), (np.float64(179.0), np.float64(86.0)), (np.float64(180.0), np.float64(85.0)), (np.float64(181.0), np.float64(84.0)), (np.float64(182.0), np.float64(83.0)), (np.float64(183.0), np.float64(82.0)), (np.float64(184.0), np.float64(81.0)), (np.float64(185.0), np.float64(80.0)), (np.float64(185.0), np.float64(79.0)), (np.float64(185.0), np.float64(78.0)), (np.float64(185.0), np.float64(77.0)), (np.float64(185.0), np.float64(76.0)), (np.float64(185.0), np.float64(75.0)), (np.float64(185.0), np.float64(74.0)), (np.float64(185.0), np.float64(73.0)), (np.float64(185.0), np.float64(72.0)), (np.float64(185.0), np.float64(71.0)), (np.float64(185.0), np.float64(70.0)), (np.float64(185.0), np.float64(69.0))])
+micro step: 93
+agent pose: 99.0 166.0 2.356194490192345
+current.pose: 99.0 166.0
+goal: 97 212
+reward: -5.148158220944993
+step: 93
+path_local frontier: [(31, 33), (30, 34), (29, 35), (29, 36), (29, 37), (29, 38), (29, 39), (29, 40), (29, 41), (29, 42), (29, 43), (29, 44), (29, 45), (29, 46), (29, 47), (29, 48), (29, 49), (29, 50), (29, 51), (29, 52), (29, 53), (29, 54), (29, 55), (29, 56), (29, 57), (29, 58), (29, 59)]
+path_global frontier: [(np.float64(165.0), np.float64(100.0)), (np.float64(164.0), np.float64(101.0)), (np.float64(163.0), np.float64(102.0)), (np.float64(163.0), np.float64(103.0)), (np.float64(163.0), np.float64(104.0)), (np.float64(163.0), np.float64(105.0)), (np.float64(163.0), np.float64(106.0)), (np.float64(163.0), np.float64(107.0)), (np.float64(163.0), np.float64(108.0)), (np.float64(163.0), np.float64(109.0)), (np.float64(163.0), np.float64(110.0)), (np.float64(163.0), np.float64(111.0)), (np.float64(163.0), np.float64(112.0)), (np.float64(163.0), np.float64(113.0)), (np.float64(163.0), np.float64(114.0)), (np.float64(163.0), np.float64(115.0)), (np.float64(163.0), np.float64(116.0)), (np.float64(163.0), np.float64(117.0)), (np.float64(163.0), np.float64(118.0)), (np.float64(163.0), np.float64(119.0)), (np.float64(163.0), np.float64(120.0)), (np.float64(163.0), np.float64(121.0)), (np.float64(163.0), np.float64(122.0)), (np.float64(163.0), np.float64(123.0)), (np.float64(163.0), np.float64(124.0)), (np.float64(163.0), np.float64(125.0)), (np.float64(163.0), np.float64(126.0))]
+deque([(np.float64(165.0), np.float64(100.0)), (np.float64(164.0), np.float64(101.0)), (np.float64(163.0), np.float64(102.0)), (np.float64(163.0), np.float64(103.0)), (np.float64(163.0), np.float64(104.0)), (np.float64(163.0), np.float64(105.0)), (np.float64(163.0), np.float64(106.0)), (np.float64(163.0), np.float64(107.0)), (np.float64(163.0), np.float64(108.0)), (np.float64(163.0), np.float64(109.0)), (np.float64(163.0), np.float64(110.0)), (np.float64(163.0), np.float64(111.0)), (np.float64(163.0), np.float64(112.0)), (np.float64(163.0), np.float64(113.0)), (np.float64(163.0), np.float64(114.0)), (np.float64(163.0), np.float64(115.0)), (np.float64(163.0), np.float64(116.0)), (np.float64(163.0), np.float64(117.0)), (np.float64(163.0), np.float64(118.0)), (np.float64(163.0), np.float64(119.0)), (np.float64(163.0), np.float64(120.0)), (np.float64(163.0), np.float64(121.0)), (np.float64(163.0), np.float64(122.0)), (np.float64(163.0), np.float64(123.0)), (np.float64(163.0), np.float64(124.0)), (np.float64(163.0), np.float64(125.0)), (np.float64(163.0), np.float64(126.0))])
+micro step: 94
+agent pose: 100.0 165.0 -0.7853981633974483
+current.pose: 100.0 165.0
+goal: 97 212
+reward: -9.63017511238834
+step: 94
+path_local frontier: [(33, 31), (34, 30), (35, 29), (36, 28), (37, 27), (38, 26), (39, 25), (40, 24), (41, 23), (42, 22), (43, 21), (44, 20), (45, 19), (46, 18), (47, 17), (48, 16), (49, 15), (50, 14), (51, 13), (52, 12), (52, 11), (52, 10), (52, 9), (52, 8), (52, 7), (52, 6), (52, 5), (52, 4), (52, 3), (52, 2), (52, 1)]
+path_global frontier: [(np.float64(166.0), np.float64(99.0)), (np.float64(167.0), np.float64(98.0)), (np.float64(168.0), np.float64(97.0)), (np.float64(169.0), np.float64(96.0)), (np.float64(170.0), np.float64(95.0)), (np.float64(171.0), np.float64(94.0)), (np.float64(172.0), np.float64(93.0)), (np.float64(173.0), np.float64(92.0)), (np.float64(174.0), np.float64(91.0)), (np.float64(175.0), np.float64(90.0)), (np.float64(176.0), np.float64(89.0)), (np.float64(177.0), np.float64(88.0)), (np.float64(178.0), np.float64(87.0)), (np.float64(179.0), np.float64(86.0)), (np.float64(180.0), np.float64(85.0)), (np.float64(181.0), np.float64(84.0)), (np.float64(182.0), np.float64(83.0)), (np.float64(183.0), np.float64(82.0)), (np.float64(184.0), np.float64(81.0)), (np.float64(185.0), np.float64(80.0)), (np.float64(185.0), np.float64(79.0)), (np.float64(185.0), np.float64(78.0)), (np.float64(185.0), np.float64(77.0)), (np.float64(185.0), np.float64(76.0)), (np.float64(185.0), np.float64(75.0)), (np.float64(185.0), np.float64(74.0)), (np.float64(185.0), np.float64(73.0)), (np.float64(185.0), np.float64(72.0)), (np.float64(185.0), np.float64(71.0)), (np.float64(185.0), np.float64(70.0)), (np.float64(185.0), np.float64(69.0))]
+deque([(np.float64(166.0), np.float64(99.0)), (np.float64(167.0), np.float64(98.0)), (np.float64(168.0), np.float64(97.0)), (np.float64(169.0), np.float64(96.0)), (np.float64(170.0), np.float64(95.0)), (np.float64(171.0), np.float64(94.0)), (np.float64(172.0), np.float64(93.0)), (np.float64(173.0), np.float64(92.0)), (np.float64(174.0), np.float64(91.0)), (np.float64(175.0), np.float64(90.0)), (np.float64(176.0), np.float64(89.0)), (np.float64(177.0), np.float64(88.0)), (np.float64(178.0), np.float64(87.0)), (np.float64(179.0), np.float64(86.0)), (np.float64(180.0), np.float64(85.0)), (np.float64(181.0), np.float64(84.0)), (np.float64(182.0), np.float64(83.0)), (np.float64(183.0), np.float64(82.0)), (np.float64(184.0), np.float64(81.0)), (np.float64(185.0), np.float64(80.0)), (np.float64(185.0), np.float64(79.0)), (np.float64(185.0), np.float64(78.0)), (np.float64(185.0), np.float64(77.0)), (np.float64(185.0), np.float64(76.0)), (np.float64(185.0), np.float64(75.0)), (np.float64(185.0), np.float64(74.0)), (np.float64(185.0), np.float64(73.0)), (np.float64(185.0), np.float64(72.0)), (np.float64(185.0), np.float64(71.0)), (np.float64(185.0), np.float64(70.0)), (np.float64(185.0), np.float64(69.0))])
+micro step: 95
+agent pose: 99.0 166.0 2.356194490192345
+current.pose: 99.0 166.0
+goal: 97 212
+reward: -5.78482488761166
+step: 95
+path_local frontier: [(31, 33), (30, 34), (29, 35), (29, 36), (29, 37), (29, 38), (29, 39), (29, 40), (29, 41), (29, 42), (29, 43), (29, 44), (29, 45), (29, 46), (29, 47), (29, 48), (29, 49), (29, 50), (29, 51), (29, 52), (29, 53), (29, 54), (29, 55), (29, 56), (29, 57), (29, 58), (29, 59)]
+path_global frontier: [(np.float64(165.0), np.float64(100.0)), (np.float64(164.0), np.float64(101.0)), (np.float64(163.0), np.float64(102.0)), (np.float64(163.0), np.float64(103.0)), (np.float64(163.0), np.float64(104.0)), (np.float64(163.0), np.float64(105.0)), (np.float64(163.0), np.float64(106.0)), (np.float64(163.0), np.float64(107.0)), (np.float64(163.0), np.float64(108.0)), (np.float64(163.0), np.float64(109.0)), (np.float64(163.0), np.float64(110.0)), (np.float64(163.0), np.float64(111.0)), (np.float64(163.0), np.float64(112.0)), (np.float64(163.0), np.float64(113.0)), (np.float64(163.0), np.float64(114.0)), (np.float64(163.0), np.float64(115.0)), (np.float64(163.0), np.float64(116.0)), (np.float64(163.0), np.float64(117.0)), (np.float64(163.0), np.float64(118.0)), (np.float64(163.0), np.float64(119.0)), (np.float64(163.0), np.float64(120.0)), (np.float64(163.0), np.float64(121.0)), (np.float64(163.0), np.float64(122.0)), (np.float64(163.0), np.float64(123.0)), (np.float64(163.0), np.float64(124.0)), (np.float64(163.0), np.float64(125.0)), (np.float64(163.0), np.float64(126.0))]
+deque([(np.float64(165.0), np.float64(100.0)), (np.float64(164.0), np.float64(101.0)), (np.float64(163.0), np.float64(102.0)), (np.float64(163.0), np.float64(103.0)), (np.float64(163.0), np.float64(104.0)), (np.float64(163.0), np.float64(105.0)), (np.float64(163.0), np.float64(106.0)), (np.float64(163.0), np.float64(107.0)), (np.float64(163.0), np.float64(108.0)), (np.float64(163.0), np.float64(109.0)), (np.float64(163.0), np.float64(110.0)), (np.float64(163.0), np.float64(111.0)), (np.float64(163.0), np.float64(112.0)), (np.float64(163.0), np.float64(113.0)), (np.float64(163.0), np.float64(114.0)), (np.float64(163.0), np.float64(115.0)), (np.float64(163.0), np.float64(116.0)), (np.float64(163.0), np.float64(117.0)), (np.float64(163.0), np.float64(118.0)), (np.float64(163.0), np.float64(119.0)), (np.float64(163.0), np.float64(120.0)), (np.float64(163.0), np.float64(121.0)), (np.float64(163.0), np.float64(122.0)), (np.float64(163.0), np.float64(123.0)), (np.float64(163.0), np.float64(124.0)), (np.float64(163.0), np.float64(125.0)), (np.float64(163.0), np.float64(126.0))])
+micro step: 96
+agent pose: 100.0 165.0 -0.7853981633974483
+current.pose: 100.0 165.0
+goal: 97 212
+reward: -10.266841779055007
+step: 96
+path_local frontier: [(31, 33), (30, 34), (30, 35), (30, 36), (30, 37), (30, 38), (30, 39), (30, 40), (30, 41), (30, 42), (30, 43), (30, 44), (30, 45), (30, 46), (30, 47), (30, 48), (30, 49), (30, 50), (30, 51), (30, 52), (30, 53), (30, 54), (30, 55), (30, 56), (30, 57), (30, 58)]
+path_global frontier: [(np.float64(164.0), np.float64(101.0)), (np.float64(163.0), np.float64(102.0)), (np.float64(163.0), np.float64(103.0)), (np.float64(163.0), np.float64(104.0)), (np.float64(163.0), np.float64(105.0)), (np.float64(163.0), np.float64(106.0)), (np.float64(163.0), np.float64(107.0)), (np.float64(163.0), np.float64(108.0)), (np.float64(163.0), np.float64(109.0)), (np.float64(163.0), np.float64(110.0)), (np.float64(163.0), np.float64(111.0)), (np.float64(163.0), np.float64(112.0)), (np.float64(163.0), np.float64(113.0)), (np.float64(163.0), np.float64(114.0)), (np.float64(163.0), np.float64(115.0)), (np.float64(163.0), np.float64(116.0)), (np.float64(163.0), np.float64(117.0)), (np.float64(163.0), np.float64(118.0)), (np.float64(163.0), np.float64(119.0)), (np.float64(163.0), np.float64(120.0)), (np.float64(163.0), np.float64(121.0)), (np.float64(163.0), np.float64(122.0)), (np.float64(163.0), np.float64(123.0)), (np.float64(163.0), np.float64(124.0)), (np.float64(163.0), np.float64(125.0)), (np.float64(163.0), np.float64(126.0))]
+deque([(np.float64(164.0), np.float64(101.0)), (np.float64(163.0), np.float64(102.0)), (np.float64(163.0), np.float64(103.0)), (np.float64(163.0), np.float64(104.0)), (np.float64(163.0), np.float64(105.0)), (np.float64(163.0), np.float64(106.0)), (np.float64(163.0), np.float64(107.0)), (np.float64(163.0), np.float64(108.0)), (np.float64(163.0), np.float64(109.0)), (np.float64(163.0), np.float64(110.0)), (np.float64(163.0), np.float64(111.0)), (np.float64(163.0), np.float64(112.0)), (np.float64(163.0), np.float64(113.0)), (np.float64(163.0), np.float64(114.0)), (np.float64(163.0), np.float64(115.0)), (np.float64(163.0), np.float64(116.0)), (np.float64(163.0), np.float64(117.0)), (np.float64(163.0), np.float64(118.0)), (np.float64(163.0), np.float64(119.0)), (np.float64(163.0), np.float64(120.0)), (np.float64(163.0), np.float64(121.0)), (np.float64(163.0), np.float64(122.0)), (np.float64(163.0), np.float64(123.0)), (np.float64(163.0), np.float64(124.0)), (np.float64(163.0), np.float64(125.0)), (np.float64(163.0), np.float64(126.0))])
+micro step: 97
+agent pose: 101.0 164.0 -0.7853981633974483
+current.pose: 101.0 164.0
+goal: 97 212
+reward: -8.029982538284743
+step: 97
+path_local frontier: [(31, 33), (31, 34), (31, 35), (31, 36), (31, 37), (31, 38), (31, 39), (31, 40), (31, 41), (31, 42), (31, 43), (31, 44), (31, 45), (31, 46), (31, 47), (31, 48), (31, 49), (31, 50), (31, 51), (31, 52), (31, 53), (31, 54), (31, 55), (31, 56), (31, 57)]
+path_global frontier: [(np.float64(163.0), np.float64(102.0)), (np.float64(163.0), np.float64(103.0)), (np.float64(163.0), np.float64(104.0)), (np.float64(163.0), np.float64(105.0)), (np.float64(163.0), np.float64(106.0)), (np.float64(163.0), np.float64(107.0)), (np.float64(163.0), np.float64(108.0)), (np.float64(163.0), np.float64(109.0)), (np.float64(163.0), np.float64(110.0)), (np.float64(163.0), np.float64(111.0)), (np.float64(163.0), np.float64(112.0)), (np.float64(163.0), np.float64(113.0)), (np.float64(163.0), np.float64(114.0)), (np.float64(163.0), np.float64(115.0)), (np.float64(163.0), np.float64(116.0)), (np.float64(163.0), np.float64(117.0)), (np.float64(163.0), np.float64(118.0)), (np.float64(163.0), np.float64(119.0)), (np.float64(163.0), np.float64(120.0)), (np.float64(163.0), np.float64(121.0)), (np.float64(163.0), np.float64(122.0)), (np.float64(163.0), np.float64(123.0)), (np.float64(163.0), np.float64(124.0)), (np.float64(163.0), np.float64(125.0)), (np.float64(163.0), np.float64(126.0))]
+deque([(np.float64(163.0), np.float64(102.0)), (np.float64(163.0), np.float64(103.0)), (np.float64(163.0), np.float64(104.0)), (np.float64(163.0), np.float64(105.0)), (np.float64(163.0), np.float64(106.0)), (np.float64(163.0), np.float64(107.0)), (np.float64(163.0), np.float64(108.0)), (np.float64(163.0), np.float64(109.0)), (np.float64(163.0), np.float64(110.0)), (np.float64(163.0), np.float64(111.0)), (np.float64(163.0), np.float64(112.0)), (np.float64(163.0), np.float64(113.0)), (np.float64(163.0), np.float64(114.0)), (np.float64(163.0), np.float64(115.0)), (np.float64(163.0), np.float64(116.0)), (np.float64(163.0), np.float64(117.0)), (np.float64(163.0), np.float64(118.0)), (np.float64(163.0), np.float64(119.0)), (np.float64(163.0), np.float64(120.0)), (np.float64(163.0), np.float64(121.0)), (np.float64(163.0), np.float64(122.0)), (np.float64(163.0), np.float64(123.0)), (np.float64(163.0), np.float64(124.0)), (np.float64(163.0), np.float64(125.0)), (np.float64(163.0), np.float64(126.0))])
+micro step: 98
+agent pose: 102.0 163.0 0.0
+current.pose: 102.0 163.0
+goal: 97 212
+reward: -7.72772343651403
+step: 98
+path_local frontier: [(31, 33), (30, 33), (29, 33), (28, 33), (27, 33), (26, 33), (25, 33), (24, 33), (23, 33), (22, 33), (21, 33), (20, 33), (19, 33), (18, 33), (17, 33), (16, 33), (15, 33), (14, 33), (13, 33), (12, 33), (11, 33), (10, 33), (9, 33), (8, 33), (7, 33)]
+path_global frontier: [(np.float64(162.0), np.float64(103.0)), (np.float64(161.0), np.float64(103.0)), (np.float64(160.0), np.float64(103.0)), (np.float64(159.0), np.float64(103.0)), (np.float64(158.0), np.float64(103.0)), (np.float64(157.0), np.float64(103.0)), (np.float64(156.0), np.float64(103.0)), (np.float64(155.0), np.float64(103.0)), (np.float64(154.0), np.float64(103.0)), (np.float64(153.0), np.float64(103.0)), (np.float64(152.0), np.float64(103.0)), (np.float64(151.0), np.float64(103.0)), (np.float64(150.0), np.float64(103.0)), (np.float64(149.0), np.float64(103.0)), (np.float64(148.0), np.float64(103.0)), (np.float64(147.0), np.float64(103.0)), (np.float64(146.0), np.float64(103.0)), (np.float64(145.0), np.float64(103.0)), (np.float64(144.0), np.float64(103.0)), (np.float64(143.0), np.float64(103.0)), (np.float64(142.0), np.float64(103.0)), (np.float64(141.0), np.float64(103.0)), (np.float64(140.0), np.float64(103.0)), (np.float64(139.0), np.float64(103.0)), (np.float64(138.0), np.float64(103.0))]
+deque([(np.float64(162.0), np.float64(103.0)), (np.float64(161.0), np.float64(103.0)), (np.float64(160.0), np.float64(103.0)), (np.float64(159.0), np.float64(103.0)), (np.float64(158.0), np.float64(103.0)), (np.float64(157.0), np.float64(103.0)), (np.float64(156.0), np.float64(103.0)), (np.float64(155.0), np.float64(103.0)), (np.float64(154.0), np.float64(103.0)), (np.float64(153.0), np.float64(103.0)), (np.float64(152.0), np.float64(103.0)), (np.float64(151.0), np.float64(103.0)), (np.float64(150.0), np.float64(103.0)), (np.float64(149.0), np.float64(103.0)), (np.float64(148.0), np.float64(103.0)), (np.float64(147.0), np.float64(103.0)), (np.float64(146.0), np.float64(103.0)), (np.float64(145.0), np.float64(103.0)), (np.float64(144.0), np.float64(103.0)), (np.float64(143.0), np.float64(103.0)), (np.float64(142.0), np.float64(103.0)), (np.float64(141.0), np.float64(103.0)), (np.float64(140.0), np.float64(103.0)), (np.float64(139.0), np.float64(103.0)), (np.float64(138.0), np.float64(103.0))])
+micro step: 99
+agent pose: 103.0 162.0 -1.5707963267948966
+current.pose: 103.0 162.0
+goal: 97 212
+reward: -8.875392645651727
+step: 99
+path_local frontier: [(33, 33), (34, 34), (35, 35), (36, 36), (37, 37), (38, 38), (39, 39), (40, 40), (41, 41), (42, 42), (43, 43), (44, 44), (45, 45), (46, 46), (47, 47), (48, 48), (49, 49), (50, 50), (50, 51), (50, 52), (50, 53), (50, 54), (50, 55)]
+path_global frontier: [(np.float64(163.0), np.float64(104.0)), (np.float64(164.0), np.float64(105.0)), (np.float64(165.0), np.float64(106.0)), (np.float64(166.0), np.float64(107.0)), (np.float64(167.0), np.float64(108.0)), (np.float64(168.0), np.float64(109.0)), (np.float64(169.0), np.float64(110.0)), (np.float64(170.0), np.float64(111.0)), (np.float64(171.0), np.float64(112.0)), (np.float64(172.0), np.float64(113.0)), (np.float64(173.0), np.float64(114.0)), (np.float64(174.0), np.float64(115.0)), (np.float64(175.0), np.float64(116.0)), (np.float64(176.0), np.float64(117.0)), (np.float64(177.0), np.float64(118.0)), (np.float64(178.0), np.float64(119.0)), (np.float64(179.0), np.float64(120.0)), (np.float64(180.0), np.float64(121.0)), (np.float64(180.0), np.float64(122.0)), (np.float64(180.0), np.float64(123.0)), (np.float64(180.0), np.float64(124.0)), (np.float64(180.0), np.float64(125.0)), (np.float64(180.0), np.float64(126.0))]
+deque([(np.float64(163.0), np.float64(104.0)), (np.float64(164.0), np.float64(105.0)), (np.float64(165.0), np.float64(106.0)), (np.float64(166.0), np.float64(107.0)), (np.float64(167.0), np.float64(108.0)), (np.float64(168.0), np.float64(109.0)), (np.float64(169.0), np.float64(110.0)), (np.float64(170.0), np.float64(111.0)), (np.float64(171.0), np.float64(112.0)), (np.float64(172.0), np.float64(113.0)), (np.float64(173.0), np.float64(114.0)), (np.float64(174.0), np.float64(115.0)), (np.float64(175.0), np.float64(116.0)), (np.float64(176.0), np.float64(117.0)), (np.float64(177.0), np.float64(118.0)), (np.float64(178.0), np.float64(119.0)), (np.float64(179.0), np.float64(120.0)), (np.float64(180.0), np.float64(121.0)), (np.float64(180.0), np.float64(122.0)), (np.float64(180.0), np.float64(123.0)), (np.float64(180.0), np.float64(124.0)), (np.float64(180.0), np.float64(125.0)), (np.float64(180.0), np.float64(126.0))])
+micro step: 100
+agent pose: 104.0 163.0 0.7853981633974483
+current.pose: 104.0 163.0
+goal: 97 212
+reward: -4.666288944050544
+step: 100
+path_local frontier: [(31, 33), (30, 34), (29, 35), (28, 36), (27, 37), (26, 38), (25, 39), (24, 40), (23, 41), (22, 42), (21, 43), (20, 44), (19, 45), (18, 46), (17, 47), (16, 48), (15, 49), (14, 50)]
+path_global frontier: [(np.float64(162.0), np.float64(105.0)), (np.float64(161.0), np.float64(106.0)), (np.float64(160.0), np.float64(107.0)), (np.float64(159.0), np.float64(108.0)), (np.float64(158.0), np.float64(109.0)), (np.float64(157.0), np.float64(110.0)), (np.float64(156.0), np.float64(111.0)), (np.float64(155.0), np.float64(112.0)), (np.float64(154.0), np.float64(113.0)), (np.float64(153.0), np.float64(114.0)), (np.float64(152.0), np.float64(115.0)), (np.float64(151.0), np.float64(116.0)), (np.float64(150.0), np.float64(117.0)), (np.float64(149.0), np.float64(118.0)), (np.float64(148.0), np.float64(119.0)), (np.float64(147.0), np.float64(120.0)), (np.float64(146.0), np.float64(121.0)), (np.float64(145.0), np.float64(122.0))]
+deque([(np.float64(162.0), np.float64(105.0)), (np.float64(161.0), np.float64(106.0)), (np.float64(160.0), np.float64(107.0)), (np.float64(159.0), np.float64(108.0)), (np.float64(158.0), np.float64(109.0)), (np.float64(157.0), np.float64(110.0)), (np.float64(156.0), np.float64(111.0)), (np.float64(155.0), np.float64(112.0)), (np.float64(154.0), np.float64(113.0)), (np.float64(153.0), np.float64(114.0)), (np.float64(152.0), np.float64(115.0)), (np.float64(151.0), np.float64(116.0)), (np.float64(150.0), np.float64(117.0)), (np.float64(149.0), np.float64(118.0)), (np.float64(148.0), np.float64(119.0)), (np.float64(147.0), np.float64(120.0)), (np.float64(146.0), np.float64(121.0)), (np.float64(145.0), np.float64(122.0))])
+micro step: 101
+agent pose: 105.0 162.0 -0.7853981633974483
+current.pose: 105.0 162.0
+goal: 97 212
+reward: -9.175469131974657
+step: 101
+path_local frontier: [(31, 33), (30, 34), (29, 35), (28, 36), (28, 37), (28, 38), (28, 39), (28, 40), (28, 41), (28, 42), (28, 43), (28, 44), (28, 45), (28, 46), (28, 47), (28, 48), (28, 49), (28, 50), (28, 51), (28, 52), (28, 53), (28, 54), (28, 55), (28, 56), (28, 57)]
+path_global frontier: [(np.float64(161.0), np.float64(106.0)), (np.float64(160.0), np.float64(107.0)), (np.float64(159.0), np.float64(108.0)), (np.float64(158.0), np.float64(109.0)), (np.float64(158.0), np.float64(110.0)), (np.float64(158.0), np.float64(111.0)), (np.float64(158.0), np.float64(112.0)), (np.float64(158.0), np.float64(113.0)), (np.float64(158.0), np.float64(114.0)), (np.float64(158.0), np.float64(115.0)), (np.float64(158.0), np.float64(116.0)), (np.float64(158.0), np.float64(117.0)), (np.float64(158.0), np.float64(118.0)), (np.float64(158.0), np.float64(119.0)), (np.float64(158.0), np.float64(120.0)), (np.float64(158.0), np.float64(121.0)), (np.float64(158.0), np.float64(122.0)), (np.float64(158.0), np.float64(123.0)), (np.float64(158.0), np.float64(124.0)), (np.float64(158.0), np.float64(125.0)), (np.float64(158.0), np.float64(126.0)), (np.float64(158.0), np.float64(127.0)), (np.float64(158.0), np.float64(128.0)), (np.float64(158.0), np.float64(129.0)), (np.float64(158.0), np.float64(130.0))]
+deque([(np.float64(161.0), np.float64(106.0)), (np.float64(160.0), np.float64(107.0)), (np.float64(159.0), np.float64(108.0)), (np.float64(158.0), np.float64(109.0)), (np.float64(158.0), np.float64(110.0)), (np.float64(158.0), np.float64(111.0)), (np.float64(158.0), np.float64(112.0)), (np.float64(158.0), np.float64(113.0)), (np.float64(158.0), np.float64(114.0)), (np.float64(158.0), np.float64(115.0)), (np.float64(158.0), np.float64(116.0)), (np.float64(158.0), np.float64(117.0)), (np.float64(158.0), np.float64(118.0)), (np.float64(158.0), np.float64(119.0)), (np.float64(158.0), np.float64(120.0)), (np.float64(158.0), np.float64(121.0)), (np.float64(158.0), np.float64(122.0)), (np.float64(158.0), np.float64(123.0)), (np.float64(158.0), np.float64(124.0)), (np.float64(158.0), np.float64(125.0)), (np.float64(158.0), np.float64(126.0)), (np.float64(158.0), np.float64(127.0)), (np.float64(158.0), np.float64(128.0)), (np.float64(158.0), np.float64(129.0)), (np.float64(158.0), np.float64(130.0))])
+micro step: 102
+agent pose: 106.0 161.0 -0.7853981633974483
+current.pose: 106.0 161.0
+goal: 97 212
+reward: -8.475704538680741
+step: 102
+path_local frontier: [(31, 33), (30, 34), (29, 35), (29, 36), (29, 37), (29, 38), (29, 39), (29, 40), (29, 41), (29, 42), (29, 43), (29, 44), (29, 45), (29, 46), (29, 47), (29, 48), (29, 49), (29, 50), (29, 51), (29, 52), (29, 53), (29, 54), (29, 55), (29, 56)]
+path_global frontier: [(np.float64(160.0), np.float64(107.0)), (np.float64(159.0), np.float64(108.0)), (np.float64(158.0), np.float64(109.0)), (np.float64(158.0), np.float64(110.0)), (np.float64(158.0), np.float64(111.0)), (np.float64(158.0), np.float64(112.0)), (np.float64(158.0), np.float64(113.0)), (np.float64(158.0), np.float64(114.0)), (np.float64(158.0), np.float64(115.0)), (np.float64(158.0), np.float64(116.0)), (np.float64(158.0), np.float64(117.0)), (np.float64(158.0), np.float64(118.0)), (np.float64(158.0), np.float64(119.0)), (np.float64(158.0), np.float64(120.0)), (np.float64(158.0), np.float64(121.0)), (np.float64(158.0), np.float64(122.0)), (np.float64(158.0), np.float64(123.0)), (np.float64(158.0), np.float64(124.0)), (np.float64(158.0), np.float64(125.0)), (np.float64(158.0), np.float64(126.0)), (np.float64(158.0), np.float64(127.0)), (np.float64(158.0), np.float64(128.0)), (np.float64(158.0), np.float64(129.0)), (np.float64(158.0), np.float64(130.0))]
+deque([(np.float64(160.0), np.float64(107.0)), (np.float64(159.0), np.float64(108.0)), (np.float64(158.0), np.float64(109.0)), (np.float64(158.0), np.float64(110.0)), (np.float64(158.0), np.float64(111.0)), (np.float64(158.0), np.float64(112.0)), (np.float64(158.0), np.float64(113.0)), (np.float64(158.0), np.float64(114.0)), (np.float64(158.0), np.float64(115.0)), (np.float64(158.0), np.float64(116.0)), (np.float64(158.0), np.float64(117.0)), (np.float64(158.0), np.float64(118.0)), (np.float64(158.0), np.float64(119.0)), (np.float64(158.0), np.float64(120.0)), (np.float64(158.0), np.float64(121.0)), (np.float64(158.0), np.float64(122.0)), (np.float64(158.0), np.float64(123.0)), (np.float64(158.0), np.float64(124.0)), (np.float64(158.0), np.float64(125.0)), (np.float64(158.0), np.float64(126.0)), (np.float64(158.0), np.float64(127.0)), (np.float64(158.0), np.float64(128.0)), (np.float64(158.0), np.float64(129.0)), (np.float64(158.0), np.float64(130.0))])
+micro step: 103
+agent pose: 107.0 160.0 -0.7853981633974483
+current.pose: 107.0 160.0
+goal: 97 212
+reward: -8.560204954766878
+step: 103
+Traceback (most recent call last):
+  File "/home/fmt/catkin_ws/src/fmt_/sb3_SAC/scripts/Train_Script.py", line 88, in <module>
+    model.learn(
+  File "/home/fmt/miniconda3/envs/sb3/lib/python3.12/site-packages/stable_baselines3/sac/sac.py", line 313, in learn
+    return super().learn(
+           ^^^^^^^^^^^^^^
+  File "/home/fmt/miniconda3/envs/sb3/lib/python3.12/site-packages/stable_baselines3/common/off_policy_algorithm.py", line 354, in learn
+    self.train(batch_size=self.batch_size, gradient_steps=gradient_steps)
+  File "/home/fmt/miniconda3/envs/sb3/lib/python3.12/site-packages/stable_baselines3/sac/sac.py", line 273, in train
+    critic_loss.backward()
+  File "/home/fmt/miniconda3/envs/sb3/lib/python3.12/site-packages/torch/_tensor.py", line 625, in backward
+    torch.autograd.backward(
+  File "/home/fmt/miniconda3/envs/sb3/lib/python3.12/site-packages/torch/autograd/__init__.py", line 354, in backward
+    _engine_run_backward(
+  File "/home/fmt/miniconda3/envs/sb3/lib/python3.12/site-packages/torch/autograd/graph.py", line 841, in _engine_run_backward
+    return Variable._execution_engine.run_backward(  # Calls into the C++ engine to run the backward pass
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+torch.OutOfMemoryError: CUDA out of memory. Tried to allocate 256.00 MiB. GPU 0 has a total capacity of 3.63 GiB of which 246.44 MiB is free. Including non-PyTorch memory, this process has 2.68 GiB memory in use. Of the allocated memory 2.19 GiB is allocated by PyTorch, and 422.19 MiB is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://pytorch.org/docs/stable/notes/cuda.html#environment-variables)

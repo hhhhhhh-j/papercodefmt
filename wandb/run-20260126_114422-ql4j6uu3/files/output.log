@@ -1,0 +1,129 @@
+CWD = /home/fmt/catkin_ws/src/fmt_/sb3_SAC
+Expect ckpt = /home/fmt/catkin_ws/src/fmt_/sb3_SAC/sac_decision_making.zip
+Exists? = False
+Creating new model...
+Using cuda device
+Logging to ./tb_logs/SAC_26
+[32m2026-01-26 11:44:25.311[0m | [34m[1mDEBUG   [0m | [36mmodels.SAC_DS_DM[0m:[36mplanning_strategy[0m:[36m435[0m - [34m[1mpath_local frontier:[(31, 31)][0m
+[32m2026-01-26 11:44:25.311[0m | [34m[1mDEBUG   [0m | [36mmodels.SAC_DS_DM[0m:[36mplanning_strategy[0m:[36m437[0m - [34m[1mpath_global frontier:[(np.float64(14.0), np.float64(224.0))][0m
+[32m2026-01-26 11:44:25.311[0m | [34m[1mDEBUG   [0m | [36mmodels.SAC_DS_DM[0m:[36mstep[0m:[36m246[0m - [34m[1mself.path:deque([(np.float64(14.0), np.float64(224.0))])[0m
+[32m2026-01-26 11:44:25.358[0m | [1mINFO    [0m | [36mmodels.SAC_DS_DM[0m:[36mstep[0m:[36m321[0m - [1mmicro step:1[0m
+[32m2026-01-26 11:44:25.358[0m | [1mINFO    [0m | [36mmodels.SAC_DS_DM[0m:[36mstep[0m:[36m322[0m - [1magent pose:224.0[0m
+[32m2026-01-26 11:44:25.359[0m | [34m[1mDEBUG   [0m | [36mmodels.SAC_DS_DM[0m:[36mplanning_strategy[0m:[36m435[0m - [34m[1mpath_local frontier:[][0m
+[32m2026-01-26 11:44:25.359[0m | [34m[1mDEBUG   [0m | [36mmodels.SAC_DS_DM[0m:[36mplanning_strategy[0m:[36m437[0m - [34m[1mpath_global frontier:[][0m
+[32m2026-01-26 11:44:25.359[0m | [34m[1mDEBUG   [0m | [36mmodels.SAC_DS_DM[0m:[36mplanning_strategy[0m:[36m447[0m - [34m[1mcan not obtain path from astar![0m
+[32m2026-01-26 11:44:25.360[0m | [34m[1mDEBUG   [0m | [36mmodels.SAC_DS_DM[0m:[36mplanning_strategy[0m:[36m449[0m - [34m[1mpath_global backup:[(np.float64(13.0), np.float64(223.0)), (np.float64(12.0), np.float64(222.0)), (np.float64(11.0), np.float64(221.0)), (np.float64(10.0), np.float64(220.0)), (np.float64(9.0), np.float64(219.0)), (np.float64(9.0), np.float64(218.0)), (np.float64(9.0), np.float64(217.0)), (np.float64(9.0), np.float64(216.0)), (np.float64(9.0), np.float64(215.0)), (np.float64(9.0), np.float64(214.0)), (np.float64(9.0), np.float64(213.0)), (np.float64(9.0), np.float64(212.0)), (np.float64(9.0), np.float64(211.0)), (np.float64(9.0), np.float64(210.0)), (np.float64(9.0), np.float64(209.0)), (np.float64(9.0), np.float64(208.0)), (np.float64(9.0), np.float64(207.0)), (np.float64(9.0), np.float64(206.0)), (np.float64(9.0), np.float64(205.0)), (np.float64(9.0), np.float64(204.0)), (np.float64(9.0), np.float64(203.0)), (np.float64(9.0), np.float64(202.0)), (np.float64(9.0), np.float64(201.0)), (np.float64(9.0), np.float64(200.0)), (np.float64(9.0), np.float64(199.0)), (np.float64(9.0), np.float64(198.0)), (np.float64(9.0), np.float64(197.0)), (np.float64(9.0), np.float64(196.0)), (np.float64(9.0), np.float64(195.0)), (np.float64(8.0), np.float64(194.0)), (np.float64(8.0), np.float64(193.0)), (np.float64(8.0), np.float64(192.0))][0m
+[32m2026-01-26 11:44:25.366[0m | [1mINFO    [0m | [36mmodels.SAC_DS_DM[0m:[36mstep[0m:[36m321[0m - [1mmicro step:2[0m
+[32m2026-01-26 11:44:25.366[0m | [1mINFO    [0m | [36mmodels.SAC_DS_DM[0m:[36mstep[0m:[36m322[0m - [1magent pose:223.0[0m
+[32m2026-01-26 11:44:25.370[0m | [1mINFO    [0m | [36mmodels.SAC_DS_DM[0m:[36mstep[0m:[36m321[0m - [1mmicro step:3[0m
+[32m2026-01-26 11:44:25.371[0m | [1mINFO    [0m | [36mmodels.SAC_DS_DM[0m:[36mstep[0m:[36m322[0m - [1magent pose:222.0[0m
+[32m2026-01-26 11:44:25.372[0m | [1mINFO    [0m | [36mmodels.SAC_DS_DM[0m:[36mstep[0m:[36m381[0m - [1mcurrent.pose:(222.0,12.0)[0m
+[32m2026-01-26 11:44:25.372[0m | [1mINFO    [0m | [36mmodels.SAC_DS_DM[0m:[36mstep[0m:[36m382[0m - [1mgoal:(183,8)[0m
+[32m2026-01-26 11:44:25.372[0m | [1mINFO    [0m | [36mmodels.SAC_DS_DM[0m:[36mstep[0m:[36m383[0m - [1mreward:5.886164568428081[0m
+[32m2026-01-26 11:44:25.372[0m | [1mINFO    [0m | [36mmodels.SAC_DS_DM[0m:[36mstep[0m:[36m384[0m - [1mstep:1[0m
+[32m2026-01-26 11:44:25.390[0m | [34m[1mDEBUG   [0m | [36mmodels.SAC_DS_DM[0m:[36mplanning_strategy[0m:[36m435[0m - [34m[1mpath_local frontier:[(31, 32), (30, 32), (29, 32), (28, 32), (27, 32), (26, 32), (25, 32), (24, 32), (23, 32), (22, 32), (21, 32), (20, 32)][0m
+[32m2026-01-26 11:44:25.390[0m | [34m[1mDEBUG   [0m | [36mmodels.SAC_DS_DM[0m:[36mplanning_strategy[0m:[36m437[0m - [34m[1mpath_global frontier:[(np.float64(11.0), np.float64(222.0)), (np.float64(10.0), np.float64(222.0)), (np.float64(9.0), np.float64(222.0)), (np.float64(8.0), np.float64(222.0)), (np.float64(7.0), np.float64(222.0)), (np.float64(6.0), np.float64(222.0)), (np.float64(5.0), np.float64(222.0)), (np.float64(4.0), np.float64(222.0)), (np.float64(3.0), np.float64(222.0)), (np.float64(2.0), np.float64(222.0)), (np.float64(1.0), np.float64(222.0)), (np.float64(0.0), np.float64(222.0))][0m
+[32m2026-01-26 11:44:25.390[0m | [34m[1mDEBUG   [0m | [36mmodels.SAC_DS_DM[0m:[36mstep[0m:[36m246[0m - [34m[1mself.path:deque([(np.float64(11.0), np.float64(222.0)), (np.float64(10.0), np.float64(222.0)), (np.float64(9.0), np.float64(222.0)), (np.float64(8.0), np.float64(222.0)), (np.float64(7.0), np.float64(222.0)), (np.float64(6.0), np.float64(222.0)), (np.float64(5.0), np.float64(222.0)), (np.float64(4.0), np.float64(222.0)), (np.float64(3.0), np.float64(222.0)), (np.float64(2.0), np.float64(222.0)), (np.float64(1.0), np.float64(222.0)), (np.float64(0.0), np.float64(222.0))])[0m
+[32m2026-01-26 11:44:25.395[0m | [1mINFO    [0m | [36mmodels.SAC_DS_DM[0m:[36mstep[0m:[36m321[0m - [1mmicro step:4[0m
+[32m2026-01-26 11:44:25.395[0m | [1mINFO    [0m | [36mmodels.SAC_DS_DM[0m:[36mstep[0m:[36m322[0m - [1magent pose:222.0[0m
+[32m2026-01-26 11:44:25.398[0m | [1mINFO    [0m | [36mmodels.SAC_DS_DM[0m:[36mstep[0m:[36m321[0m - [1mmicro step:5[0m
+[32m2026-01-26 11:44:25.399[0m | [1mINFO    [0m | [36mmodels.SAC_DS_DM[0m:[36mstep[0m:[36m322[0m - [1magent pose:222.0[0m
+[32m2026-01-26 11:44:25.402[0m | [1mINFO    [0m | [36mmodels.SAC_DS_DM[0m:[36mstep[0m:[36m321[0m - [1mmicro step:6[0m
+[32m2026-01-26 11:44:25.402[0m | [1mINFO    [0m | [36mmodels.SAC_DS_DM[0m:[36mstep[0m:[36m322[0m - [1magent pose:222.0[0m
+[32m2026-01-26 11:44:25.403[0m | [1mINFO    [0m | [36mmodels.SAC_DS_DM[0m:[36mstep[0m:[36m381[0m - [1mcurrent.pose:(222.0,9.0)[0m
+[32m2026-01-26 11:44:25.403[0m | [1mINFO    [0m | [36mmodels.SAC_DS_DM[0m:[36mstep[0m:[36m382[0m - [1mgoal:(183,8)[0m
+[32m2026-01-26 11:44:25.403[0m | [1mINFO    [0m | [36mmodels.SAC_DS_DM[0m:[36mstep[0m:[36m383[0m - [1mreward:-1.2066796264596138[0m
+[32m2026-01-26 11:44:25.403[0m | [1mINFO    [0m | [36mmodels.SAC_DS_DM[0m:[36mstep[0m:[36m384[0m - [1mstep:2[0m
+[32m2026-01-26 11:44:25.405[0m | [34m[1mDEBUG   [0m | [36mmodels.SAC_DS_DM[0m:[36mplanning_strategy[0m:[36m435[0m - [34m[1mpath_local frontier:[(32, 33)][0m
+[32m2026-01-26 11:44:25.406[0m | [34m[1mDEBUG   [0m | [36mmodels.SAC_DS_DM[0m:[36mplanning_strategy[0m:[36m437[0m - [34m[1mpath_global frontier:[(np.float64(9.0), np.float64(223.0))][0m
+[32m2026-01-26 11:44:25.406[0m | [34m[1mDEBUG   [0m | [36mmodels.SAC_DS_DM[0m:[36mstep[0m:[36m246[0m - [34m[1mself.path:deque([(np.float64(9.0), np.float64(223.0))])[0m
+[32m2026-01-26 11:44:25.409[0m | [1mINFO    [0m | [36mmodels.SAC_DS_DM[0m:[36mstep[0m:[36m321[0m - [1mmicro step:7[0m
+[32m2026-01-26 11:44:25.409[0m | [1mINFO    [0m | [36mmodels.SAC_DS_DM[0m:[36mstep[0m:[36m322[0m - [1magent pose:223.0[0m
+[32m2026-01-26 11:44:25.410[0m | [34m[1mDEBUG   [0m | [36mmodels.SAC_DS_DM[0m:[36mplanning_strategy[0m:[36m435[0m - [34m[1mpath_local frontier:[][0m
+[32m2026-01-26 11:44:25.410[0m | [34m[1mDEBUG   [0m | [36mmodels.SAC_DS_DM[0m:[36mplanning_strategy[0m:[36m437[0m - [34m[1mpath_global frontier:[][0m
+[32m2026-01-26 11:44:25.410[0m | [34m[1mDEBUG   [0m | [36mmodels.SAC_DS_DM[0m:[36mplanning_strategy[0m:[36m447[0m - [34m[1mcan not obtain path from astar![0m
+[32m2026-01-26 11:44:25.411[0m | [34m[1mDEBUG   [0m | [36mmodels.SAC_DS_DM[0m:[36mplanning_strategy[0m:[36m449[0m - [34m[1mpath_global backup:[(np.float64(8.0), np.float64(222.0)), (np.float64(8.0), np.float64(221.0)), (np.float64(8.0), np.float64(220.0)), (np.float64(8.0), np.float64(219.0)), (np.float64(8.0), np.float64(218.0)), (np.float64(8.0), np.float64(217.0)), (np.float64(8.0), np.float64(216.0)), (np.float64(8.0), np.float64(215.0)), (np.float64(8.0), np.float64(214.0)), (np.float64(8.0), np.float64(213.0)), (np.float64(8.0), np.float64(212.0)), (np.float64(8.0), np.float64(211.0)), (np.float64(8.0), np.float64(210.0)), (np.float64(8.0), np.float64(209.0)), (np.float64(8.0), np.float64(208.0)), (np.float64(8.0), np.float64(207.0)), (np.float64(8.0), np.float64(206.0)), (np.float64(8.0), np.float64(205.0)), (np.float64(8.0), np.float64(204.0)), (np.float64(8.0), np.float64(203.0)), (np.float64(8.0), np.float64(202.0)), (np.float64(8.0), np.float64(201.0)), (np.float64(8.0), np.float64(200.0)), (np.float64(8.0), np.float64(199.0)), (np.float64(8.0), np.float64(198.0)), (np.float64(8.0), np.float64(197.0)), (np.float64(8.0), np.float64(196.0)), (np.float64(8.0), np.float64(195.0)), (np.float64(8.0), np.float64(194.0)), (np.float64(7.0), np.float64(193.0)), (np.float64(8.0), np.float64(192.0)), (np.float64(8.0), np.float64(191.0))][0m
+[32m2026-01-26 11:44:25.416[0m | [1mINFO    [0m | [36mmodels.SAC_DS_DM[0m:[36mstep[0m:[36m321[0m - [1mmicro step:8[0m
+[32m2026-01-26 11:44:25.416[0m | [1mINFO    [0m | [36mmodels.SAC_DS_DM[0m:[36mstep[0m:[36m322[0m - [1magent pose:222.0[0m
+[32m2026-01-26 11:44:25.421[0m | [1mINFO    [0m | [36mmodels.SAC_DS_DM[0m:[36mstep[0m:[36m321[0m - [1mmicro step:9[0m
+[32m2026-01-26 11:44:25.421[0m | [1mINFO    [0m | [36mmodels.SAC_DS_DM[0m:[36mstep[0m:[36m322[0m - [1magent pose:221.0[0m
+[32m2026-01-26 11:44:25.422[0m | [1mINFO    [0m | [36mmodels.SAC_DS_DM[0m:[36mstep[0m:[36m381[0m - [1mcurrent.pose:(221.0,8.0)[0m
+[32m2026-01-26 11:44:25.422[0m | [1mINFO    [0m | [36mmodels.SAC_DS_DM[0m:[36mstep[0m:[36m382[0m - [1mgoal:(183,8)[0m
+[32m2026-01-26 11:44:25.422[0m | [1mINFO    [0m | [36mmodels.SAC_DS_DM[0m:[36mstep[0m:[36m383[0m - [1mreward:0.4492443872776244[0m
+[32m2026-01-26 11:44:25.422[0m | [1mINFO    [0m | [36mmodels.SAC_DS_DM[0m:[36mstep[0m:[36m384[0m - [1mstep:3[0m
+[32m2026-01-26 11:44:25.436[0m | [34m[1mDEBUG   [0m | [36mmodels.SAC_DS_DM[0m:[36mplanning_strategy[0m:[36m435[0m - [34m[1mpath_local frontier:[(31, 33), (30, 34), (29, 35), (28, 36), (27, 37), (26, 38), (25, 39)][0m
+[32m2026-01-26 11:44:25.436[0m | [34m[1mDEBUG   [0m | [36mmodels.SAC_DS_DM[0m:[36mplanning_strategy[0m:[36m437[0m - [34m[1mpath_global frontier:[(np.float64(7.0), np.float64(222.0)), (np.float64(6.0), np.float64(223.0)), (np.float64(5.0), np.float64(224.0)), (np.float64(4.0), np.float64(225.0)), (np.float64(3.0), np.float64(226.0)), (np.float64(2.0), np.float64(227.0)), (np.float64(1.0), np.float64(228.0))][0m
+[32m2026-01-26 11:44:25.436[0m | [34m[1mDEBUG   [0m | [36mmodels.SAC_DS_DM[0m:[36mstep[0m:[36m246[0m - [34m[1mself.path:deque([(np.float64(7.0), np.float64(222.0)), (np.float64(6.0), np.float64(223.0)), (np.float64(5.0), np.float64(224.0)), (np.float64(4.0), np.float64(225.0)), (np.float64(3.0), np.float64(226.0)), (np.float64(2.0), np.float64(227.0)), (np.float64(1.0), np.float64(228.0))])[0m
+[32m2026-01-26 11:44:25.482[0m | [1mINFO    [0m | [36mmodels.SAC_DS_DM[0m:[36mstep[0m:[36m321[0m - [1mmicro step:10[0m
+[32m2026-01-26 11:44:25.482[0m | [1mINFO    [0m | [36mmodels.SAC_DS_DM[0m:[36mstep[0m:[36m322[0m - [1magent pose:222.0[0m
+[32m2026-01-26 11:44:25.485[0m | [1mINFO    [0m | [36mmodels.SAC_DS_DM[0m:[36mstep[0m:[36m321[0m - [1mmicro step:11[0m
+[32m2026-01-26 11:44:25.485[0m | [1mINFO    [0m | [36mmodels.SAC_DS_DM[0m:[36mstep[0m:[36m322[0m - [1magent pose:223.0[0m
+[32m2026-01-26 11:44:25.488[0m | [1mINFO    [0m | [36mmodels.SAC_DS_DM[0m:[36mstep[0m:[36m321[0m - [1mmicro step:12[0m
+[32m2026-01-26 11:44:25.488[0m | [1mINFO    [0m | [36mmodels.SAC_DS_DM[0m:[36mstep[0m:[36m322[0m - [1magent pose:224.0[0m
+[32m2026-01-26 11:44:25.489[0m | [1mINFO    [0m | [36mmodels.SAC_DS_DM[0m:[36mstep[0m:[36m381[0m - [1mcurrent.pose:(224.0,5.0)[0m
+[32m2026-01-26 11:44:25.489[0m | [1mINFO    [0m | [36mmodels.SAC_DS_DM[0m:[36mstep[0m:[36m382[0m - [1mgoal:(183,8)[0m
+[32m2026-01-26 11:44:25.489[0m | [1mINFO    [0m | [36mmodels.SAC_DS_DM[0m:[36mstep[0m:[36m383[0m - [1mreward:-7.512109984593342[0m
+[32m2026-01-26 11:44:25.489[0m | [1mINFO    [0m | [36mmodels.SAC_DS_DM[0m:[36mstep[0m:[36m384[0m - [1mstep:4[0m
+[32m2026-01-26 11:44:25.491[0m | [34m[1mDEBUG   [0m | [36mmodels.SAC_DS_DM[0m:[36mplanning_strategy[0m:[36m435[0m - [34m[1mpath_local frontier:[(33, 32)][0m
+[32m2026-01-26 11:44:25.491[0m | [34m[1mDEBUG   [0m | [36mmodels.SAC_DS_DM[0m:[36mplanning_strategy[0m:[36m437[0m - [34m[1mpath_global frontier:[(np.float64(6.0), np.float64(224.0))][0m
+[32m2026-01-26 11:44:25.492[0m | [34m[1mDEBUG   [0m | [36mmodels.SAC_DS_DM[0m:[36mstep[0m:[36m246[0m - [34m[1mself.path:deque([(np.float64(6.0), np.float64(224.0))])[0m
+[32m2026-01-26 11:44:25.495[0m | [1mINFO    [0m | [36mmodels.SAC_DS_DM[0m:[36mstep[0m:[36m321[0m - [1mmicro step:13[0m
+[32m2026-01-26 11:44:25.495[0m | [1mINFO    [0m | [36mmodels.SAC_DS_DM[0m:[36mstep[0m:[36m322[0m - [1magent pose:224.0[0m
+[32m2026-01-26 11:44:25.496[0m | [34m[1mDEBUG   [0m | [36mmodels.SAC_DS_DM[0m:[36mplanning_strategy[0m:[36m435[0m - [34m[1mpath_local frontier:[][0m
+[32m2026-01-26 11:44:25.496[0m | [34m[1mDEBUG   [0m | [36mmodels.SAC_DS_DM[0m:[36mplanning_strategy[0m:[36m437[0m - [34m[1mpath_global frontier:[][0m
+[32m2026-01-26 11:44:25.496[0m | [34m[1mDEBUG   [0m | [36mmodels.SAC_DS_DM[0m:[36mplanning_strategy[0m:[36m447[0m - [34m[1mcan not obtain path from astar![0m
+[32m2026-01-26 11:44:25.496[0m | [34m[1mDEBUG   [0m | [36mmodels.SAC_DS_DM[0m:[36mplanning_strategy[0m:[36m449[0m - [34m[1mpath_global backup:[(np.float64(7.0), np.float64(223.0)), (np.float64(8.0), np.float64(222.0)), (np.float64(8.0), np.float64(221.0)), (np.float64(8.0), np.float64(220.0)), (np.float64(8.0), np.float64(219.0)), (np.float64(8.0), np.float64(218.0)), (np.float64(8.0), np.float64(217.0)), (np.float64(8.0), np.float64(216.0)), (np.float64(8.0), np.float64(215.0)), (np.float64(8.0), np.float64(214.0)), (np.float64(8.0), np.float64(213.0)), (np.float64(8.0), np.float64(212.0)), (np.float64(8.0), np.float64(211.0)), (np.float64(8.0), np.float64(210.0)), (np.float64(8.0), np.float64(209.0)), (np.float64(8.0), np.float64(208.0)), (np.float64(8.0), np.float64(207.0)), (np.float64(8.0), np.float64(206.0)), (np.float64(8.0), np.float64(205.0)), (np.float64(8.0), np.float64(204.0)), (np.float64(8.0), np.float64(203.0)), (np.float64(8.0), np.float64(202.0)), (np.float64(8.0), np.float64(201.0)), (np.float64(8.0), np.float64(200.0)), (np.float64(8.0), np.float64(199.0)), (np.float64(8.0), np.float64(198.0)), (np.float64(8.0), np.float64(197.0)), (np.float64(8.0), np.float64(196.0)), (np.float64(8.0), np.float64(195.0)), (np.float64(8.0), np.float64(194.0)), (np.float64(8.0), np.float64(193.0)), (np.float64(8.0), np.float64(192.0))][0m
+[32m2026-01-26 11:44:25.501[0m | [1mINFO    [0m | [36mmodels.SAC_DS_DM[0m:[36mstep[0m:[36m321[0m - [1mmicro step:14[0m
+[32m2026-01-26 11:44:25.501[0m | [1mINFO    [0m | [36mmodels.SAC_DS_DM[0m:[36mstep[0m:[36m322[0m - [1magent pose:223.0[0m
+[32m2026-01-26 11:44:25.506[0m | [1mINFO    [0m | [36mmodels.SAC_DS_DM[0m:[36mstep[0m:[36m321[0m - [1mmicro step:15[0m
+[32m2026-01-26 11:44:25.506[0m | [1mINFO    [0m | [36mmodels.SAC_DS_DM[0m:[36mstep[0m:[36m322[0m - [1magent pose:222.0[0m
+[32m2026-01-26 11:44:25.507[0m | [1mINFO    [0m | [36mmodels.SAC_DS_DM[0m:[36mstep[0m:[36m381[0m - [1mcurrent.pose:(222.0,8.0)[0m
+[32m2026-01-26 11:44:25.507[0m | [1mINFO    [0m | [36mmodels.SAC_DS_DM[0m:[36mstep[0m:[36m382[0m - [1mgoal:(183,8)[0m
+[32m2026-01-26 11:44:25.507[0m | [1mINFO    [0m | [36mmodels.SAC_DS_DM[0m:[36mstep[0m:[36m383[0m - [1mreward:0.5871099845933417[0m
+[32m2026-01-26 11:44:25.507[0m | [1mINFO    [0m | [36mmodels.SAC_DS_DM[0m:[36mstep[0m:[36m384[0m - [1mstep:5[0m
+[32m2026-01-26 11:44:25.509[0m | [34m[1mDEBUG   [0m | [36mmodels.SAC_DS_DM[0m:[36mplanning_strategy[0m:[36m435[0m - [34m[1mpath_local frontier:[(32, 33)][0m
+[32m2026-01-26 11:44:25.509[0m | [34m[1mDEBUG   [0m | [36mmodels.SAC_DS_DM[0m:[36mplanning_strategy[0m:[36m437[0m - [34m[1mpath_global frontier:[(np.float64(8.0), np.float64(223.0))][0m
+[32m2026-01-26 11:44:25.509[0m | [34m[1mDEBUG   [0m | [36mmodels.SAC_DS_DM[0m:[36mstep[0m:[36m246[0m - [34m[1mself.path:deque([(np.float64(8.0), np.float64(223.0))])[0m
+Traceback (most recent call last):
+  File "/home/fmt/catkin_ws/src/fmt_/sb3_SAC/scripts/Train_Script.py", line 88, in <module>
+    model.learn(
+  File "/home/fmt/miniconda3/envs/sb3/lib/python3.12/site-packages/stable_baselines3/sac/sac.py", line 313, in learn
+    return super().learn(
+           ^^^^^^^^^^^^^^
+  File "/home/fmt/miniconda3/envs/sb3/lib/python3.12/site-packages/stable_baselines3/common/off_policy_algorithm.py", line 335, in learn
+    rollout = self.collect_rollouts(
+              ^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/fmt/miniconda3/envs/sb3/lib/python3.12/site-packages/stable_baselines3/common/off_policy_algorithm.py", line 567, in collect_rollouts
+    new_obs, rewards, dones, infos = env.step(actions)
+                                     ^^^^^^^^^^^^^^^^^
+  File "/home/fmt/miniconda3/envs/sb3/lib/python3.12/site-packages/stable_baselines3/common/vec_env/base_vec_env.py", line 222, in step
+    return self.step_wait()
+           ^^^^^^^^^^^^^^^^
+  File "/home/fmt/miniconda3/envs/sb3/lib/python3.12/site-packages/stable_baselines3/common/vec_env/dummy_vec_env.py", line 59, in step_wait
+    obs, self.buf_rews[env_idx], terminated, truncated, self.buf_infos[env_idx] = self.envs[env_idx].step(  # type: ignore[assignment]
+                                                                                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/fmt/miniconda3/envs/sb3/lib/python3.12/site-packages/stable_baselines3/common/monitor.py", line 94, in step
+    observation, reward, terminated, truncated, info = self.env.step(action)
+                                                       ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/fmt/miniconda3/envs/sb3/lib/python3.12/site-packages/gymnasium/wrappers/common.py", line 393, in step
+    return super().step(action)
+           ^^^^^^^^^^^^^^^^^^^^
+  File "/home/fmt/miniconda3/envs/sb3/lib/python3.12/site-packages/gymnasium/core.py", line 327, in step
+    return self.env.step(action)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/fmt/miniconda3/envs/sb3/lib/python3.12/site-packages/gymnasium/wrappers/common.py", line 285, in step
+    return self.env.step(action)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/fmt/catkin_ws/src/fmt_/sb3_SAC/models/SAC_DS_DM.py", line 265, in step
+    m_occ, m_free, m_unk, local_m, local_m_occ, local_m_free, local_m_unk, collision, current_pose, self.belief_map = self.interface.ToSAC_step(sub_goal)
+                                                                                                                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/fmt/catkin_ws/src/fmt_/sb3_SAC/envs/env_DS.py", line 67, in ToSAC_step
+    self.m_occ, self.m_free, self.m_unk = self.lidar.DS_update([x_new, y_new, yaw_new])
+                                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/fmt/catkin_ws/src/fmt_/sb3_SAC/envs/env_DS.py", line 419, in DS_update
+    meas_r = self.get_ranges(X)
+             ^^^^^^^^^^^^^^^^^^
+  File "/home/fmt/catkin_ws/src/fmt_/sb3_SAC/envs/env_DS.py", line 289, in get_ranges
+    elif self.true_map[int(round(yi)), int(round(xi))] == 1:
+                                           ^^^^^^^^^
+KeyboardInterrupt

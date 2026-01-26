@@ -1,0 +1,55 @@
+CWD = /home/fmt/catkin_ws/src/fmt_/sb3_SAC
+Expect ckpt = /home/fmt/catkin_ws/src/fmt_/sb3_SAC/sac_decision_making.zip
+Exists? = False
+Creating new model...
+Using cuda device
+Logging to ./tb_logs/SAC_15
+path_local frontier: [(32, 31), (32, 30), (32, 29), (32, 28), (32, 27), (32, 26), (32, 25), (32, 24), (32, 23), (32, 22), (32, 21), (32, 20), (32, 19), (32, 18), (32, 17), (32, 16), (32, 15), (32, 14), (32, 13), (32, 12), (32, 11), (32, 10), (32, 9), (32, 8), (32, 7), (32, 6), (32, 5), (32, 4), (32, 3)]
+path_global frontier: [(np.float64(177.0), np.float64(28.0)), (np.float64(177.0), np.float64(27.0)), (np.float64(177.0), np.float64(26.0)), (np.float64(177.0), np.float64(25.0)), (np.float64(177.0), np.float64(24.0)), (np.float64(177.0), np.float64(23.0)), (np.float64(177.0), np.float64(22.0)), (np.float64(177.0), np.float64(21.0)), (np.float64(177.0), np.float64(20.0)), (np.float64(177.0), np.float64(19.0)), (np.float64(177.0), np.float64(18.0)), (np.float64(177.0), np.float64(17.0)), (np.float64(177.0), np.float64(16.0)), (np.float64(177.0), np.float64(15.0)), (np.float64(177.0), np.float64(14.0)), (np.float64(177.0), np.float64(13.0)), (np.float64(177.0), np.float64(12.0)), (np.float64(177.0), np.float64(11.0)), (np.float64(177.0), np.float64(10.0)), (np.float64(177.0), np.float64(9.0)), (np.float64(177.0), np.float64(8.0)), (np.float64(177.0), np.float64(7.0)), (np.float64(177.0), np.float64(6.0)), (np.float64(177.0), np.float64(5.0)), (np.float64(177.0), np.float64(4.0)), (np.float64(177.0), np.float64(3.0)), (np.float64(177.0), np.float64(2.0)), (np.float64(177.0), np.float64(1.0)), (np.float64(177.0), np.float64(0.0))]
+deque([(np.float64(177.0), np.float64(28.0)), (np.float64(177.0), np.float64(27.0)), (np.float64(177.0), np.float64(26.0)), (np.float64(177.0), np.float64(25.0)), (np.float64(177.0), np.float64(24.0)), (np.float64(177.0), np.float64(23.0)), (np.float64(177.0), np.float64(22.0)), (np.float64(177.0), np.float64(21.0)), (np.float64(177.0), np.float64(20.0)), (np.float64(177.0), np.float64(19.0)), (np.float64(177.0), np.float64(18.0)), (np.float64(177.0), np.float64(17.0)), (np.float64(177.0), np.float64(16.0)), (np.float64(177.0), np.float64(15.0)), (np.float64(177.0), np.float64(14.0)), (np.float64(177.0), np.float64(13.0)), (np.float64(177.0), np.float64(12.0)), (np.float64(177.0), np.float64(11.0)), (np.float64(177.0), np.float64(10.0)), (np.float64(177.0), np.float64(9.0)), (np.float64(177.0), np.float64(8.0)), (np.float64(177.0), np.float64(7.0)), (np.float64(177.0), np.float64(6.0)), (np.float64(177.0), np.float64(5.0)), (np.float64(177.0), np.float64(4.0)), (np.float64(177.0), np.float64(3.0)), (np.float64(177.0), np.float64(2.0)), (np.float64(177.0), np.float64(1.0)), (np.float64(177.0), np.float64(0.0))])
+current.pose: 26.0 177.0
+goal: 111 76
+reward: -1.8915081565860294
+step: 1
+path_local frontier: []
+path_global frontier: []
+deque([])
+path_local frontier: []
+path_global frontier: []
+Traceback (most recent call last):
+  File "/home/fmt/catkin_ws/src/fmt_/sb3_SAC/scripts/Train_Script.py", line 88, in <module>
+    model.learn(
+  File "/home/fmt/miniconda3/envs/sb3/lib/python3.12/site-packages/stable_baselines3/sac/sac.py", line 313, in learn
+    return super().learn(
+           ^^^^^^^^^^^^^^
+  File "/home/fmt/miniconda3/envs/sb3/lib/python3.12/site-packages/stable_baselines3/common/off_policy_algorithm.py", line 335, in learn
+    rollout = self.collect_rollouts(
+              ^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/fmt/miniconda3/envs/sb3/lib/python3.12/site-packages/stable_baselines3/common/off_policy_algorithm.py", line 567, in collect_rollouts
+    new_obs, rewards, dones, infos = env.step(actions)
+                                     ^^^^^^^^^^^^^^^^^
+  File "/home/fmt/miniconda3/envs/sb3/lib/python3.12/site-packages/stable_baselines3/common/vec_env/base_vec_env.py", line 222, in step
+    return self.step_wait()
+           ^^^^^^^^^^^^^^^^
+  File "/home/fmt/miniconda3/envs/sb3/lib/python3.12/site-packages/stable_baselines3/common/vec_env/dummy_vec_env.py", line 59, in step_wait
+    obs, self.buf_rews[env_idx], terminated, truncated, self.buf_infos[env_idx] = self.envs[env_idx].step(  # type: ignore[assignment]
+                                                                                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/fmt/miniconda3/envs/sb3/lib/python3.12/site-packages/stable_baselines3/common/monitor.py", line 94, in step
+    observation, reward, terminated, truncated, info = self.env.step(action)
+                                                       ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/fmt/miniconda3/envs/sb3/lib/python3.12/site-packages/gymnasium/wrappers/common.py", line 393, in step
+    return super().step(action)
+           ^^^^^^^^^^^^^^^^^^^^
+  File "/home/fmt/miniconda3/envs/sb3/lib/python3.12/site-packages/gymnasium/core.py", line 327, in step
+    return self.env.step(action)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/fmt/miniconda3/envs/sb3/lib/python3.12/site-packages/gymnasium/wrappers/common.py", line 285, in step
+    return self.env.step(action)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/fmt/catkin_ws/src/fmt_/sb3_SAC/models/SAC_DS_DM.py", line 264, in step
+    m_occ, m_free, m_unk, local_m, local_m_occ, local_m_free, local_m_unk, collision, current_pose, self.belief_map = self.interface.ToSAC_step(sub_goal)
+                                                                                                                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/fmt/catkin_ws/src/fmt_/sb3_SAC/envs/env_DS.py", line 63, in ToSAC_step
+    x_new = sub_goal[0]
+            ~~~~~~~~^^^
+TypeError: 'NoneType' object is not subscriptable

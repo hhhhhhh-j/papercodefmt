@@ -241,6 +241,12 @@ class Planner:
         self.goal_pos = None
         self.nodes = {}
     
+    def __contains__(self, pos):
+        y, x = pos
+        return 0 <= y < param.local_size_height \
+            and 0 <= x < param.local_size_width \
+            and self.local_map[y,x] <= 0.5
+
     def main_workflow(self, local_map, goal):
         self.local_map = local_map
         self.goal_pos = goal
@@ -254,12 +260,6 @@ class Planner:
             limit=10000,
             debug=self.debug)
         return path
-
-    def __contains__(self, pos):
-        y, x = pos
-        return 0 <= y < param.local_size_height \
-            and 0 <= x < param.local_size_width \
-            and self.local_map[y,x] <= 0.5
 
     def neighbors(self, pos):
         y, x = pos

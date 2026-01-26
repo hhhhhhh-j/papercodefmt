@@ -1,0 +1,47 @@
+CWD = /home/fmt/catkin_ws/src/fmt_/sb3_SAC
+Expect ckpt = /home/fmt/catkin_ws/src/fmt_/sb3_SAC/sac_decision_making.zip
+Exists? = False
+Creating new model...
+Using cuda device
+Logging to ./tb_logs/SAC_14
+deque([])
+Traceback (most recent call last):
+  File "/home/fmt/catkin_ws/src/fmt_/sb3_SAC/scripts/Train_Script.py", line 88, in <module>
+    model.learn(
+  File "/home/fmt/miniconda3/envs/sb3/lib/python3.12/site-packages/stable_baselines3/sac/sac.py", line 313, in learn
+    return super().learn(
+           ^^^^^^^^^^^^^^
+  File "/home/fmt/miniconda3/envs/sb3/lib/python3.12/site-packages/stable_baselines3/common/off_policy_algorithm.py", line 335, in learn
+    rollout = self.collect_rollouts(
+              ^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/fmt/miniconda3/envs/sb3/lib/python3.12/site-packages/stable_baselines3/common/off_policy_algorithm.py", line 567, in collect_rollouts
+    new_obs, rewards, dones, infos = env.step(actions)
+                                     ^^^^^^^^^^^^^^^^^
+  File "/home/fmt/miniconda3/envs/sb3/lib/python3.12/site-packages/stable_baselines3/common/vec_env/base_vec_env.py", line 222, in step
+    return self.step_wait()
+           ^^^^^^^^^^^^^^^^
+  File "/home/fmt/miniconda3/envs/sb3/lib/python3.12/site-packages/stable_baselines3/common/vec_env/dummy_vec_env.py", line 59, in step_wait
+    obs, self.buf_rews[env_idx], terminated, truncated, self.buf_infos[env_idx] = self.envs[env_idx].step(  # type: ignore[assignment]
+                                                                                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/fmt/miniconda3/envs/sb3/lib/python3.12/site-packages/stable_baselines3/common/monitor.py", line 94, in step
+    observation, reward, terminated, truncated, info = self.env.step(action)
+                                                       ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/fmt/miniconda3/envs/sb3/lib/python3.12/site-packages/gymnasium/wrappers/common.py", line 393, in step
+    return super().step(action)
+           ^^^^^^^^^^^^^^^^^^^^
+  File "/home/fmt/miniconda3/envs/sb3/lib/python3.12/site-packages/gymnasium/core.py", line 327, in step
+    return self.env.step(action)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/fmt/miniconda3/envs/sb3/lib/python3.12/site-packages/gymnasium/wrappers/common.py", line 283, in step
+    return env_step_passive_checker(self.env, action)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/fmt/miniconda3/envs/sb3/lib/python3.12/site-packages/gymnasium/utils/passive_env_checker.py", line 207, in env_step_passive_checker
+    result = env.step(action)
+             ^^^^^^^^^^^^^^^^
+  File "/home/fmt/catkin_ws/src/fmt_/sb3_SAC/models/SAC_DS_DM.py", line 264, in step
+    m_occ, m_free, m_unk, local_m, local_m_occ, local_m_free, local_m_unk, collision, current_pose, self.belief_map = self.interface.ToSAC_step(sub_goal)
+                                                                                                                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/fmt/catkin_ws/src/fmt_/sb3_SAC/envs/env_DS.py", line 63, in ToSAC_step
+    x_new = sub_goal[0]
+            ~~~~~~~~^^^
+TypeError: 'NoneType' object is not subscriptable

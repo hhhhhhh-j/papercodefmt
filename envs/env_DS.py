@@ -4,10 +4,12 @@ import seaborn as sns
 import matplotlib.pyplot as plt
 import cv2
 import time
-from utils.read_grid_map import ReadGridMap
+from loguru import logger
 from collections import defaultdict
+from utils.read_grid_map import ReadGridMap
 from envs.attachments import Frontier
 from envs.attachments import param
+
 
 class interface2RL:
     def __init__(self, global_map, init_pose = [0.0, 0.0, 0.0]):
@@ -117,7 +119,6 @@ class interface2RL:
                 self.belief_map_dict[(gx, gy)]["free"] = float(self.local_m_free[i, j])
                 self.belief_map_dict[(gx, gy)]["unk"] = float(self.local_m_unk[i, j])
 
-                # print(self.belief_map_dict)
         return self.belief_map_dict
 
     def get_local_map(self, global_map, X):
@@ -504,70 +505,6 @@ class Lidar:
         m_uncertainty = self.get_uncertainty_map_entropy()
 
         return m, m_uncertainty
-    
-def main():
-    '''
-    测试代码
-    '''
-    # 读取地图
-    map_converter = ReadGridMap()
-    big_map,small_map = map_converter.convert("/home/fmt/decision_making/sb3_SAC/map/map_basic.png")
-    lidar = Lidar(big_map)
-
-    # action输入: 车辆/雷达状态 [x, y, theta]
-    for x in range(1,10):
-        for y in range(1):
-            for yaw in [math.pi/3]:
-                m,m_uncertainty = lidar.update([x,y,yaw])
-
-    # 计算不确定性地图
-    x,y,yaw = 50,50,math.pi/3
-    uncertainty_map = lidar.get_uncertainty_map_entropy()
-
-    # 可视化
-    fig, axes = plt.subplots(1, 3, figsize=(12, 6))
-
-    img0 = axes[0].imshow(m, cmap='gray_r', origin='lower', vmin=0, vmax=1)
-    fig.colorbar(img0, ax=axes[0], fraction=0.046, pad=0.04)
-    axes[0].set_title("Occupancy map")
-
-    img1 = axes[1].imshow(big_map, cmap='gray_r', origin='lower', vmin=0, vmax=1)
-    fig.colorbar(img1, ax=axes[1], fraction=0.046, pad=0.04)
-    axes[1].set_title("Original grid map")
-
-    # 风格1 
-    img2 = axes[2].imshow(uncertainty_map, cmap='jet', origin='lower', vmin=0, vmax=1)
-    fig.colorbar(img2, ax=axes[2], fraction=0.046, pad=0.04)
-    axes[2].set_title("Uncertainty map")
-
-    # 风格2
-    # sns.heatmap(
-    #     uncertainty_map,
-    #     ax=axes[2],
-    #     cmap='YlOrRd',
-    #     square=True,
-    #     cbar_kws={"shrink": 0.8},
-    #     linewidths=0.0
-    # )
-    print("uncertainty_map:", uncertainty_map.shape)
-    print("map:", m.shape)
-    print("small_map:", small_map.shape)
-    print("big_map:", big_map.shape)
-
-    plt.tight_layout()
-    plt.show()
 
 if __name__ == "__main__":
-    '''
-    目前仍存在的问题
-    1.环境是否太简单，如何让其更真实一些
-    2.感知不确定性如何衡量，现在用信息熵衡量能否满足要求
-        证据理论不确定性
-    3.如何体现越野场景（地形起伏大，只用一个地图来代替是否可行）
-    4.传感器模型没有噪声，如何体现不确定性（针对当前技术，传感器噪声是否可以忽略，调研当前传感器
-        技术水平，评估lidar模型是否合理）
-    5.如何融合点云数据
-    6.保存环境数据进行可视化
-    7.***全局地图也要更新观测、不确定性
-    '''
     pass

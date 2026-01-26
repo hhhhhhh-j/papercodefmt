@@ -8,6 +8,7 @@ import scipy.ndimage as nd
 import numpy as np
 import math
 import matplotlib.pyplot as plt
+from loguru import logger                       # info debug warning error
 from collections import defaultdict
 from collections import deque
 from envs.env_DS import Lidar
@@ -34,7 +35,7 @@ class DM_env(gym.Env):
         self.step_count = 0
         self.timestep = 0
         self.max_steps = 300
-        self.replan_interval = 3                                      
+        self.replan_interval = 3                                    
         self.visit_count = defaultdict(int)
         self.seed = param.SEED
         self.np_random, _ = seeding.np_random(self.seed)
@@ -42,12 +43,15 @@ class DM_env(gym.Env):
         self.reward_step = 0.0
 
         # vehicle state
-        self.v = 0
-        self.agent_x = 0
-        self.agent_y = 0
-        self.agent_yaw = 0
+        self.agent_x = 0.0
+        self.agent_ix = 0
+        self.agent_y = 0.0
+        self.agent_iy = 0
+        self.agent_yaw = 0.0
         self.goal_x = None
+        self.goal_ix = None
         self.goal_y = None
+        self.goal_iy = None
         self.goal_yaw = None
         self.global_mask = np.zeros((param.global_size_height, param.global_size_width))
         self.local_mask = np.zeros((param.local_size_height, param.local_size_width))
@@ -74,7 +78,7 @@ class DM_env(gym.Env):
         # 状态空间通道数
         self.global_map_channel = 4         
         self.local_map_channel = 4         
-        self.pose_channel = 7              
+        self.pose_channel = 6              
 
         # 动作空间通道数
         self.action_channel = 3             
@@ -89,7 +93,7 @@ class DM_env(gym.Env):
         local_m_occ
         local_m_free
         local_m_unk
-        x, y, sin(yaw), cos(yaw), g_distance, g_angle, v_norm(归一化到 [-1, 1])
+        x, y, sin(yaw), cos(yaw), g_distance, g_angle
         '''
         self.observation_space = spaces.Dict({
             "global_map": spaces.Box(
@@ -145,11 +149,12 @@ class DM_env(gym.Env):
         self.step_count = 0
         self.micro_step = 0
         self.visit_count.clear()
-        self.v = 0.0
         self.goal_x = None
         self.goal_y = None
         self.goal_yaw = None
         self.path = deque()
+        self.global_mask.fill(0)
+        self.local_mask.fill(0)
 
         # 生成地图
         # self.generate_random_map(seed = seed)     # 随机生成地图 
@@ -157,11 +162,18 @@ class DM_env(gym.Env):
 
         # 随机生成智能体和目标点位置
         self.goal_x,self.goal_y,self.goal_yaw = self.get_random_free_position()
+        self.goal_ix = int(self.goal_x / param.XY_RESO)
+        self.goal_iy = int(self.goal_y / param.XY_RESO)
+
         self.agent_x,self.agent_y,self.agent_yaw = self.get_random_free_position()  
+        self.agent_ix = int(self.agent_x / param.XY_RESO)
+        self.agent_iy = int(self.agent_y / param.XY_RESO)
 
         # 得到 position mask
-        self.global_mask[self.agent_y // param.XY_RESO, self.agent_x // param.XY_RESO] = 1
-        self.local_mask[param.local_size_height//2, param.local_size_width//2] = 1
+        local_mask_ix = int(param.local_size_width // 2)
+        local_mask_iy = int(param.local_size_height // 2)
+        self.global_mask[self.agent_iy, self.agent_ix] = 1
+        self.local_mask[local_mask_iy, local_mask_ix] = 1
 
         # 初始化创建接口对象
         self.interface = interface2RL(self.global_map, 
@@ -194,13 +206,12 @@ class DM_env(gym.Env):
                                    self.local_m_unk], axis=0).astype(np.float32),
 
             "pose": np.array([
-                self.agent_x / param.global_size_width,
-                self.agent_y / param.global_size_height,
+                self.agent_ix / param.global_size_width,
+                self.agent_iy / param.global_size_height,
                 math.sin(self.agent_yaw),
                 math.cos(self.agent_yaw),
                 goal_distance / param.max_dist,
-                goal_angle / math.pi,
-                self.v / param.max_velocity
+                goal_angle / math.pi
             ], dtype=np.float32)
         }
         
@@ -220,10 +231,19 @@ class DM_env(gym.Env):
         self.timestep += 1
         self.reward_step = 0.0
 
-        
+        # 如果 goal 在 localmap 内
+        goal_reachable, path2goal = self.goal_reachable()
 
         # ---计算 frontier , astar planning---
-        self.planning_strategy(action)
+        if goal_reachable:
+            # 直接规划到 goal
+            self.path.clear()
+            path_global = self.path_local_to_global(path2goal, self.agent_x, self.agent_y)
+            self.path.extend(path_global)
+        else:
+            self.planning_strategy(action)
+
+        logger.debug("self.path:{}", self.path)        # --
 
         # micro steps
         for i in range(self.replan_interval):
@@ -245,7 +265,9 @@ class DM_env(gym.Env):
             m_occ, m_free, m_unk, local_m, local_m_occ, local_m_free, local_m_unk, collision, current_pose, self.belief_map = self.interface.ToSAC_step(sub_goal)
 
             self.agent_x = current_pose[0]
+            self.agent_ix = int(self.agent_x / param.XY_RESO)
             self.agent_y = current_pose[1]
+            self.agent_iy = int(self.agent_y / param.XY_RESO)
             self.agent_yaw = current_pose[2]
             self.local_m_occ = local_m_occ
             self.local_m_free = local_m_free
@@ -256,7 +278,7 @@ class DM_env(gym.Env):
             self.m_unk = m_unk
 
             # 得到 position mask
-            self.global_mask[self.agent_y // param.XY_RESO, self.agent_x // param.XY_RESO] = 1
+            self.global_mask[self.agent_iy, self.agent_ix] = 1
             
             goal_distance = self.get_distance2goal()
             goal_angle = self.get_angle2goal()
@@ -278,8 +300,6 @@ class DM_env(gym.Env):
             step_penalty = param.STEP_PENALTY_WEIGHT * (-self.micro_step / self.max_steps)
             reach_goal_reward = param.REACH_GOAL_WEIGHT if reach else 0.0
             explore_reward = param.EXPLORE_GAIN_WEIGHT * (-uncertainty_err)
-            reverse_penalty = param.REVERSE_WEIGHT * self.v if self.v<0 else 0.0
-            forward_reward = param.FOWARD_WEIGHT * self.v if self.v>0 else 0.0
             risk_penalty = param.RISK_PENALTY_WEIGHT * (-risk_err)
             revisit_penalty = param.VISIT_PENALTY_WEIGHT * (-visit_penalty)
 
@@ -289,16 +309,17 @@ class DM_env(gym.Env):
                                  step_penalty + 
                                  reach_goal_reward + 
                                  explore_reward +
-                                 reverse_penalty + 
-                                 forward_reward + 
                                  risk_penalty +
                                  revisit_penalty)
 
             #---terminated collsion reach---
             if (reach or collision): 
                 break
-            if self.step_count >= self.max_steps:
+            if self.micro_step >= self.max_steps:
                 break
+
+            logger.info("micro step:{}", self.micro_step,)
+            logger.info("agent pose:{}", self.agent_x, self.agent_y, self.agent_yaw)
     
         self.reward_step = np.clip(self.reward_step, -200, 200)
 
@@ -315,13 +336,12 @@ class DM_env(gym.Env):
                                            self.local_m_unk], axis=0).astype(np.float32),
 
                     "pose": np.array([
-                        self.agent_x / param.global_size_width,
-                        self.agent_y / param.global_size_height,
+                        self.agent_ix / param.global_size_width,
+                        self.agent_iy / param.global_size_height,
                         math.sin(self.agent_yaw),
                         math.cos(self.agent_yaw),
                         goal_distance / param.max_dist,
-                        goal_angle / math.pi,
-                        self.v / param.max_velocity
+                        goal_angle / math.pi
                     ], dtype=np.float32)
                 }
 
@@ -339,29 +359,29 @@ class DM_env(gym.Env):
 
         # ---设置terminated和truncated---
         terminated = True if (reach or collision) else False
-        truncated = True if self.step_count >= self.max_steps else False
+        truncated = True if self.micro_step >= self.max_steps else False
 
-        # 如果 episode 结束，必须手动写入 episode 信息
+        # episode 结束，手动写入 episode 信息
         if terminated or truncated:
             info["episode"] = {
-                "r": self.episode_reward,   # 总奖励
-                "l": self.episode_length    # episode 长度
+                "r": self.episode_reward,   
+                "l": self.episode_length    
             }
 
         # ---调试信息---
         if reach:
-            print("reachhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhh")
+            logger.info("reachhhhh!!!!!")
 
         if collision:
-            print("collisionnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnn")
+            logger.warning("collisionnnnn!!!!!")
         
         if truncated:
-            print("max   steppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppp")
+            logger.warning("max stepppppp!!!!!")
         
-        print("current.pose:",self.agent_x,self.agent_y)
-        print("goal:",self.goal_x,self.goal_y)
-        print("reward:",self.reward_step)
-        print("step:",self.timestep)
+        logger.info("current.pose:({},{})",self.agent_x,self.agent_y)
+        logger.info("goal:({},{})",self.goal_x,self.goal_y)
+        logger.info("reward:{}",self.reward_step)
+        logger.info("step:{}",self.timestep)
         
         return obs, self.reward_step, terminated, truncated, info
 
@@ -393,23 +413,45 @@ class DM_env(gym.Env):
     
         plt.pause(0.10)   
 
+    def goal_reachable(self):
+        goal_local_yi, goal_local_xi = self.point_global_to_local(self.goal_x, self.goal_y)
+        if goal_local_xi < 0 or goal_local_xi >= param.local_size_width or \
+           goal_local_yi < 0 or goal_local_yi >= param.local_size_height:
+            return False, None
+        path = self.get_path_astar(self.local_m, (goal_local_yi, goal_local_xi))
+        if path is None or len(path) == 0:
+            return False, None
+        else:
+            return True, path
+
     def planning_strategy(self, action):
         topk, _ = self.get_frontier_clusters(action)
         best = topk[0] if topk and topk[0] is not None else None
         current_sub_goal_astar = best.get("rep_ij") if best else None     
+
+        logger.debug("current_sub_goal_astar:{}", current_sub_goal_astar)
             # 
         self.path.clear()
+
+        path_local = self.get_path_astar(self.local_m, current_sub_goal_astar)
+        logger.debug("path_local frontier:{}", path_local)
+        path_global = self.path_local_to_global(path_local, self.agent_x, self.agent_y)
+        logger.debug("path_global frontier:{}", path_global)
+        self.path.extend(path_global)
+
         if current_sub_goal_astar is None:
-            print("No frontier found!")
-            current_sub_goal_ = self.sub_goal_back_up_poloicy()
-            path_local = self.get_path_astar(self.local_m, current_sub_goal_)
-            path_global = self.path_local_to_global(path_local, self.agent_x, self.agent_y)
+            logger.debug("No frontier found!")
+            path_global = self.back_up_poloicy()
+            logger.debug("path_global backup:{}", path_global)
             self.path.extend(path_global)
-        else:
-            path_local = self.get_path_astar(self.local_m, current_sub_goal_astar)
-            path_global = self.path_local_to_global(path_local, self.agent_x, self.agent_y)
+        
+        if not path_local:
+            logger.debug("can not obtain path from astar!")
+            path_global = self.back_up_poloicy()
+            logger.debug("path_global backup:{}", path_global)
             self.path.extend(path_global)
 
+            
 
     def pop_sub_goal(self):
         '''
@@ -421,20 +463,20 @@ class DM_env(gym.Env):
         
         if len(self.path) == 1:
             p_ = self.path.popleft()
-            sub_x, sub_y = p_
+            sub_y, sub_x = p_
             sub_yaw = self.agent_yaw
             sub_goal = [sub_x, sub_y, sub_yaw]
             return sub_goal
         else:
             p_ = self.path.popleft()
             p_next = self.path[0]
-            sub_x, sub_y = p_
-            sub_x_next, sub_y_next = p_next
+            sub_y, sub_x = p_
+            sub_y_next, sub_x_next = p_next
             sub_yaw = math.atan2((sub_y_next - sub_y),(sub_x_next - sub_x))
             sub_goal = [sub_x, sub_y, sub_yaw]
             return sub_goal
 
-    def sub_goal_back_up_poloicy(self):
+    def back_up_poloicy(self):
         H, W = param.local_size_height, param.local_size_width
         ci, cj = H // 2, W // 2
         res = param.XY_RESO
@@ -450,8 +492,30 @@ class DM_env(gym.Env):
         # clamp 到 local 边界
         y = int(np.clip(y, 0, H - 1))
         x = int(np.clip(x, 0, W - 1))
-        return (x, y)
 
+        current_sub_goal_ = (y, x)
+        path_local = self.get_path_astar(self.local_m, current_sub_goal_)
+        path_global = self.path_local_to_global(path_local, self.agent_x, self.agent_y)
+
+        return path_global
+
+    def point_global_to_local(self, x_in, y_in):
+        '''
+        return local 索引 (y, x)
+        '''
+        H, W = param.local_size_height, param.local_size_width
+        ci, cj = H // 2, W // 2
+        res = param.XY_RESO
+
+        # goal 在 local 坐标系中的偏移（格）
+        dx = (x_in - self.agent_x) / res
+        dy = (y_in - self.agent_y) / res
+
+        # local 索引 (y, x)
+        y = int(round(ci + dy))
+        x = int(round(cj + dx))
+
+        return (y, x)
 
     def path_local_to_global(self, path_local, agent_x, agent_y):
         if path_local is None or len(path_local)==0:
@@ -467,7 +531,7 @@ class DM_env(gym.Env):
             # 
             xg = np.clip(xg, 0, param.global_size_width - 1)
             yg = np.clip(yg, 0, param.global_size_height - 1)
-            path_global.append((xg, yg))
+            path_global.append((yg, xg))
 
         return path_global
 

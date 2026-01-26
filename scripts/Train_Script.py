@@ -9,14 +9,22 @@ print("PYTHONPATH updated:", ROOT_DIR)
 
 import gymnasium as gym
 import utils.register_env as register_env
-from stable_baselines3 import SAC
-from utils.custom_cnn import CustomCNN
-from stable_baselines3.common.callbacks import BaseCallback
 import wandb
+from stable_baselines3 import SAC
+from utils.custom_encoder import CustomEncoder
+from stable_baselines3.common.callbacks import BaseCallback
+from loguru import logger
 from wandb.integration.sb3 import WandbCallback
 from utils.wandb_callback import WandbCustomCallback
 from stable_baselines3.common.monitor import Monitor
 from stable_baselines3.common.env_util import make_vec_env
+
+# logging
+logger.add("logging/train.log", rotation="50 MB", retention="7 days", compression="zip")
+# logger.remove() # 去掉默认 handler，自定义
+# logger.add(sys.stdout, level="INFO")
+# logger.add("logging/train_debug.log", level="DEBUG", rotation="50 MB", retention="14 days")
+
 
 print("Start Training")
 env = make_vec_env("DM-v1", n_envs=1, monitor_dir="./monitor")
@@ -29,8 +37,8 @@ wandb.init(
     name="SAC_DS_run1",             # 当前实验名
     config={
         "learning_rate": 3e-4,
-        "buffer_size": 200000,
-        "batch_size": 256,
+        "buffer_size": 10000,       # 1000000
+        "batch_size": 32,           # 256
         "gamma": 0.99,
         "tau": 0.005,
         "net_arch": [256, 256],
@@ -40,7 +48,7 @@ wandb.init(
 )
 
 policy_kwargs = dict(
-    features_extractor_class=CustomCNN,
+    features_extractor_class=CustomEncoder,
     features_extractor_kwargs=dict(features_dim=256),
     net_arch=dict(
         pi=[256, 256],         # actor
