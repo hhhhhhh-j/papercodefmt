@@ -11,7 +11,7 @@ import gymnasium as gym
 import utils.register_env as register_env
 import wandb
 from stable_baselines3 import SAC
-from utils.custom_encoder import CustomEncoder
+from interactions.custom_encoder import CustomEncoder
 from stable_baselines3.common.callbacks import BaseCallback
 from loguru import logger
 from wandb.integration.sb3 import WandbCallback
