@@ -1,113 +1,114 @@
-import sys, os
-
-CURRENT_DIR = os.path.dirname(os.path.abspath(__file__))
-ROOT_DIR = os.path.dirname(CURRENT_DIR)
-sys.path.append(ROOT_DIR)
-sys.path.append(os.path.join(ROOT_DIR, "utils"))
-
-print("PYTHONPATH updated:", ROOT_DIR)
-
+import os, sys
+import multiprocessing as mp
 import gymnasium as gym
-import utils.register_env as register_env
-import wandb
-from stable_baselines3 import SAC
-from interactions.custom_encoder import CustomEncoder
-from stable_baselines3.common.callbacks import BaseCallback
 from loguru import logger
-from wandb.integration.sb3 import WandbCallback
-from utils.wandb_callback import WandbCustomCallback
-from stable_baselines3.common.monitor import Monitor
-from stable_baselines3.common.env_util import make_vec_env
 
-# logging
-logger.add("logging/train.log", rotation="50 MB", retention="7 days", compression="zip")
-# logger.remove() # 去掉默认 handler，自定义
-# logger.add(sys.stdout, level="INFO")
-# logger.add("logging/train_debug.log", level="DEBUG", rotation="50 MB", retention="14 days")
+def main():
+    mp.set_start_method("forkserver", force=True)
 
+    CURRENT_DIR = os.path.dirname(os.path.abspath(__file__))
+    ROOT_DIR = os.path.dirname(CURRENT_DIR)
+    sys.path.append(ROOT_DIR)
+    sys.path.append(os.path.join(ROOT_DIR, "utils"))
+    MODEL_PATH = os.path.join(ROOT_DIR, "wandb_models", "model.zip")
 
-print("Start Training")
-env = make_vec_env("DM-v1", n_envs=1, monitor_dir="./monitor")
+    print("PYTHONPATH updated:", ROOT_DIR)
 
-# 初始化 wandb
-wandb.init(
-    sync_tensorboard=True,
-    dir="./",
-    project="offroad-sac-ds",       # 你的项目名称
-    name="SAC_DS_run1",             # 当前实验名
-    config={
-        "learning_rate": 3e-4,
-        "buffer_size": 10000,       # 1000000
-        "batch_size": 32,           # 256
-        "gamma": 0.99,
-        "tau": 0.005,
-        "net_arch": [256, 256],
-        "features_dim": 256, 
-        "total_timesteps": 1000000,
-    }
-)
+    import utils.register_env as register_env
 
-policy_kwargs = dict(
-    features_extractor_class=CustomEncoder,
-    features_extractor_kwargs=dict(features_dim=256),
-    net_arch=dict(
-        pi=[256, 256],         # actor
-        qf=[256, 256]          # critic
+    import wandb
+    from stable_baselines3 import SAC
+    from stable_baselines3.common.env_util import make_vec_env
+    from stable_baselines3.common.vec_env import SubprocVecEnv
+    from interactions.custom_encoder import CustomEncoder
+    from wandb.integration.sb3 import WandbCallback
+    from utils.wandb_callback import WandbCustomCallback
+
+    logger.info("Start Training")
+
+    # env = make_vec_env(
+    #     "DM-v1",
+    #     n_envs=16,
+    #     vec_env_cls=SubprocVecEnv,
+    #     vec_env_kwargs=dict(start_method="spawn"),
+    #     monitor_dir="./monitor"
+    # )
+    def make_env(rank: int):
+        def _init():
+            import gymnasium as gym          # ✅ 关键：子进程里也 import
+            import utils.register_env        # ✅ 关键：子进程里注册
+            from stable_baselines3.common.monitor import Monitor
+            env = gym.make("DM-v1")
+            env = Monitor(env)
+            return env
+        return _init
+
+    env = SubprocVecEnv([make_env(i) for i in range(16)])
+
+    wandb.init(
+        sync_tensorboard=True,
+        dir="./",
+        project="offroad-sac-ds",
+        name="SAC_DS_run1",
+        config={
+            "learning_rate": 3e-4,
+            "buffer_size": 100000,
+            "batch_size": 512,
+            "gamma": 0.99,
+            "tau": 0.005,
+            "features_dim": 256,
+            "total_timesteps": 50_0000,  # 时间紧张先别 1e9
+        }
     )
-)
 
-# 创建或加载 SAC 模型
-print("CWD =", os.getcwd())
-print("Expect ckpt =", os.path.abspath("sac_decision_making.zip"))
-print("Exists? =", os.path.exists("sac_decision_making.zip"))
-if os.path.exists("sac_decision_making.zip"):
-    print("Loading existing model...")
-    model = SAC.load("sac_decision_making", env=env)
-else:
-    print("Creating new model...")
+    policy_kwargs = dict(
+        features_extractor_class=CustomEncoder,
+        features_extractor_kwargs=dict(features_dim=256),
+        net_arch=dict(pi=[256, 256], qf=[256, 256])
+    )
+
     model = SAC(
-        policy="MultiInputPolicy",
-        env=env,
+        "MultiInputPolicy",
+        env,
+        device="cuda",
         learning_rate=wandb.config.learning_rate,
         buffer_size=wandb.config.buffer_size,
         batch_size=wandb.config.batch_size,
         tau=wandb.config.tau,
         gamma=wandb.config.gamma,
         train_freq=(1, "step"),
-        gradient_steps=1,
+        gradient_steps=4,
         ent_coef="auto",
         target_entropy="auto",
         policy_kwargs=policy_kwargs,
-        verbose=2, 
-        tensorboard_log="./tb_logs/", 
+        verbose=2,
+        tensorboard_log="./tb_logs/",
+        learning_starts=5000,
+    )
+    if os.path.exists(MODEL_PATH):
+        logger.info(f"Loading weights from: {MODEL_PATH}")
+        loaded = SAC.load(MODEL_PATH, env=env, device="cuda")
+        model.set_parameters(loaded.get_parameters(), exact_match=True)
+
+    wandb_cb = WandbCallback(
+        model_save_path="./wandb_models",
+        model_save_freq=5000,
+        verbose=2
     )
 
-# 开始训练（接入 WandB）
-wandb_cb = WandbCallback(
-    model_save_path="./wandb_models",
-    model_save_freq=5000,
-    verbose=2
-)
+    custom_cb = WandbCustomCallback(log_freq=2000)
 
-custom_cb = WandbCustomCallback(
-    log_freq=200,
-)
+    model.learn(
+        total_timesteps=wandb.config.total_timesteps,
+        log_interval=4,
+        callback=[wandb_cb, custom_cb]
+    )
 
-model.learn(
-    total_timesteps=wandb.config.total_timesteps,
-    log_interval=4,
-    callback=[wandb_cb, custom_cb]
-)
-
-model.save("/home/fmt/catkin_ws/src/fmt_/sb3_SAC/sac_decision_making")
-env.close()
-wandb.finish()
+    model.save("./sac_decision_making_v2")
+    env.close()
+    wandb.finish()
 
 if __name__ == "__main__":
-    '''
-    目前仍存在的问题
-    1.如何针对超参数进行优化
-    2.如何自动的生成随机地图进行训练
-    3. ...
-    '''
-    pass
+    # 如果未来要 freeze 成可执行文件，需要 freeze_support；普通训练可不加
+    # mp.freeze_support()
+    main()

@@ -36,22 +36,22 @@ class param:
 
     # action 缩放系数
     RATIO_throttle = 4                          # x缩放系数
-    RATIO_yaw = math.pi / 4                     # yaw缩放系数
+    RATIO_steer = math.pi / 4                     # yaw缩放系数
     dt = 0.3                                    # 时间步长
     L = 2.5                                     # 车辆轴距
 
     # reward 系数
-    REACH_GOAL_WEIGHT = 50.0                    # 到达目标奖励
+    REACH_GOAL_WEIGHT = 100.0                    # 到达目标奖励
     COLLISION_WEIGHT = -50.0                    # 碰撞惩罚
-    STEP_PENALTY_WEIGHT = 20.5                  # step惩罚
-    DISTANCE_WEIGHT = 1.30                      # 距离权重
-    YAW_WEIGHT = 0.5                            # 航向角权重
-    EXPLORE_GAIN_WEIGHT = 0.0                   # 探索奖励增益
-    REVERSE_WEIGHT = 1.0                        # 倒车惩罚
-    FOWARD_WEIGHT = 0.5                         # 前进奖励
+    STEP_PENALTY_WEIGHT = 1.0                  # step惩罚
+    DISTANCE_WEIGHT = 5.30                      # 距离权重
+    YAW_WEIGHT = 0.05                            # 航向角权重
+    EXPLORE_GAIN_WEIGHT = 0.5                   # 探索奖励增益
+    # REVERSE_WEIGHT = 1.0                        # 倒车惩罚
+    # FOWARD_WEIGHT = 0.5                         # 前进奖励
     VISIT_PENALTY_WEIGHT = 0.5                  # 访问频次惩罚系数
-    RISK_PENALTY_WEIGHT = 2.0                   # 风险惩罚系数
-    NOPATH_PENALTY_WEIGHT = 5.0                 # 无路径惩罚系数
+    RISK_PENALTY_WEIGHT = 0.05                  # 风险惩罚系数
+    NOPATH_PENALTY_WEIGHT = 1.0                 # 无路径惩罚系数
 
     # 111
     PATCH_SIZE_beliefmap = 256                  # 全局地图patch大小

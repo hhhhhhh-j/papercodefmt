@@ -7,8 +7,8 @@ import time
 from loguru import logger
 from collections import defaultdict
 from utils.read_grid_map import ReadGridMap
-from envs.attachments import Frontier
-from envs.attachments import param
+from interactions.attachments import Frontier
+from interactions.attachments import param
 
 
 class interface2RL:
