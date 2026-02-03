@@ -139,13 +139,15 @@ class Frontier:
             if risk_map is not None:
                 risk = float(risk_map[i, j])
 
-            # 分数越大越好：偏好“大cluster、近一些、低风险”
+            # 大cluster、近一些、低风险”
             # score_ = self.action[0] * size - self.action[1] * dist - self.action[2] * risk
             # 归一化
             size_norm = size * self.size_norm_factor
             dist_norm = dist * self.dist_norm_factor
             risk_norm = risk * self.risk_norm_factor
+
             score_ = self.action[0] * size_norm - self.action[1] * dist_norm - self.action[2] * risk_norm
+
             return score_
 
         infos_sorted = sorted(infos, key=score, reverse=True)

@@ -22,29 +22,23 @@ from gymnasium import spaces
 from gymnasium.utils import seeding
 
 class DM_env(gym.Env):
-    def _make_episode_seed(self, episode_id: int) -> int:
-        return self.base_seed + self.rank * 100000 + int(episode_id)
-
-    def __init__(self, exec_mode="common", 
-                 obs_mode="full", 
-                 base_seed  = 0, 
-                 rank = 0):
+    def __init__(self, rank = 0):
         super(DM_env, self).__init__()
 
         # seeding for multi-env
         self.rank = int(rank)
-        self.episode_id = 0
-        self.base_seed = int(base_seed)
+        self.episode_num = 0
+        self.base_seed = int(0)
 
-        self.exec_mode = exec_mode          # common, noplan
-        self.obs_mode =  obs_mode           # full, no_uncertainty
+        self.exec_mode = "common"           # common, noplan
+        self.obs_mode =  "full"             # full, no_uncertainty
         self.EXPLORE_GAIN_WEIGHT = 0.5
         self.disable_u_reward = (self.obs_mode == "no_uncertainty")
 
         self.planner = Planner()
         self.render_obj = Render()
 
-        self._seed = self._make_episode_seed(self.episode_id)
+        self._seed = self._make_episode_seed(self.episode_num)
         self.np_random, _ = seeding.np_random(self._seed)  
 
         # 参数
@@ -146,6 +140,109 @@ class DM_env(gym.Env):
             self._init_actionspace_noplan()
         else:
             raise ValueError(self.exec_mode)
+
+    def reset(self, *, seed=None, options=None):
+        '''
+        -重置环境状态
+        -返回值
+        observation	    初始观察
+        info	        额外信息（一般空字典）
+        '''
+        super().reset(seed=seed)
+        if seed is not None:
+            self.base_seed = int(seed)
+
+        self._seed = self._make_episode_seed(self.episode_num)
+        self.episode_num += 1
+        self.np_random, _ = seeding.np_random(self._seed)
+
+        self._reset_world_()
+
+        # ---observation---
+        if self.obs_mode == "full":
+            observation = self._build_obs_common()
+        elif self.obs_mode == "no_uncertainty":
+            observation = self._build_obs_no_uncertainty()
+        else:
+            raise ValueError(self.obs_mode)
+        
+        return observation, {}
+
+    def step(self, action): 
+        '''
+        返回值
+        observation	    observation	        下一时刻的观测
+        reward	        reward	            这一步的奖励
+        done	        terminated	        任务是否自然结束（成功/失败）
+        False	        truncated	        是否被强制中断（超时等）
+        info	        info	            额外信息（调试/分析用）
+        '''
+        self.step_count += 1
+        self.timestep += 1
+        self.reward = 0.0
+
+        # ---forward---
+        if self.exec_mode == "common":
+            reach, collision = self._step_forward_common(action) 
+        elif self.exec_mode == "noplan":     
+            reach, collision = self._step_forward_noplan(action)
+        else:
+            raise ValueError(self.exec_mode)
+
+        # ---observation---
+        if self.obs_mode == "full":
+            obs = self._build_obs_common()
+        elif self.obs_mode == "no_uncertainty":
+            obs = self._build_obs_no_uncertainty()
+        else:
+            raise ValueError(self.obs_mode)
+
+        # ---输出info---
+        self.episode_reward += self.reward
+        self.episode_length += 1
+
+        terminated = True if (reach or collision) else False
+        truncated = True if self.step_count >= self.max_steps else False   # buggggggggggg different count method
+
+        if reach:
+            done_reason = "reach"
+        if collision:
+            done_reason = "collision"
+        if truncated:
+            done_reason = "max step"
+
+        info = {
+            "success": reach,
+            "collision": collision,
+            "done_reason": done_reason,
+        }
+        
+        if terminated or truncated:
+            info["episode"] = {
+                "r": self.episode_reward,   
+                "l": self.episode_length    
+            }
+
+        
+        return obs, self.reward, terminated, truncated, info
+
+    def render(self, mode='human'):
+        '''
+        渲染环境（可选）
+        mode: 渲染模式
+        'human'：渲染到屏幕
+        'rgb_array'：返回RGB图像数组
+        '''
+        
+        self.render_obj._draw_local_map(self.local_m, self.agent_x, self.agent_y, self.agent_yaw)
+        self.render_obj._draw_local_map_uncertainty(self.local_m_unk, self.agent_x, self.agent_y, self.agent_yaw)
+        self.render_obj._draw_belief_map(self.belief_map)
+        self.render_obj.flush()
+    
+        plt.pause(0.10)   
+
+    def _make_episode_seed(self, episode_num: int) -> int:
+        return self.base_seed + self.rank * 100000 + int(episode_num)
 
     def _init_actionspace_common(self):
         '''
@@ -278,35 +375,6 @@ class DM_env(gym.Env):
             ], dtype=np.float32)
         }
         return observation
-
-    def reset(self, *, seed=None, options=None):
-        '''
-        -重置环境状态
-        -返回值
-        observation	    初始观察
-        info	        额外信息（一般空字典）
-        '''
-        super().reset(seed=seed)
-        if seed is not None:
-            # 外部显式传 seed：“重新开始一组实验”
-            self.base_seed = int(seed)
-            self.episode_id = 0
-
-        self._seed = self._make_episode_seed(self.episode_id)
-        self.episode_id += 1
-        self.np_random, _ = seeding.np_random(self._seed)
-
-        self._reset_world_()
-
-        # ---observation---
-        if self.obs_mode == "full":
-            observation = self._build_obs_common()
-        elif self.obs_mode == "no_uncertainty":
-            observation = self._build_obs_no_uncertainty()
-        else:
-            raise ValueError(self.obs_mode)
-        
-        return observation, {}
 
     def _step_forward_common(self, action):
         '''
@@ -498,73 +566,6 @@ class DM_env(gym.Env):
                         stall_penalty)
         
         return reach, collision
-
-    def step(self, action): 
-        '''
-        返回值
-        observation	    observation	        下一时刻的观测
-        reward	        reward	            这一步的奖励
-        done	        terminated	        任务是否自然结束（成功/失败）
-        False	        truncated	        是否被强制中断（超时等）
-        info	        info	            额外信息（调试/分析用）
-        '''
-        self.step_count += 1
-        self.timestep += 1
-        self.reward = 0.0
-
-        # ---forward---
-        if self.exec_mode == "common":
-            reach, collision = self._step_forward_common(action) 
-        elif self.exec_mode == "noplan":     
-            reach, collision = self._step_forward_noplan(action)
-        else:
-            raise ValueError(self.exec_mode)
-
-        # ---observation---
-        if self.obs_mode == "full":
-            obs = self._build_obs_common()
-        elif self.obs_mode == "no_uncertainty":
-            obs = self._build_obs_no_uncertainty()
-        else:
-            raise ValueError(self.obs_mode)
-
-        # ---输出info---
-        self.episode_reward += self.reward
-        self.episode_length += 1
-
-        terminated = True if (reach or collision) else False
-        truncated = True if self.step_count >= self.max_steps else False   # buggggggggggg different count method
-
-        info = {
-            "reach_goal": reach,
-            "collision": collision,
-            "distance_to_goal": self.goal_distance,
-            "uncertainty": np.mean(self.local_m_unk)
-        }
-        
-        if terminated or truncated:
-            info["episode"] = {
-                "r": self.episode_reward,   
-                "l": self.episode_length    
-            }
-
-        
-        return obs, self.reward, terminated, truncated, info
-
-    def render(self, mode='human'):
-        '''
-        渲染环境（可选）
-        mode: 渲染模式
-        'human'：渲染到屏幕
-        'rgb_array'：返回RGB图像数组
-        '''
-        
-        self.render_obj._draw_local_map(self.local_m, self.agent_x, self.agent_y, self.agent_yaw)
-        self.render_obj._draw_local_map_uncertainty(self.local_m_unk, self.agent_x, self.agent_y, self.agent_yaw)
-        self.render_obj._draw_belief_map(self.belief_map)
-        self.render_obj.flush()
-    
-        plt.pause(0.10)   
 
     def get_risk_map(self, beta_occ = 1.0, beta_unk = 0.5, occ_threshold = 0.6,
                      safe_radius = 3.0,
