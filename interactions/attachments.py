@@ -32,7 +32,8 @@ class param:
     max_dist = np.sqrt(global_size_width**2 + global_size_height**2)
     max_dist_local = np.sqrt(local_size_width**2 + local_size_height**2)
     frontier_k = 8                              # 选择前 k 个 frontier clusters
-    SEED = None                                 # 随机地图种子
+    # SEED = None                                 # 随机地图种子
+    dem_id:str = "00000"                        # 读取的dem编号
 
     # action 缩放系数
     RATIO_throttle = 4                          # x缩放系数

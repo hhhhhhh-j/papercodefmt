@@ -241,7 +241,6 @@ class interface2RL:
 class Lidar:
     def __init__(self, true_map):
         self.true_map = true_map
-        self.reso = param.RESO
         # Parameters for the sensor model.
         self.meas_phi = param.MEAS_PHI
         self.rmax = param.RMAX
@@ -268,8 +267,8 @@ class Lidar:
         rmax     : 最大量程
         返回值   : 每条激光束的量测距离数组 meas_r
         """
-        x = X[0] / self.reso
-        y = X[1] / self.reso
+        x = X[0] 
+        y = X[1] 
         theta = X[2]
         meas_r = self.rmax * np.ones(self.meas_phi.shape)
         
@@ -297,9 +296,9 @@ class Lidar:
         """
         
         """
-        x_ind, y_ind, theta = X[0]/self.reso, X[1]/self.reso, X[2]
+        x_ind, y_ind, theta = X[0], X[1], X[2]
 
-        r_grid = int(self.rmax / self.reso)
+        r_grid = int(self.rmax)
 
         x_min = max(0, int(x_ind - r_grid))
         x_max = min(self.N, int(x_ind + r_grid)+1)
@@ -408,9 +407,9 @@ class Lidar:
         '''
         DS_update 
         '''
-        x_ind, y_ind = X[0]/self.reso, X[1]/self.reso
+        x_ind, y_ind = X[0], X[1]
 
-        r_grid = int(self.rmax / self.reso)
+        r_grid = int(self.rmax)
 
         x_min = max(0, int(x_ind - r_grid))
         x_max = min(self.N, int(x_ind + r_grid)+1)
@@ -497,8 +496,8 @@ class Lidar:
         更新感知概率地图和不确定性地图
         """
         X_clipped = np.array([
-            np.clip(X[0], 0, self.N * self.reso - 1),
-            np.clip(X[1], 0, self.M * self.reso - 1),
+            np.clip(X[0], 0, self.N  - 1),
+            np.clip(X[1], 0, self.M  - 1),
             X[2]   
         ])
         m = self.generate_probability_map(X_clipped)

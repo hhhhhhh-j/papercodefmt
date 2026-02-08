@@ -1,0 +1,74 @@
+entity: 3297240254-bit
+project: offroad-sac-ds
+name: DM_sweep_0207
+program: scripts/train.py
+
+command:
+  - ${env}
+  - python3
+  - ${program}
+
+method: random                # grid, bayes
+metric:
+  name: custom/success_rate   # rollout/ep_rew_mean
+  goal: maximize
+
+parameters:
+  master_seed:
+    values: [0, 1, 2]
+  exec_mode:
+    values: ["common"]        # "common", "noplan"
+  obs_mode:
+    values: ["full"]          # "full", "no_uncertainty"
+
+  # map setting
+  dem_id:
+    values: ["00000", "10001", "20003"] 
+
+  # ===== 固定/训练设置 =====
+  total_timesteps:
+    value: 500000
+  n_envs:
+    values: [16]
+  features_dim:
+    values: [256]
+  learning_starts:
+    values: [2000, 5000, 10000]
+  train_freq:
+    values: [1, 4]
+  gradient_steps:
+    values: [1, 4, 8]
+
+  # ===== SAC 超参 =====
+  learning_rate:
+    distribution: log_uniform_values
+    min: 1.0e-5
+    max: 3.0e-4
+  batch_size:
+    values: [256, 512, 1024]
+  buffer_size:
+    values: [20000, 50000, 100000]
+  gamma:
+    values: [0.98, 0.99, 0.995]
+  tau:
+    values: [0.005, 0.01]
+
+  # ===== 环境 reward 权重（你要 sweep 的）=====
+  distance_w:
+    values: [0.5, 1.0, 2.0]
+  yaw_w:
+    values: [0.1, 0.5, 1.0]
+  collision_w:
+    values: [0.5, 1.0, 2.0]
+  step_penalty_w:
+    values: [0.01, 0.05, 0.1]
+  reach_w:
+    values: [0.0, 0.2, 0.5]
+  risk_penalty_w:
+    values: [0.0, 0.2, 0.5]
+  visit_penalty_w:
+    values: [0.0, 0.2, 0.5]
+  nopath_w:
+    values: [0.0, 0.5, 1.0]
+  explore_gain_w:
+    values: [0.0, 0.5, 1.0]

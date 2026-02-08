@@ -90,7 +90,6 @@ class FixedActionAgent(Agent):
             f"fixed_action shape {self.a.shape} != action_space {self.action_space.shape}"
 
     def act(self, obs: Dict[str, Any]) -> np.ndarray:
-        # 如果 action_space 是 Box，建议 clip 到合法范围
         if isinstance(self.action_space, gym.spaces.Box):
             low, high = self.action_space.low, self.action_space.high
             return np.clip(self.a, low, high)
@@ -98,11 +97,7 @@ class FixedActionAgent(Agent):
 
 class AblationWrapper(gym.Wrapper):
     """
-    without_uncertainty:
-      - 把 obs 里的 uncertainty 通道置零（或从 info/cost 中关闭相关项：看你 env 实现）
-    without_planning:
-      - 这种一般要在 env 内部切 planner 开关；如果 env 暴露了 set_mode/flags 最好
-      - wrapper 里做不了规划器替换的话，就在 env 构造时传参数：gym.make(..., w/o_planning=True)
+    ablation
     """
     def __init__(self, env, exec_mode, obs_mode):
         super().__init__(env)
@@ -162,10 +157,19 @@ class Recorder:
         self.m_unk = None
         self.global_mask = None
 
+    # every step
     def append(self, obs: Dict[str, Any], action: np.ndarray, reward: float, info: Dict[str, Any]):
         self.poses.append(np.array(obs["pose"], dtype=np.float32))
         self.actions.append(np.array(action, dtype=np.float32))
         self.rewards.append(float(reward))
+
+        pm = info.get("progress_map")
+
+        if pm is not None:
+            self.m_occ = pm.get("m_occ", None)
+            self.m_free = pm.get("m_free", None)
+            self.m_unk = pm.get("m_unk", None)
+            self.global_mask = pm.get("global_mask", None)
 
         key_info = {
             "success": info.get("success", None),
@@ -177,6 +181,7 @@ class Recorder:
         self.success = self.success or bool(info.get("success", False))
         self.collision = self.collision or bool(info.get("collision", False))
 
+    # every episode
     def summary(self, ep_id: int, seed: int, terminated: bool, truncated: bool) -> EpisodeSummary:
         return EpisodeSummary(
             ep_id=ep_id,
@@ -198,6 +203,8 @@ def evaluate(
     ablation = "full",
     seed_base: int = 0,
     render: bool = False,
+    exec_mode:str = "common",
+    obs_mode:str = "full",
 ):
     os.makedirs(out_dir, exist_ok=True)
 
@@ -210,6 +217,8 @@ def evaluate(
         render=render,
         time=now_str(),
         ablation = ablation,
+        exec_mode = exec_mode,
+        obs_mode = obs_mode,
     )
 
     time_stamp = now_date()
@@ -219,28 +228,31 @@ def evaluate(
         json.dump(config, f, ensure_ascii=False, indent=2)
 
     # ---make env---
-    env = gym.make(env_id)
+    env = gym.make(env_id, exec_mode = exec_mode, obs_mode = obs_mode)
 
-    if ablation == "full":
-        exec_mode, obs_mode = "common", "full"
-    elif ablation == "without_uncertainty":
-        exec_mode, obs_mode = "common", "no_uncertainty"
-    elif ablation == "without_planning":
-        exec_mode, obs_mode = "noplan", "full"
-    else:
-        raise ValueError(ablation)
+    # if ablation == "full":
+    #     exec_mode, obs_mode = "common", "full"
+    # elif ablation == "without_uncertainty":
+    #     exec_mode, obs_mode = "common", "no_uncertainty"
+    # elif ablation == "without_planning":
+    #     exec_mode, obs_mode = "noplan", "full"
+    # else:
+    #     raise ValueError(ablation)
     
-    env = AblationWrapper(env, exec_mode=exec_mode, obs_mode=obs_mode)
+    # env = AblationWrapper(env, exec_mode=exec_mode, obs_mode=obs_mode)
 
     # ---main loop---
     summaries: List[EpisodeSummary] = []
 
     # ---episode---
     for ep in range(n_episodes):
-        ep_seed = seed_base + ep
-        seed_everything(ep_seed)
+        if ep == 0:
+            obs, info = env.reset(seed=seed_base)
+        else:
+            obs, info = env.reset()
 
-        obs, info = env.reset(seed=ep_seed)
+        ep_seed = info.get("ep_seed", None)
+
         rec = Recorder()
 
         terminated = False
@@ -288,6 +300,12 @@ def evaluate(
         # info --one episode
         with open(os.path.join(ep_dir, "info_keys.json"), "w", encoding="utf-8") as f:
             json.dump(jsonable(rec.info_keys), f, ensure_ascii=False)
+
+        # map --one episode
+        if rec.m_occ is not None: np.save(os.path.join(ep_dir, "m_occ.npy"), rec.m_occ)
+        if rec.m_free is not None: np.save(os.path.join(ep_dir, "m_free.npy"), rec.m_free)
+        if rec.m_unk is not None: np.save(os.path.join(ep_dir, "m_unk.npy"), rec.m_unk)
+        if rec.global_mask is not None: np.save(os.path.join(ep_dir, "global_mask.npy"), rec.global_mask)
 
         # log
         logger.info(
@@ -354,7 +372,7 @@ def main():
             else:
                 raise ValueError(METHOD)
         finally:
-                env_for_model.close()
+            env_for_model.close()
 
         agent = SB3Agent(model, deterministic=DETERMINISTIC)
 
@@ -362,15 +380,12 @@ def main():
         agent = RandomAgent(action_space, seed = MASTER_SEED)
 
     elif METHOD == "frontier":
-        # 这里假设你的 action = [w_goal, w_info, w_safe, tau]
-        # frontier baseline 可以固定 w_info=1，其他=0
         agent = FixedActionAgent(
             fixed_action=np.array([0.5, 0.5, 0.5], dtype=np.float32),
             action_space=action_space,
         )
 
     elif METHOD == "greedy_goal":
-        # greedy-goal：只追 goal（示例）
         agent = FixedActionAgent(
             fixed_action=np.array([0.0, 1.0, 0.0], dtype=np.float32),
             action_space=action_space,
@@ -386,6 +401,16 @@ def main():
     '''
     ABLATION = "without_uncertainty"      # without_planning, full
 
+    if ABLATION == "without_uncertainty":
+        exec_mode, obs_mode = "common", "no_uncertainty"
+    elif ABLATION == "without_planning":
+        exec_mode, obs_mode = "noplan", "full"
+    elif ABLATION == "full":
+        exec_mode, obs_mode = "common", "full"
+    else:
+        raise ValueError(ABLATION)
+
+
     # ---evaluate---
     evaluate(
         env_id="DM-v1",
@@ -396,6 +421,8 @@ def main():
         ablation = ABLATION,
         seed_base=MASTER_SEED,
         render=False,
+        exec_mode=exec_mode,
+        obs_mode=obs_mode
     )
 
 if __name__ == "__main__":

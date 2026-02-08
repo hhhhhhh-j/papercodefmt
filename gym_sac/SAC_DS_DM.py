@@ -22,30 +22,32 @@ from gymnasium import spaces
 from gymnasium.utils import seeding
 
 class DM_env(gym.Env):
-    def __init__(self, rank = 0):
+    def __init__(self, exec_mode = "common", obs_mode = "full", rank = 0):
         super(DM_env, self).__init__()
+
+        self.dem_id = param.dem_id
 
         # seeding for multi-env
         self.rank = int(rank)
         self.episode_num = 0
-        self.base_seed = int(0)
+        self.base_seed = 0
 
-        self.exec_mode = "common"           # common, noplan
-        self.obs_mode =  "full"             # full, no_uncertainty
-        self.EXPLORE_GAIN_WEIGHT = 0.5
+        self.exec_mode = exec_mode           # common, noplan
+        self.obs_mode =  obs_mode             # full, no_uncertainty
+        self.EXPLORE_GAIN_WEIGHT = param.EXPLORE_GAIN_WEIGHT
         self.disable_u_reward = (self.obs_mode == "no_uncertainty")
 
         self.planner = Planner()
         self.render_obj = Render()
 
-        self._seed = self._make_episode_seed(self.episode_num)
+        self._seed = int(0)
         self.np_random, _ = seeding.np_random(self._seed)  
 
         # 参数
         self.micro_step = 0
-        self.step_count = 0
+        self.step_count_inepisode = 0
         self.timestep = 0
-        self.max_steps = 300
+        self.max_steps = 1000
         self.replan_interval = 3                                    
         self.visit_count = defaultdict(int)
         self.global_map = np.zeros((param.global_size_height, param.global_size_width))
@@ -151,9 +153,12 @@ class DM_env(gym.Env):
         super().reset(seed=seed)
         if seed is not None:
             self.base_seed = int(seed)
-
-        self._seed = self._make_episode_seed(self.episode_num)
+            self.episode_num = 0
+        
+        ep_seed = self._make_episode_seed(self.episode_num)
         self.episode_num += 1
+
+        self._seed = ep_seed
         self.np_random, _ = seeding.np_random(self._seed)
 
         self._reset_world_()
@@ -166,7 +171,12 @@ class DM_env(gym.Env):
         else:
             raise ValueError(self.obs_mode)
         
-        return observation, {}
+        # ---info---
+        info = {
+            "ep_seed": int(ep_seed)
+        }
+
+        return observation, info
 
     def step(self, action): 
         '''
@@ -177,7 +187,6 @@ class DM_env(gym.Env):
         False	        truncated	        是否被强制中断（超时等）
         info	        info	            额外信息（调试/分析用）
         '''
-        self.step_count += 1
         self.timestep += 1
         self.reward = 0.0
 
@@ -201,15 +210,18 @@ class DM_env(gym.Env):
         self.episode_reward += self.reward
         self.episode_length += 1
 
-        terminated = True if (reach or collision) else False
-        truncated = True if self.step_count >= self.max_steps else False   # buggggggggggg different count method
+        terminated = bool(reach or collision)
+        truncated = bool((not terminated) and (self.micro_step >= self.max_steps))
+
 
         if reach:
             done_reason = "reach"
-        if collision:
+        elif collision:
             done_reason = "collision"
-        if truncated:
+        elif truncated:
             done_reason = "max step"
+        else:
+            done_reason = "running"
 
         info = {
             "success": reach,
@@ -221,6 +233,12 @@ class DM_env(gym.Env):
             info["episode"] = {
                 "r": self.episode_reward,   
                 "l": self.episode_length    
+            }
+            info["progress_map"] = {
+                "m_occ": self.m_occ,
+                "m_free": self.m_free,
+                "m_unk": self.m_unk,
+                "global_mask": self.global_mask,
             }
 
         
@@ -273,7 +291,7 @@ class DM_env(gym.Env):
         self.disable_u_reward = (self.obs_mode == "no_uncertainty")
         self.episode_reward = 0.0
         self.episode_length = 0
-        self.step_count = 0
+        self.step_count_inepisode = 0
         self.micro_step = 0
         self.visit_count.clear()
         self.goal_x = None
@@ -284,17 +302,18 @@ class DM_env(gym.Env):
         self.local_mask.fill(0)
 
         # 生成地图
-        # self.generate_random_map(seed = seed)     # 随机生成地图 
-        self.get_easy_map()                         # 生成简单测试地图
+        # self.generate_random_map(seed = seed)         # 随机生成地图 
+        # self.get_easy_map()                           # 生成简单测试地图
+        self.read_map_Dataset()                         # read map from dataset
 
         # 随机生成智能体和目标点位置
-        self.goal_x,self.goal_y,self.goal_yaw = self.get_random_free_position()
-        self.goal_ix = int(self.goal_x / param.XY_RESO)
-        self.goal_iy = int(self.goal_y / param.XY_RESO)
+        self.goal_ix,self.goal_iy,self.goal_yaw = self.get_random_free_position()
+        self.goal_x = int(self.goal_ix * param.XY_RESO)
+        self.goal_y = int(self.goal_iy * param.XY_RESO)
 
-        self.agent_x,self.agent_y,self.agent_yaw = self.get_random_free_position()  
-        self.agent_ix = int(self.agent_x / param.XY_RESO)
-        self.agent_iy = int(self.agent_y / param.XY_RESO)
+        self.agent_ix,self.agent_iy,self.agent_yaw = self.get_random_free_position()  
+        self.agent_x = int(self.agent_ix * param.XY_RESO)
+        self.agent_y = int(self.agent_iy * param.XY_RESO)
 
         # 得到 position mask
         local_mask_ix = int(param.local_size_width // 2)
@@ -321,7 +340,21 @@ class DM_env(gym.Env):
         self.goal_angle = self.get_angle2goal()
 
         self.risk_map = self.get_risk_map()
+
+    def read_map_Dataset(self):
+        '''
         
+        '''
+        dem_id = self.dem_id
+
+        DATASET_DIR = os.path.join(PARENT_DIR, "Dataset", "output", "map", "tiles" )
+        npy_path = os.path.join(DATASET_DIR, f"tile_{dem_id}.npy")
+
+        if not os.path.exists(npy_path):
+            raise FileNotFoundError(f"DEM npy not found: {npy_path}")
+
+        self.global_map = np.load(npy_path, mmap_mode="r")
+  
     def _build_obs_common(self):
         '''return: obs'''
         observation = {
@@ -381,6 +414,10 @@ class DM_env(gym.Env):
         action is weight;
         return: reach, collision;
         '''
+        self.step_count_inepisode += 1
+
+        # ---action to weight---
+        weight = self.action2weight_softmax(action)
 
         # 如果 goal 在 localmap 内
         goal_reachable, path2goal = self.goal_reachable()
@@ -393,7 +430,7 @@ class DM_env(gym.Env):
             self.path.extend(path_global)
             nopath = False
         else:
-            nopath = self.planning_strategy(action)
+            nopath = self.planning_strategy(weight)
 
         # logger.debug("self.path:{}", self.path)        # --
 
@@ -410,7 +447,7 @@ class DM_env(gym.Env):
             sub_goal = self.pop_sub_goal()
             # when path is used up
             if sub_goal is None:
-                _ = self.planning_strategy(action)
+                _ = self.planning_strategy(weight)
                 sub_goal = self.pop_sub_goal()
 
             # last reward params
@@ -459,7 +496,6 @@ class DM_env(gym.Env):
             reach_goal_reward = param.REACH_GOAL_WEIGHT if reach else 0.0
             explore_reward = 0.0 if self.disable_u_reward else\
                   self.EXPLORE_GAIN_WEIGHT * (-uncertainty_err)
-            # explore_reward = self.EXPLORE_GAIN_WEIGHT * (-uncertainty_err)
             risk_penalty = param.RISK_PENALTY_WEIGHT * (-risk_err)
             revisit_penalty = param.VISIT_PENALTY_WEIGHT * (-visit_penalty)
             nopath_penalty = -param.NOPATH_PENALTY_WEIGHT if nopath else 0.0
@@ -491,6 +527,9 @@ class DM_env(gym.Env):
         action is acc, steer
         return: reach, collision
         '''
+        self.step_count_inepisode += 1
+        self.micro_step = self.step_count_inepisode
+
         # last reward params
         distance, angle_yaw_goal, uncertain_gain, risk = self.calculate_reward_param()
 
@@ -503,8 +542,8 @@ class DM_env(gym.Env):
         desired_y = self.v * np.sin(self.agent_yaw) * param.dt + self.agent_y
         desired_steer = self.v / param.L * np.tan(steer) * param.dt + self.agent_yaw
 
-        sub_x = np.clip(desired_x, 0, param.global_size_width - 1)
-        sub_y = np.clip(desired_y, 0, param.global_size_height - 1)
+        sub_x = np.clip(desired_x, 0, (param.global_size_width - 1)*param.XY_RESO)
+        sub_y = np.clip(desired_y, 0, (param.global_size_height - 1)*param.XY_RESO)
         sub_steer = desired_steer
         sub_goal = [sub_x, sub_y, sub_steer]
 
@@ -565,6 +604,9 @@ class DM_env(gym.Env):
                         revisit_penalty +  
                         stall_penalty)
         
+        if self.step_count_inepisode >= self.max_steps:
+            self.reward -= 20
+        
         return reach, collision
 
     def get_risk_map(self, beta_occ = 1.0, beta_unk = 0.5, occ_threshold = 0.6,
@@ -599,17 +641,17 @@ class DM_env(gym.Env):
         
         return risk_map
 
-    def get_frontier_clusters(self, action, risk_map=None): 
+    def get_frontier_clusters(self, weight, risk_map=None): 
         '''
         获取 top k frontier clusters
         '''
         frontier = Frontier(self.local_m_occ, self.local_m_unk, 
                             self.local_m_free,(param.local_size_height // 2, param.local_size_width // 2)
-                            , action, k=param.frontier_k)
+                            , weight, k=param.frontier_k)
         frontier_mask = frontier.compute_frontier_mask()
         clusters = frontier.cluster_frontiers(frontier_mask)
         infos = frontier.summarize_clusters_rep_points(clusters)
-        topk = frontier.select_topk(infos, risk_map) # no risk map for now
+        topk = frontier.select_topk(infos, risk_map) 
         return topk, frontier_mask
 
     def goal_reachable(self):
@@ -623,12 +665,20 @@ class DM_env(gym.Env):
         else:
             return True, path
 
-    def planning_strategy(self, action):
+    def action2weight_softmax(self, action, temperature = 1.0):
+        action = np.clip(action, -1.0, 1.0)
+        logits = action / temperature
+        weight = np.exp(logits - logits.max())
+        weight = weight / (weight.sum() + 1e-8)
+        
+        return weight
+
+    def planning_strategy(self, weight):
         '''
         return nopath: bool
         '''
         self.path.clear()
-        topk, _ = self.get_frontier_clusters(action, self.risk_map)
+        topk, _ = self.get_frontier_clusters(weight, self.risk_map)
         best = topk[0] if topk and topk[0] is not None else None
         current_sub_goal_astar = best.get("rep_ij") if best else None     
 
@@ -738,8 +788,8 @@ class DM_env(gym.Env):
             xg = agent_x + (x - cj) * res
             yg = agent_y + (y - ci) * res
             # 
-            xg = np.clip(xg, 0, param.global_size_width - 1)
-            yg = np.clip(yg, 0, param.global_size_height - 1)
+            xg = np.clip(xg, 0, (param.global_size_width - 1)*param.XY_RESO)
+            yg = np.clip(yg, 0, (param.global_size_height - 1)*param.XY_RESO)
             path_global.append((yg, xg))
 
         return path_global
@@ -770,7 +820,7 @@ class DM_env(gym.Env):
         return distance_Euclidean, angle_yaw_goal, uncertain_gain, risk_gain
         
     def revisit_penalty_func(self):
-        ix, iy = int(self.agent_x), int(self.agent_y)
+        ix, iy = int(self.agent_ix), int(self.agent_iy)
         c = self.visit_count[(ix, iy)]
         visit_penalty = math.log1p(c) 
         self.visit_count[(ix, iy)] = c + 1
