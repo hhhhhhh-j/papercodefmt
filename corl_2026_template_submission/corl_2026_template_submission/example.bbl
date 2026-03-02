@@ -1,0 +1,19 @@
+\begin{thebibliography}{2}
+\providecommand{\natexlab}[1]{#1}
+\providecommand{\url}[1]{\texttt{#1}}
+\expandafter\ifx\csname urlstyle\endcsname\relax
+  \providecommand{\doi}[1]{doi: #1}\else
+  \providecommand{\doi}{doi: \begingroup \urlstyle{rm}\Url}\fi
+
+\bibitem[Gauss and Davis(1857)]{Gauss1857}
+C.~F. Gauss and C.~H. Davis.
+\newblock Theory of the motion of the heavenly bodies moving about the sun in
+  conic sections.
+\newblock \emph{Gauss's Theoria Motus}, 76\penalty0 (1):\penalty0 5--23, 1857.
+
+\bibitem[Lagrange(1788)]{Lagrange1788}
+J.-L. Lagrange.
+\newblock \emph{M{\'e}canique Analytique}.
+\newblock Desaint, Paris, 1788.
+
+\end{thebibliography}

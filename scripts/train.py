@@ -16,14 +16,17 @@ import time
 from stable_baselines3 import SAC
 from stable_baselines3.common.env_util import make_vec_env
 from stable_baselines3.common.vec_env import SubprocVecEnv
+from stable_baselines3.common.callbacks import CallbackList, EvalCallback
+from stable_baselines3.common.monitor import Monitor
 from interactions.custom_encoder import CustomEncoder
 from wandb.integration.sb3 import WandbCallback
 from utils.wandb_callback import WandbCustomCallback
 from loguru import logger
+from interactions.attachments import param
 
 def train():
     run = wandb.init(
-        project="offroad-sac-ds",
+        project="fmt-without_prior_map-dm",
         # name=run_name,
         sync_tensorboard=True,
         dir="./",
@@ -35,26 +38,24 @@ def train():
             "dem_id": "00000",
 
             "learning_rate": 3e-4,
-            "buffer_size": 100000,
+            "buffer_size": 50000,
             "batch_size": 512,
             "gamma": 0.99,
             "tau": 0.005,
             "total_timesteps": 50_0000,
-            "n_envs": 16,
+            "n_envs": 8,
             "gradient_steps": 4,
             "train_freq": 1,
             "learning_starts": 5000,
             "features_dim": 256,
 
-            "distance_w": 0.5,
-            "yaw_w": 1.0,
-            "collision_w": 1.0,
-            "step_penalty_w": 1.0,
-            "reach_w": 0.05,
-            "risk_penalty_w": 0.2,
-            "visit_penalty_w": 0.5,
-            "nopath_w": 0.5,
+            "reach_w": 10.0,
+            "collision_penalty": -10.0,
+            "step_penalty": -1.0,
+            "distance_w": 5.0,
             "explore_gain_w": 0.5,
+            "risk_penalty": -0.8,
+            "nopath_penalty": -3.0,
         }
     )
 
@@ -68,11 +69,8 @@ def train():
 
 
     run_name = (
-        f"DM_dem{cfg.dem_id}_{cfg.exec_mode}_{cfg.obs_mode}"
         f"_seed{cfg.master_seed}"
         f"_env{cfg.n_envs}"
-        f"_lr{float(cfg.learning_rate):.2e}"
-        f"_bs{int(cfg.batch_size)}"
         f"_{time.strftime('%m%d-%H%M')}"
     )
     wandb.run.name = run_name
@@ -85,8 +83,8 @@ def train():
     sweep_dir = os.path.join(ROOT_DIR, "sweep_runs")
     run_dir = os.path.join(sweep_dir, "_run_", wandb.run.id)
     os.makedirs(run_dir, exist_ok=True)
-    MODEL_PATH = os.path.join(run_dir, "model.zip")
-    RB_PATH = os.path.join(run_dir, "buffer.pkl")
+
+    MODEL_PATH = os.path.join(ROOT_DIR, "WandB_models", "model.zip")
 
     # ---create multi-env---
     def make_env(rank: int):
@@ -99,15 +97,14 @@ def train():
             from stable_baselines3.common.monitor import Monitor
             from interactions.attachments import param
 
-            param.DISTANCE_WEIGHT = float(env_cfg["distance_w"])
-            param.YAW_WEIGHT = float(env_cfg["yaw_w"])
-            param.COLLISION_WEIGHT = float(env_cfg["collision_w"])
-            param.STEP_PENALTY_WEIGHT = float(env_cfg["step_penalty_w"])
             param.REACH_GOAL_WEIGHT = float(env_cfg["reach_w"])
-            param.RISK_PENALTY_WEIGHT = float(env_cfg["risk_penalty_w"])
-            param.VISIT_PENALTY_WEIGHT = float(env_cfg["visit_penalty_w"])
-            param.NOPATH_PENALTY_WEIGHT = float(env_cfg["nopath_w"])
+            param.COLLISION_PENALTY = float(env_cfg["collision_penalty"])
+            param.STEP_PENALTY = float(env_cfg["step_penalty"])
+            param.DISTANCE_WEIGHT = float(env_cfg["distance_w"])
             param.EXPLORE_GAIN_WEIGHT = float(env_cfg["explore_gain_w"])
+            param.RISK_PENALTY = float(env_cfg["risk_penalty"])
+            param.NOPATH_PENALTY = float(env_cfg["nopath_penalty"])
+            
             param.dem_id = str(env_cfg["dem_id"])
             # env.unwrapped.EXPLORE_GAIN_WEIGHT = float(env_cfg["explore_gain_w"])
 
@@ -123,15 +120,13 @@ def train():
 
         "dem_id":cfg.dem_id,
 
-        "distance_w": cfg.distance_w,
-        "yaw_w": cfg.yaw_w,
-        "collision_w": cfg.collision_w,
-        "step_penalty_w": cfg.step_penalty_w,
         "reach_w": cfg.reach_w,
-        "risk_penalty_w": cfg.risk_penalty_w,
-        "visit_penalty_w": cfg.visit_penalty_w,
-        "nopath_w": cfg.nopath_w,
+        "collision_penalty": cfg.collision_penalty,
+        "step_penalty": cfg.step_penalty,
+        "distance_w": cfg.distance_w,
         "explore_gain_w": cfg.explore_gain_w,
+        "risk_penalty": cfg.risk_penalty,
+        "nopath_penalty": cfg.nopath_penalty,
     }
 
     env = SubprocVecEnv([make_env(i) for i in range(cfg.n_envs)], start_method="forkserver")
@@ -147,8 +142,7 @@ def train():
     if os.path.exists(MODEL_PATH):
         logger.info(f"Loading weights from: {MODEL_PATH}")
         model = SAC.load(MODEL_PATH, env=env, device="cuda")
-        if os.path.exists(RB_PATH): 
-            model.load_replay_buffer(RB_PATH)
+        
     else:
         model = SAC(
             "MultiInputPolicy",
@@ -170,22 +164,50 @@ def train():
         )
     
     # ---callback---
-    custom_cb = WandbCustomCallback(save_freq=5000, 
-                                    verbose=2, 
-                                    model_path=MODEL_PATH, 
-                                    rb_path=RB_PATH,
-                                    log_freq=1000)
+    param.REACH_GOAL_WEIGHT = float(env_cfg["reach_w"])
+    param.COLLISION_PENALTY = float(env_cfg["collision_penalty"])
+    param.STEP_PENALTY = float(env_cfg["step_penalty"])
+    param.DISTANCE_WEIGHT = float(env_cfg["distance_w"])
+    param.EXPLORE_GAIN_WEIGHT = float(env_cfg["explore_gain_w"])
+    param.RISK_PENALTY = float(env_cfg["risk_penalty"])
+    param.NOPATH_PENALTY = float(env_cfg["nopath_penalty"])
+
+    param.dem_id                = str(cfg.dem_id)
+    n_envs = env.num_envs
+    eval_freq = max(5000 // n_envs, 1)
+    best_dir = os.path.join(run_dir, "best_model")
+    eval_dir  = os.path.join(run_dir, "eval")
+    os.makedirs(best_dir, exist_ok=True)
+    os.makedirs(eval_dir, exist_ok=True)
+
+    eval_env = gym.make("DM-v1", exec_mode = EXEC_MODE, obs_mode = OBS_MODE)
+    eval_env = Monitor(eval_env)
+    _ = eval_env.reset(seed=MASTER_SEED)
+
+    custom_cb = WandbCustomCallback(save_freq=0, 
+                                    log_freq=5000)
+    
+    eval_cb = EvalCallback(
+        eval_env,
+        best_model_save_path=best_dir,  # 只保存 best
+        log_path=eval_dir,
+        eval_freq=eval_freq,
+        n_eval_episodes=20,
+        deterministic=True,
+    )
 
     # ---learning---
+    callback = CallbackList([custom_cb, eval_cb])
+
     model.learn(
         total_timesteps=int(cfg.total_timesteps),
         log_interval=4,
-        callback=[custom_cb]
+        callback=callback
     )
 
     # ---save---
-    model.save(MODEL_PATH)
-    model.save_replay_buffer(RB_PATH)
+    # model.save(MODEL_PATH)
+    # model.save_replay_buffer(RB_PATH)
     env.close()
     run.finish()
 

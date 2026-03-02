@@ -15,14 +15,12 @@ UNKNOWN = -1
 FREE    = 0
 OCC     = 1
 
-
-
 class param:
-    # Hybrid A* 参数
-    XY_RESO = 1.0                               # 一个格子代表多少m
-    YAW_RESO = np.deg2rad(15.0)                 # 航向角分辨率
-    WB = 3.5                                    # 车辆的轴距 (WheelBase)
-    max_velocity = 10.0                         # 最大速度 m/s
+    # # Hybrid A* 参数  (弃用)
+    # XY_RESO = 1.0                               # 一个格子代表多少m
+    # YAW_RESO = np.deg2rad(15.0)                 # 航向角分辨率
+    # WB = 3.5                                    # 车辆的轴距 (WheelBase)
+    # max_velocity = 10.0                         # 最大速度 m/s
 
     # 地图尺寸
     local_size_width = 64
@@ -42,17 +40,13 @@ class param:
     L = 2.5                                     # 车辆轴距
 
     # reward 系数
-    REACH_GOAL_WEIGHT = 100.0                    # 到达目标奖励
-    COLLISION_WEIGHT = -50.0                    # 碰撞惩罚
-    STEP_PENALTY_WEIGHT = 1.0                  # step惩罚
-    DISTANCE_WEIGHT = 5.30                      # 距离权重
-    YAW_WEIGHT = 0.05                            # 航向角权重
+    REACH_GOAL_WEIGHT = 10.0                    # 到达目标奖励
+    COLLISION_PENALTY = -10.0                   # 碰撞惩罚
+    STEP_PENALTY = -1.0                         # step惩罚
+    DISTANCE_WEIGHT = 5.0                       # 距离权重
     EXPLORE_GAIN_WEIGHT = 0.5                   # 探索奖励增益
-    # REVERSE_WEIGHT = 1.0                        # 倒车惩罚
-    # FOWARD_WEIGHT = 0.5                         # 前进奖励
-    VISIT_PENALTY_WEIGHT = 0.5                  # 访问频次惩罚系数
-    RISK_PENALTY_WEIGHT = 0.05                  # 风险惩罚系数
-    NOPATH_PENALTY_WEIGHT = 1.0                 # 无路径惩罚系数
+    RISK_PENALTY = -0.8                         # 风险惩罚系数
+    NOPATH_PENALTY = -3.0                       # 无路径惩罚系数
 
     # 111
     PATCH_SIZE_beliefmap = 256                  # 全局地图patch大小
