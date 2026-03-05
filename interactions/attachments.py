@@ -17,7 +17,7 @@ OCC     = 1
 
 class param:
     # # Hybrid A* 参数  (弃用)
-    # XY_RESO = 1.0                               # 一个格子代表多少m
+    XY_RESO = 1.0                               # 一个格子代表多少m
     # YAW_RESO = np.deg2rad(15.0)                 # 航向角分辨率
     # WB = 3.5                                    # 车辆的轴距 (WheelBase)
     # max_velocity = 10.0                         # 最大速度 m/s
@@ -98,6 +98,17 @@ class Frontier:
         return clusters
 
 
+
+
+
+
+
+
+
+
+
+
+
     def summarize_clusters_rep_points(self, clusters):
         ri, rj = self.robot_ij
         infos = []
@@ -121,6 +132,23 @@ class Frontier:
             })
 
         return infos
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
     def select_topk(self, infos, risk_map=None):
         ri, rj = self.robot_ij
@@ -267,7 +295,10 @@ class Planner:
                 yield y + dy, x + dx
 
     def reach_goal(self, pos):
-        return pos == self.goal_pos
+        y,x = pos
+        y_goal,x_goal = self.goal_pos
+        distance = np.sqrt((x_goal - x)**2 + (y_goal - y)**2)
+        return distance <= 2.0
 
     def cost(self, from_pos, to_pos):
         from_y, from_x = from_pos

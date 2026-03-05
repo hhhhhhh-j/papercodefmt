@@ -70,7 +70,7 @@ parameters:
   reach_w:
     values: [10.0, 5.0]
   collision_penalty:
-    values: [-10.0, -5.0]
+    values: [-20.0, -10.0]
   step_penalty:
     values: [-1.0, -2.0]
   distance_w:
@@ -78,7 +78,7 @@ parameters:
   explore_gain_w:
     values: [0.5, 1.0, 2.0]
   risk_penalty:
-    values: [-0.25, -0.8, -1.2]
+    values: [-0.5, -0.8, -1.5]
   nopath_penalty:
     values: [-2.0, -3.0, -5.0]
 

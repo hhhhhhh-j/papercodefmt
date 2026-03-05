@@ -286,7 +286,7 @@ class Lidar:
                     break
                 # If in the map, but hitting an obstacle, set the measurement range
                 # and stop ray tracing.
-                elif self.true_map[int(round(yi)), int(round(xi))] == 1:
+                elif self.true_map[int(round(yi)), int(round(xi))] > 0.6:
                     meas_r[i] = r
                     break
                     

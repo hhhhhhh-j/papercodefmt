@@ -69,6 +69,9 @@ def train():
 
 
     run_name = (
+        f"fmt"
+        f"_run_id{wandb.run.id}_"
+        f"_dem{cfg.dem_id}_"
         f"_seed{cfg.master_seed}"
         f"_env{cfg.n_envs}"
         f"_{time.strftime('%m%d-%H%M')}"
@@ -192,7 +195,7 @@ def train():
         best_model_save_path=best_dir,  # 只保存 best
         log_path=eval_dir,
         eval_freq=eval_freq,
-        n_eval_episodes=20,
+        n_eval_episodes=100,
         deterministic=True,
     )
 

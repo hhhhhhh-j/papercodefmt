@@ -34,7 +34,7 @@ class DM_env(gym.Env):
 
         self.exec_mode = exec_mode           # common, noplan
         self.obs_mode =  obs_mode             # full, no_uncertainty
-        self.EXPLORE_GAIN_WEIGHT = param.EXPLORE_GAIN_WEIGHT
+        self.EXPLORE_WEIGHT = param.EXPLORE_GAIN_WEIGHT
         self.disable_u_reward = (self.obs_mode == "no_uncertainty")
 
         self.planner = Planner()
@@ -176,6 +176,9 @@ class DM_env(gym.Env):
             "ep_seed": int(ep_seed)
         }
 
+        # DEBUG
+        logger.debug("reach_weight = {}", param.REACH_GOAL_WEIGHT)
+
         return observation, info
 
     def step(self, action): 
@@ -310,12 +313,10 @@ class DM_env(gym.Env):
 
         # 随机生成智能体和目标点位置
         self.goal_ix,self.goal_iy,self.goal_yaw = self.get_random_free_position()
-        self.goal_x = int(self.goal_ix * param.XY_RESO)
-        self.goal_y = int(self.goal_iy * param.XY_RESO)
+        self.goal_x, self.goal_y = self.Transform_index_to_world(self.goal_ix, self.goal_iy, "global")
 
         self.agent_ix,self.agent_iy,self.agent_yaw = self.get_random_free_position()  
-        self.agent_x = int(self.agent_ix * param.XY_RESO)
-        self.agent_y = int(self.agent_iy * param.XY_RESO)
+        self.agent_y, self.agent_x = self.Transform_index_to_world(self.agent_ix, self.agent_iy, "global")
 
         # 得到 position mask
         local_mask_ix = int(param.local_size_width // 2)
@@ -325,7 +326,7 @@ class DM_env(gym.Env):
 
         # 初始化创建接口对象
         self.interface = interface2RL(self.global_map, 
-                                      [self.agent_x, self.agent_y, self.agent_yaw])
+                                      [self.agent_ix, self.agent_iy, self.agent_yaw])
 
         # 获取初始观测值（map_uncertainty、map_occupancy）
         m_occ, m_free, m_unk, local_m, local_m_occ, local_m_free, local_m_unk, _ , self.belief_map = self.interface.ToSAC_reset()
@@ -343,28 +344,6 @@ class DM_env(gym.Env):
 
         self.risk_map = self.get_risk_map()
 
-    def read_map_Dataset(self):
-        '''
-        
-        '''
-        dem_id = self.dem_id
-
-        DATASET_DIR = os.path.join(PARENT_DIR, "Dataset", "output", "map", "tiles" )
-        npy_path = os.path.join(DATASET_DIR, f"tile_{dem_id}.npy")
-
-        if not os.path.exists(npy_path):
-            raise FileNotFoundError(f"DEM npy not found: {npy_path}")
-
-        tile = np.load(npy_path, mmap_mode="r")
-
-        lo = np.percentile(tile, 2)
-        hi = np.percentile(tile, 98)
-        tile_clip = np.clip(tile, lo, hi)
-
-        m01 = (tile_clip - lo) / (hi - lo + 1e-6)   # 0~1 float32
-
-        self.global_map = m01
-  
     def _build_obs_common(self):
         '''return: obs'''
         observation = {
@@ -442,7 +421,7 @@ class DM_env(gym.Env):
         if goal_reachable:
             # 直接规划到 goal
             self.path.clear()
-            path_global = self.path_local_to_global(path2goal, self.agent_x, self.agent_y)
+            path_global = self.path_to_world(path2goal, self.agent_x, self.agent_y)
             self.path.extend(path_global)
         else:
             back_up = self.planning_strategy(weight)
@@ -475,12 +454,14 @@ class DM_env(gym.Env):
             _, _, uncertain_gain, risk = self.calculate_reward_param()
 
             # ---更新局部map与pose---
-            m_occ, m_free, m_unk, local_m, local_m_occ, local_m_free, local_m_unk, collision, current_pose, self.belief_map = self.interface.ToSAC_step(sub_goal)
+            sub_goal_yi, sub_goal_xi = self.Transform_world_to_index(sub_goal[0], sub_goal[1], "global")
+            sub_goal_i = [sub_goal_xi, sub_goal_yi, sub_goal[2]]
 
-            self.agent_x = current_pose[0]
-            self.agent_ix = int(self.agent_x / param.XY_RESO)
-            self.agent_y = current_pose[1]
-            self.agent_iy = int(self.agent_y / param.XY_RESO)
+            m_occ, m_free, m_unk, local_m, local_m_occ, local_m_free, local_m_unk, collision, current_pose, self.belief_map = self.interface.ToSAC_step(sub_goal_i)
+
+            self.agent_y, self.agent_x = self.Transform_index_to_world(current_pose[0], current_pose[1], "global")
+            self.agent_iy, self.agent_ix = self.Transform_world_to_index(self.agent_x, self.agent_y, "global")
+
             self.agent_yaw = current_pose[2]
             self.local_m_occ = local_m_occ
             self.local_m_free = local_m_free
@@ -557,13 +538,14 @@ class DM_env(gym.Env):
         sub_y = np.clip(desired_y, 0, (param.global_size_height - 1)*param.XY_RESO)
         sub_steer = desired_steer
         sub_goal = [sub_x, sub_y, sub_steer]
+        sub_goal_yi, sub_goal_xi = self.Transform_world_to_index(sub_goal[0], sub_goal[1], "global")
+        sub_goal_i = [sub_goal_xi, sub_goal_yi, sub_steer]
 
-        m_occ, m_free, m_unk, local_m, local_m_occ, local_m_free, local_m_unk, collision, current_pose, self.belief_map = self.interface.ToSAC_step(sub_goal)
+        m_occ, m_free, m_unk, local_m, local_m_occ, local_m_free, local_m_unk, collision, current_pose, self.belief_map = self.interface.ToSAC_step(sub_goal_i)
 
-        self.agent_x = current_pose[0]
-        self.agent_ix = int(self.agent_x / param.XY_RESO)
-        self.agent_y = current_pose[1]
-        self.agent_iy = int(self.agent_y / param.XY_RESO)
+        self.agent_y, self.agent_x = self.Transform_index_to_world(current_pose[0], current_pose[1], "global")
+        self.agent_iy, self.agent_ix = self.Transform_world_to_index(self.agent_x, self.agent_y, "global")
+
         self.agent_yaw = current_pose[2]
         self.local_m_occ = local_m_occ
         self.local_m_free = local_m_free
@@ -606,6 +588,28 @@ class DM_env(gym.Env):
         self.macro_reward = self.reward
         
         return reach, collision
+
+    def read_map_Dataset(self):
+        '''
+        
+        '''
+        dem_id = self.dem_id
+
+        DATASET_DIR = os.path.join(PARENT_DIR, "Dataset", "output", "map", "tiles" )
+        npy_path = os.path.join(DATASET_DIR, f"tile_{dem_id}.npy")
+
+        if not os.path.exists(npy_path):
+            raise FileNotFoundError(f"DEM npy not found: {npy_path}")
+
+        tile = np.load(npy_path, mmap_mode="r")
+
+        lo = np.percentile(tile, 2)
+        hi = np.percentile(tile, 98)
+        tile_clip = np.clip(tile, lo, hi)
+
+        m01 = (tile_clip - lo) / (hi - lo + 1e-6)   # 0~1 float32
+
+        self.global_map = m01
 
     def calculate_reward(self, distance_togoal, collision, reach, step, uncertainty_err, risk_err, visit_count):
         distance_reward = param.DISTANCE_WEIGHT * (1.0 - ((distance_togoal / param.max_dist) ** 0.4))
@@ -672,11 +676,11 @@ class DM_env(gym.Env):
         return topk, frontier_mask
 
     def goal_reachable(self):
-        goal_local_yi, goal_local_xi = self.point_global_to_local(self.goal_x, self.goal_y)
-        if goal_local_xi < 0 or goal_local_xi >= param.local_size_width or \
-           goal_local_yi < 0 or goal_local_yi >= param.local_size_height:
+        goal_local_iy, goal_local_ix = self.Transform_World_global_to_local(self.goal_ix, self.goal_iy)
+        if goal_local_ix < 0 or goal_local_ix >= param.local_size_width or \
+           goal_local_iy < 0 or goal_local_iy >= param.local_size_height:
             return False, None
-        path = self.get_path_astar(self.local_m, (goal_local_yi, goal_local_xi))
+        path = self.get_path_astar(self.local_m, (goal_local_iy, goal_local_ix))
         if path is None or len(path) == 0:
             return False, None
         else:
@@ -712,7 +716,7 @@ class DM_env(gym.Env):
 
         path_local = self.get_path_astar(self.local_m, current_sub_goal_astar)
         # logger.debug("path_local frontier:{}", path_local)
-        path_global = self.path_local_to_global(path_local, self.agent_x, self.agent_y)
+        path_global = self.path_to_world(path_local, self.agent_x, self.agent_y)
         # logger.debug("path_global frontier:{}", path_global)
 
         self.path.extend(path_global)
@@ -760,7 +764,7 @@ class DM_env(gym.Env):
         dy = (self.goal_y - self.agent_y) / res
 
         # local 索引 (y, x)
-        y = int(round(ci + dy))
+        y = int(round(ci - dy))
         x = int(round(cj + dx))
 
         # clamp 到 local 边界
@@ -769,29 +773,29 @@ class DM_env(gym.Env):
 
         current_sub_goal_ = (y, x)
         path_local = self.get_path_astar(self.local_m, current_sub_goal_)
-        path_global = self.path_local_to_global(path_local, self.agent_x, self.agent_y)
+        path_global = self.path_to_world(path_local, self.agent_x, self.agent_y)
 
         return path_global
 
-    def point_global_to_local(self, x_in, y_in):
-        '''
-        return local 索引 (y, x)
-        '''
-        H, W = param.local_size_height, param.local_size_width
-        ci, cj = H // 2, W // 2
-        res = param.XY_RESO
+    # def point_global_to_local(self, x_in, y_in):
+    #     '''
+    #     return local 索引 (y, x)
+    #     '''
+    #     H, W = param.local_size_height, param.local_size_width
+    #     ci, cj = H // 2, W // 2
+    #     res = param.XY_RESO
 
-        # goal 在 local 坐标系中的偏移（格）
-        dx = (x_in - self.agent_x) / res
-        dy = (y_in - self.agent_y) / res
+    #     # goal 在 local 坐标系中的偏移（格）
+    #     dx = (x_in - self.agent_x) / res
+    #     dy = (y_in - self.agent_y) / res
 
-        # local 索引 (y, x)
-        y = int(round(ci + dy))
-        x = int(round(cj + dx))
+    #     # local 坐标 (y, x)
+    #     y = int(round(ci + dy))
+    #     x = int(round(cj + dx))
 
-        return (y, x)
+    #     return (y, x)
 
-    def path_local_to_global(self, path_local, agent_x, agent_y):
+    def path_to_world(self, path_local, agent_x, agent_y):
         if path_local is None or len(path_local)==0:
             return []
         H, W = param.local_size_height, param.local_size_width
@@ -801,7 +805,7 @@ class DM_env(gym.Env):
         path_global = []
         for (y, x) in path_local:   # y, x
             xg = agent_x + (x - cj) * res
-            yg = agent_y + (y - ci) * res
+            yg = agent_y + (ci - y) * res
             # 
             xg = np.clip(xg, 0, (param.global_size_width - 1)*param.XY_RESO)
             yg = np.clip(yg, 0, (param.global_size_height - 1)*param.XY_RESO)
@@ -944,6 +948,82 @@ class DM_env(gym.Env):
         goal_angle = (goal_angle + math.pi) % (2 * math.pi) - math.pi
         
         return goal_angle
+
+    # 坐标变换接口
+    def Transform_World_global_to_local(self, x_global, y_global):
+        '''
+        global坐标转local坐标
+        '''
+        H, W = param.local_size_height, param.local_size_width
+        ci, cj = H // 2, W // 2
+
+        dx = (x_global - self.agent_x)
+        dy = (y_global - self.agent_y)
+
+        y_local = int(round(ci + dy))
+        x_local = int(round(cj + dx))
+
+        return y_local, x_local
+    
+    def Transform_World_local_to_global(self, x_local, y_local):
+        '''
+        local坐标转global坐标
+        '''
+        H, W = param.local_size_height, param.local_size_width
+        ci, cj = H // 2, W // 2
+
+        dx = (x_local - cj)
+        dy = (y_local - ci)
+
+        x_global = self.agent_x + dx
+        y_global = self.agent_y + dy
+
+        return y_global, x_global
+    
+    def Transform_world_to_index(self, x_world, y_world, map_format="local"):
+        '''
+        world坐标转index坐标
+        '''
+        
+        res = param.XY_RESO
+
+        if map_format == "local":
+            H, W = param.local_size_height, param.local_size_width
+            ci, cj = H // 2, W // 2
+            dx = (x_world - self.agent_x) / res
+            dy = (y_world - self.agent_y) / res
+            ix = int(round(cj + dx))
+            iy = int(round(ci - dy))
+        elif map_format == "global":
+            H, W = param.global_size_height, param.global_size_width
+            ix = int(round(x_world / res))
+            iy = int((H-1) - round(y_world / res))
+        else:
+            raise ValueError("map_format must be 'local' or 'global'")
+
+        return iy, ix
+    
+    def Transform_index_to_world(self, ix, iy, map_format="local"):
+        '''
+        index坐标转world坐标
+        '''
+        
+        res = param.XY_RESO
+
+        if map_format == "local":
+            H, W = param.local_size_height, param.local_size_width
+            ci, cj = H // 2, W // 2
+            x_world = self.agent_x + (ix - cj) * res
+            y_world = self.agent_y + (ci - iy) * res
+        
+        elif map_format == "global":
+            H, W = param.global_size_height, param.global_size_width
+            x_world = ix * res
+            y_world = (H - iy) * res
+        else:
+            raise ValueError("map_format must be 'local' or 'global'")
+
+        return y_world, x_world
 
 if __name__ == "__main__":
     '''
