@@ -232,6 +232,19 @@ class DM_env(gym.Env):
             "collision": bool(collision),
             "done_reason": done_reason,
         }
+
+        info.update({
+            "agent_ix": int(self.agent_ix),
+            "agent_iy": int(self.agent_iy),
+            "goal_ix": int(self.goal_ix),
+            "goal_iy": int(self.goal_iy),
+            "agent_x": float(self.agent_x),
+            "agent_y": float(self.agent_y),
+            "goal_x": float(self.goal_x),
+            "goal_y": float(self.goal_y),
+            "agent_yaw": float(self.agent_yaw),
+            "goal_angle": float(self.goal_angle),
+        })
         
         if terminated or truncated:
             info["episode"] = {
@@ -313,7 +326,7 @@ class DM_env(gym.Env):
 
         # 随机生成智能体和目标点位置
         self.goal_ix,self.goal_iy,self.goal_yaw = self.get_random_free_position()
-        self.goal_x, self.goal_y = self.Transform_index_to_world(self.goal_ix, self.goal_iy, "global")
+        self.goal_y, self.goal_x = self.Transform_index_to_world(self.goal_ix, self.goal_iy, "global")
 
         self.agent_ix,self.agent_iy,self.agent_yaw = self.get_random_free_position()  
         self.agent_y, self.agent_x = self.Transform_index_to_world(self.agent_ix, self.agent_iy, "global")
@@ -410,8 +423,9 @@ class DM_env(gym.Env):
         collision = False
         micro_executed = 0
 
-        # ---action to weight---
-        weight = self.action2weight_softmax(action)
+        # ---action to weight---    
+        # weight = self.action2weight_softmax(action)
+        weight = np.clip(action, -1.0, 1.0)
 
         # 如果 goal 在 localmap 内
         goal_reachable, path2goal = self.goal_reachable()
@@ -676,7 +690,8 @@ class DM_env(gym.Env):
         return topk, frontier_mask
 
     def goal_reachable(self):
-        goal_local_iy, goal_local_ix = self.Transform_World_global_to_local(self.goal_ix, self.goal_iy)
+        goal_local_iy, goal_local_ix = self.Transform_World_global_to_local(self.goal_ix, self.goal_iy, "index")
+
         if goal_local_ix < 0 or goal_local_ix >= param.local_size_width or \
            goal_local_iy < 0 or goal_local_iy >= param.local_size_height:
             return False, None
@@ -936,49 +951,64 @@ class DM_env(gym.Env):
             return False
 
     def get_distance2goal(self):
-        dx = self.goal_x - self.agent_x
-        dy = self.goal_y - self.agent_y
+        dx = self.goal_ix - self.agent_ix
+        dy = self.goal_iy - self.agent_iy
         goal_distance = math.sqrt(dx*dx + dy*dy)
         
         return goal_distance
     
     def get_angle2goal(self):
-        goal_angle = math.atan2(self.goal_y - self.agent_y, self.goal_x - self.agent_x)
+        goal_angle = math.atan2(self.goal_iy - self.agent_iy, self.goal_ix - self.agent_ix)
         # 归一化到 [-pi, pi]
         goal_angle = (goal_angle + math.pi) % (2 * math.pi) - math.pi
         
         return goal_angle
 
     # 坐标变换接口
-    def Transform_World_global_to_local(self, x_global, y_global):
+    def Transform_World_global_to_local(self, x_global, y_global, xy_format="index"):
         '''
         global坐标转local坐标
+        返回 local index
         '''
         H, W = param.local_size_height, param.local_size_width
         ci, cj = H // 2, W // 2
 
-        dx = (x_global - self.agent_x)
-        dy = (y_global - self.agent_y)
+        if xy_format == "index":
+            dx = (x_global - self.agent_ix)
+            dy = (y_global - self.agent_iy)
+        elif xy_format == "world":
+            logger.error("remain some bug here, be careful when using world format!")
+            dx = (x_global - self.agent_x) / param.XY_RESO
+            dy = (y_global - self.agent_y) / param.XY_RESO
+        else:
+            raise ValueError("xy_format must be 'index' or 'world'")
 
         y_local = int(round(ci + dy))
         x_local = int(round(cj + dx))
 
         return y_local, x_local
     
-    def Transform_World_local_to_global(self, x_local, y_local):
-        '''
-        local坐标转global坐标
-        '''
-        H, W = param.local_size_height, param.local_size_width
-        ci, cj = H // 2, W // 2
+    # def Transform_World_local_to_global(self, x_local, y_local, xy_format="index"):
+    #     '''
+    #     local坐标转global坐标
+    #     return global index or world coordinate
+    #     '''
+    #     H, W = param.local_size_height, param.local_size_width
+    #     ci, cj = H // 2, W // 2
 
-        dx = (x_local - cj)
-        dy = (y_local - ci)
+    #     if xy_format == "index":
+    #         dx = (x_local - cj)
+    #         dy = (y_local - ci)
+    #     elif xy_format == "world":
+    #         dx = (x_local - cj) * param.XY_RESO
+    #         dy = (y_local - ci) * param.XY_RESO
+    #     else:
+    #         raise ValueError("xy_format must be 'index' or 'world'")
 
-        x_global = self.agent_x + dx
-        y_global = self.agent_y + dy
+    #     x_global = self.agent_x + dx
+    #     y_global = self.agent_y + dy
 
-        return y_global, x_global
+    #     return y_global, x_global
     
     def Transform_world_to_index(self, x_world, y_world, map_format="local"):
         '''
@@ -1019,7 +1049,7 @@ class DM_env(gym.Env):
         elif map_format == "global":
             H, W = param.global_size_height, param.global_size_width
             x_world = ix * res
-            y_world = (H - iy) * res
+            y_world = (H - 1 - iy) * res
         else:
             raise ValueError("map_format must be 'local' or 'global'")
 
