@@ -10,6 +10,7 @@ import sys
 import itertools
 from utils.draw import draw_agent
 from heapq import heappush, heappop
+from loguru import logger
 
 UNKNOWN = -1
 FREE    = 0
@@ -60,9 +61,10 @@ class param:
     gamma = 1.0000000000000                     # 遗忘指数
 
 class Frontier:
-    def __init__(self, local_occ, local_unk, local_free, robot_ij, action, k=8):
+    def __init__(self, local_occ, local_unk, local_free, robot_ij, action, goal_ij, k=8):
         self.k = k                                                                          # 选择前 k 个 frontier clusters
         self.size_norm_factor = 10.0 / (param.local_size_width * param.local_size_height)   # cluster size 归一化因子
+        self.progress_to_goal_factor = 3.0 / param.max_dist_local                           # to 目标 progress 归一化因子
         self.dist_norm_factor = 1.0 / param.max_dist_local
         self.risk_norm_factor = 1.0                                                         # 假定 risk 在 [0,1] 之间
         H, W = local_free.shape
@@ -70,6 +72,7 @@ class Frontier:
         self.grid[local_occ >= 0.7] = OCC
         self.grid[local_free >= 0.7] = FREE
         self.robot_ij = robot_ij                                                            # 机器人在 grid 中的位置 (i,j)
+        self.goal_ij = goal_ij                                                              # 目标在 grid 中的位置 (i,j)
         self.action = action                                                                # 用于评分的权重参数
 
     def compute_frontier_mask(self):
@@ -82,8 +85,7 @@ class Frontier:
         frontier = (free & unk_near).astype(np.uint8)
         return frontier  # 0/1
 
-
-    def cluster_frontiers(self, frontiers, min_size=3):
+    def cluster_frontiers(self, frontiers, min_size=2):
         # labels: 0=背景, 1..num_labels-1 = 每个连通域
         num_labels, labels = cv2.connectedComponents(frontiers, connectivity=8)
 
@@ -93,21 +95,154 @@ class Frontier:
             if ys.size < min_size:
                 continue
             cells = np.stack([ys, xs], axis=1)  # (N,2) 每行 (i,j)
-            clusters.append(cells)
+            ordered = self.order_clusters(cells)   
+            clusters.append(ordered)
 
         return clusters
+    
+    def order_clusters(self, cells):
+        """
+        将一个 frontier cluster 的无序点集，近似排成一条边界链。
+        输入:
+            cells: np.ndarray, shape (N, 2), 每行是 (i, j)
+        输出:
+            ordered: np.ndarray, shape (N, 2), 近似按边界顺序排列
+        """
+        cells = np.asarray(cells, dtype=np.int32)
+        n = cells.shape[0]
 
+        if n <= 2:
+            return cells
 
+        point_set = {tuple(p) for p in cells}
 
+        # 8邻域
+        def get_neighbors(p):
+            i, j = p
+            nbrs = []
+            for di in (-1, 0, 1):
+                for dj in (-1, 0, 1):
+                    if di == 0 and dj == 0:
+                        continue
+                    q = (i + di, j + dj)
+                    if q in point_set:
+                        nbrs.append(q)
+            return nbrs
 
+        # 1) 先找“端点”：邻居数最少的点更像边界两端
+        degrees = {}
+        for p in point_set:
+            degrees[p] = len(get_neighbors(p))
 
+        min_deg = min(degrees.values())
+        endpoints = [p for p, d in degrees.items() if d == min_deg]
 
+        # 2) 从离机器人最近的端点开始；如果没有明显端点，就从离机器人最近的点开始
+        ri, rj = self.robot_ij
+        if len(endpoints) > 0:
+            start = min(endpoints, key=lambda p: (p[0] - ri) ** 2 + (p[1] - rj) ** 2)
+        else:
+            start = min(point_set, key=lambda p: (p[0] - ri) ** 2 + (p[1] - rj) ** 2)
 
+        ordered = [start]
+        visited = {start}
+        current = start
+        prev = None
 
+        # 3) 贪心沿边界走
+        while len(ordered) < n:
+            nbrs = [q for q in get_neighbors(current) if q not in visited]
 
+            if len(nbrs) == 0:
+                break
 
+            if prev is None:
+                # 第一步：选最近邻
+                nxt = min(nbrs, key=lambda q: (q[0] - current[0]) ** 2 + (q[1] - current[1]) ** 2)
+            else:
+                # 后续：优先保持前进方向连续
+                vi = current[0] - prev[0]
+                vj = current[1] - prev[1]
 
+                def score(q):
+                    wi = q[0] - current[0]
+                    wj = q[1] - current[1]
+                    dot = vi * wi + vj * wj          # 越大越希望继续这个方向
+                    d2 = wi * wi + wj * wj           # 同时希望步长小
+                    return (-dot, d2)
 
+                nxt = min(nbrs, key=score)
+
+            ordered.append(nxt)
+            visited.add(nxt)
+            prev = current
+            current = nxt
+
+        # 4) 如果有漏掉的点，用“最近插入”补齐
+        if len(ordered) < n:
+            remaining = [p for p in point_set if p not in visited]
+            for p in remaining:
+                insert_idx = min(
+                    range(len(ordered)),
+                    key=lambda k: (ordered[k][0] - p[0]) ** 2 + (ordered[k][1] - p[1]) ** 2
+                )
+                ordered.insert(insert_idx + 1, p)
+
+        ordered = np.asarray(ordered, dtype=np.int32)
+        return ordered
+
+    def splite_large_clusters(self, clusters, max_size=20, min_sub_size=3, max_segments=5):
+        """
+        将大 frontier cluster 按边界长度分段，切成多个小 cluster。
+        输入:
+            clusters: list[np.ndarray], 每个元素 shape (N,2)
+            max_size: 超过该大小的 cluster 开始切分
+            min_sub_size: 子段最小点数
+            max_segments: 最多切成多少段
+        输出:
+            new_clusters: list[np.ndarray]
+        """
+        new_clusters = []
+
+        for cells in clusters:
+            cells = np.asarray(cells, dtype=np.int32)
+            n = cells.shape[0]
+
+            # 小 cluster 直接保留
+            if n <= max_size:
+                new_clusters.append(cells)
+                continue
+
+            # 同时看一下几何跨度，避免“点数多但很紧凑”的 cluster 被乱切
+            span_i = int(cells[:, 0].max() - cells[:, 0].min())
+            span_j = int(cells[:, 1].max() - cells[:, 1].min())
+            span = max(span_i, span_j)
+
+            # 跨度不大也不切
+            if span <= 6:
+                new_clusters.append(cells)
+                continue
+
+            # 1) 先按边界顺序排序
+            ordered = self.order_clusters(cells)
+
+            # 2) 决定切成几段
+            # 比如 21~40 -> 2段, 41~60 -> 3段, 更大 -> 4段
+            n_segments = int(np.ceil(n / max_size))
+            n_segments = max(2, min(max_segments, n_segments))
+
+            # 3) 沿 ordered frontier 等分
+            seg_len = int(np.ceil(len(ordered) / n_segments))
+
+            for s in range(n_segments):
+                st = s * seg_len
+                ed = min((s + 1) * seg_len, len(ordered))
+                sub_cells = ordered[st:ed]
+
+                if sub_cells.shape[0] >= min_sub_size:
+                    new_clusters.append(sub_cells)
+
+        return new_clusters
 
     def summarize_clusters_rep_points(self, clusters):
         ri, rj = self.robot_ij
@@ -133,28 +268,13 @@ class Frontier:
 
         return infos
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     def select_topk(self, infos, risk_map=None):
         ri, rj = self.robot_ij
+        gi, gj = self.goal_ij 
 
         def score(info):                                        # use action to score
             i, j = info["rep_ij"]
+            progress = np.hypot(gi - ri, gj - rj) - np.hypot(gi - i, gj - j)
             dist = np.hypot(i - ri, j - rj) + 1e-6
             size = info["size"]
 
@@ -165,11 +285,12 @@ class Frontier:
             # 大cluster、近一些、低风险”
             # score_ = self.action[0] * size - self.action[1] * dist - self.action[2] * risk
             # 归一化
+            progress_norm = progress * self.progress_to_goal_factor
             size_norm = size * self.size_norm_factor
             dist_norm = dist * self.dist_norm_factor
             risk_norm = risk * self.risk_norm_factor
 
-            score_ = self.action[0] * size_norm - self.action[1] * dist_norm - self.action[2] * risk_norm
+            score_ = self.action[0] * progress_norm - self.action[1] * dist_norm - self.action[2] * risk_norm
 
             return score_
 
@@ -179,6 +300,9 @@ class Frontier:
         # padding（不足 K 用 None 填满）
         while len(topk) < self.k:
             topk.append(None)
+
+        # logger.debug("Frontier clusters scored and sorted. Top {}: {}", self.k, topk)
+        logger.debug("Scores: {}", [score(info) if info is not None else None for info in infos])
 
         return topk
         
@@ -271,7 +395,7 @@ class Planner:
         y, x = pos
         return 0 <= y < param.local_size_height \
             and 0 <= x < param.local_size_width \
-            and self.local_map[y,x] <= 0.5
+            and self.local_map[y,x] <= 0.3
 
     def main_workflow(self, local_map, goal):
         self.local_map = local_map

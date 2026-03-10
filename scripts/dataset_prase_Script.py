@@ -14,13 +14,13 @@ from loguru import logger
 ROOT = Path(__file__).resolve().parent.parent
 
 class Args:
-    tif = ROOT / "Dataset" / "dem" / "output.tin(2).tif"   # 输入 GeoTIFF DEM（高程栅格）
+    tif = ROOT / "Dataset" / "dem" / "dtm.tif"   # 输入 GeoTIFF DEM（高程栅格）
     out = ROOT / "Dataset" / "output" / "map"           # 输出目录：保存 tiles/ 和索引文件
     tile = 256                                          # 输出 tile 的大小：tile x tile（像素）
     overlap = 0.2                                       # 重叠率：0=无重叠；0.5=50%重叠；越大样本越多
     k = 20                                              # 代表性聚类簇数：最终大约选 k 张代表 tile
     seed = 0                                            # 随机种子：保证每次结果一致
-    id = 20001                                          # 保存文件的id(起始记录编号)
+    id = 30001                                          # 保存文件的id(起始记录编号)
 
 def main():
     args = Args()

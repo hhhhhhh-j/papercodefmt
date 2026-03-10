@@ -21,11 +21,12 @@ def main():
 
     obs, info = env.reset()
 
-    for t in range(1000):
+    for t in range(1):
         # action, _ = model.predict(obs, deterministic=True)
-        action = env.action_space.sample()
+        # action = env.action_space.sample()
+        action = [0.3, 0.0, 0.0]  # dummy action for testing
         obs, reward, terminated, truncated, info = env.step(action)
-        env.render()
+        # env.render()
 
         # --- 1) 必要字段检查（你需要先在 env 里按 A 加入 info） ---
         need = ["agent_ix","agent_iy","goal_ix","goal_iy","agent_x","agent_y","goal_x","goal_y","agent_yaw","goal_angle"]

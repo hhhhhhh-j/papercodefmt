@@ -177,7 +177,7 @@ class DM_env(gym.Env):
         }
 
         # DEBUG
-        logger.debug("reach_weight = {}", param.REACH_GOAL_WEIGHT)
+        # logger.debug("reach_weight = {}", param.REACH_GOAL_WEIGHT)
 
         return observation, info
 
@@ -327,9 +327,16 @@ class DM_env(gym.Env):
         # 随机生成智能体和目标点位置
         self.goal_ix,self.goal_iy,self.goal_yaw = self.get_random_free_position()
         self.goal_y, self.goal_x = self.Transform_index_to_world(self.goal_ix, self.goal_iy, "global")
-
         self.agent_ix,self.agent_iy,self.agent_yaw = self.get_random_free_position()  
         self.agent_y, self.agent_x = self.Transform_index_to_world(self.agent_ix, self.agent_iy, "global")
+
+        # 生成固定目标点位置（debug）
+        # self.goal_ix, self.goal_iy, self.goal_yaw = 80, 230, 0.0
+        # self.goal_y, self.goal_x = self.Transform_index_to_world(self.goal_ix, self.goal_iy, "global")
+        # self.agent_ix, self.agent_iy, self.agent_yaw = 10, 230, 0.0
+        # self.agent_y, self.agent_x = self.Transform_index_to_world(self.agent_ix, self.agent_iy, "global")
+
+        logger.debug("World reset: agent at ({:.1f},{:.1f}), goal at ({:.1f},{:.1f}), distance {:.1f}", self.agent_x, self.agent_y, self.goal_x, self.goal_y, self.get_distance2goal())
 
         # 得到 position mask
         local_mask_ix = int(param.local_size_width // 2)
@@ -425,7 +432,8 @@ class DM_env(gym.Env):
 
         # ---action to weight---    
         # weight = self.action2weight_softmax(action)
-        weight = np.clip(action, -1.0, 1.0)
+        weight = np.clip(action, -1.0, 1.0) * 2.0
+        # weight = np.exp(action)
 
         # 如果 goal 在 localmap 内
         goal_reachable, path2goal = self.goal_reachable()
@@ -497,7 +505,7 @@ class DM_env(gym.Env):
             # ---reward---
             # reward params
             distance_new, _, uncertain_gain_new, risk_new = self.calculate_reward_param()
-            uncertainty_err = uncertain_gain_new - uncertain_gain
+            uncertainty_err = -(uncertain_gain_new - uncertain_gain)
             risk_err = risk_new - risk
             reach = self.reach_goal()
             _ = self.revisit_penalty_func()
@@ -581,7 +589,7 @@ class DM_env(gym.Env):
         # ---reward---
         # reward params
         distance_new, _, uncertain_gain_new, risk_new = self.calculate_reward_param()
-        uncertainty_err = uncertain_gain_new - uncertain_gain
+        uncertainty_err = -(uncertain_gain_new - uncertain_gain)
         risk_err = risk_new - risk
         reach = self.reach_goal()
         _ = self.revisit_penalty_func()
@@ -682,10 +690,11 @@ class DM_env(gym.Env):
         '''
         frontier = Frontier(self.local_m_occ, self.local_m_unk, 
                             self.local_m_free,(param.local_size_height // 2, param.local_size_width // 2)
-                            , weight, k=param.frontier_k)
+                            , weight, (self.goal_ix, self.goal_iy), k=param.frontier_k)
         frontier_mask = frontier.compute_frontier_mask()
         clusters = frontier.cluster_frontiers(frontier_mask)
-        infos = frontier.summarize_clusters_rep_points(clusters)
+        new_clusters = frontier.splite_large_clusters(clusters)
+        infos = frontier.summarize_clusters_rep_points(new_clusters)
         topk = frontier.select_topk(infos, risk_map) 
         return topk, frontier_mask
 
@@ -701,7 +710,7 @@ class DM_env(gym.Env):
         else:
             return True, path
 
-    def action2weight_softmax(self, action, temperature = 1.0):
+    def action2weight_softmax(self, action, temperature = 6.0):
         action = np.clip(action, -1.0, 1.0)
         logits = action / temperature
         weight = np.exp(logits - logits.max())
