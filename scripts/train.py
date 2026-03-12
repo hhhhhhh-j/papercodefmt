@@ -13,7 +13,10 @@ import gymnasium as gym
 import utils.register_env as register_env
 import wandb
 import time
+import numpy as np
+from stable_baselines3.common.noise import NormalActionNoise
 from stable_baselines3 import SAC
+from stable_baselines3 import TD3
 from stable_baselines3.common.env_util import make_vec_env
 from stable_baselines3.common.vec_env import SubprocVecEnv
 from stable_baselines3.common.callbacks import CallbackList, EvalCallback
@@ -35,7 +38,7 @@ def train():
             "exec_mode": "common",
             "obs_mode": "full",
 
-            "dem_id": "00000",
+            "map_id_set": ["00000"],
 
             "learning_rate": 3e-4,
             "buffer_size": 50000,
@@ -71,7 +74,7 @@ def train():
     run_name = (
         f"fmt"
         f"_run_id{wandb.run.id}_"
-        f"_dem{cfg.dem_id}_"
+        # f"_dem{cfg.map_id_set}_"
         f"_seed{cfg.master_seed}"
         f"_env{cfg.n_envs}"
         f"_{time.strftime('%m%d-%H%M')}"
@@ -108,10 +111,10 @@ def train():
             param.RISK_PENALTY = float(env_cfg["risk_penalty"])
             param.NOPATH_PENALTY = float(env_cfg["nopath_penalty"])
             
-            param.dem_id = str(env_cfg["dem_id"])
+            param.map_id_set = eval(env_cfg["map_id_set"])
             # env.unwrapped.EXPLORE_GAIN_WEIGHT = float(env_cfg["explore_gain_w"])
 
-            env = gym.make("DM-v1", exec_mode = EXEC_MODE, obs_mode = OBS_MODE, rank = rank)
+            env = gym.make("DM-v1", exec_mode = EXEC_MODE, obs_mode = OBS_MODE, map_id_set=env_cfg["map_id_set"], rank = rank)
             env = Monitor(env)
 
             return env
@@ -121,7 +124,7 @@ def train():
         "exec_mode": EXEC_MODE,
         "obs_mode": OBS_MODE,
 
-        "dem_id":cfg.dem_id,
+        "map_id_set": list(cfg.map_id_set),
 
         "reach_w": cfg.reach_w,
         "collision_penalty": cfg.collision_penalty,
@@ -144,26 +147,53 @@ def train():
         
     if os.path.exists(MODEL_PATH):
         logger.info(f"Loading weights from: {MODEL_PATH}")
-        model = SAC.load(MODEL_PATH, env=env, device="cuda")
+        # model = SAC.load(MODEL_PATH, env=env, device="cuda")            
+        model = TD3.load(MODEL_PATH, env=env, device="cuda")           
         
     else:
-        model = SAC(
+        # model = SAC(
+        #     "MultiInputPolicy",
+        #     env,
+        #     device="cuda",
+        #     learning_rate=float(cfg.learning_rate),
+        #     buffer_size=int(cfg.buffer_size),
+        #     batch_size=int(cfg.batch_size),
+        #     tau=float(cfg.tau),
+        #     gamma=float(cfg.gamma),
+        #     train_freq=(int(cfg.train_freq), "step"),
+        #     gradient_steps=int(cfg.gradient_steps),
+        #     ent_coef="auto",
+        #     target_entropy="auto",
+        #     policy_kwargs=policy_kwargs,
+        #     verbose=2,
+        #     tensorboard_log="./tb_logs/",
+        #     learning_starts=int(cfg.learning_starts),
+        # )
+
+
+        n_actions = env.action_space.shape[-1]
+        action_noise = NormalActionNoise(
+            mean=np.zeros(n_actions),
+            sigma=0.1 * np.ones(n_actions)
+        )
+
+        model = TD3(
             "MultiInputPolicy",
             env,
             device="cuda",
             learning_rate=float(cfg.learning_rate),
             buffer_size=int(cfg.buffer_size),
+            learning_starts=int(cfg.learning_starts),
             batch_size=int(cfg.batch_size),
             tau=float(cfg.tau),
             gamma=float(cfg.gamma),
             train_freq=(int(cfg.train_freq), "step"),
             gradient_steps=int(cfg.gradient_steps),
-            ent_coef="auto",
-            target_entropy="auto",
+            action_noise=None,
+            replay_buffer_class=None,                   # 使用默认的ReplayBuffer, need promote
             policy_kwargs=policy_kwargs,
             verbose=2,
             tensorboard_log="./tb_logs/",
-            learning_starts=int(cfg.learning_starts),
         )
     
     # ---callback---
@@ -175,7 +205,7 @@ def train():
     param.RISK_PENALTY = float(env_cfg["risk_penalty"])
     param.NOPATH_PENALTY = float(env_cfg["nopath_penalty"])
 
-    param.dem_id                = str(cfg.dem_id)
+    # param.map_id_set = eval(env_cfg["map_id_set"])
     n_envs = env.num_envs
     eval_freq = max(5000 // n_envs, 1)
     best_dir = os.path.join(run_dir, "best_model")
@@ -183,7 +213,7 @@ def train():
     os.makedirs(best_dir, exist_ok=True)
     os.makedirs(eval_dir, exist_ok=True)
 
-    eval_env = gym.make("DM-v1", exec_mode = EXEC_MODE, obs_mode = OBS_MODE)
+    eval_env = gym.make("DM-v1", exec_mode = EXEC_MODE, obs_mode = OBS_MODE, map_id_set=env_cfg["map_id_set"])
     eval_env = Monitor(eval_env)
     _ = eval_env.reset(seed=MASTER_SEED)
 

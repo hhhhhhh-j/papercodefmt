@@ -198,8 +198,8 @@ def evaluate(
     env_id: str,
     agent: Agent,
     out_dir: str,
-    n_episodes: int = 50,
-    max_steps: int = 2000,
+    n_episodes: int = 100,
+    max_steps: int = 1000,
     ablation = "full",
     seed_base: int = 0,
     render: bool = False,
@@ -399,7 +399,7 @@ def main():
     without_planning:exec(noplan), obs(full);
     full:exec(common), obs(full);
     '''
-    ABLATION = "without_uncertainty"      # without_planning, full
+    ABLATION = "without_uncertainty"      # without_planning, full, without_uncertainty
 
     if ABLATION == "without_uncertainty":
         exec_mode, obs_mode = "common", "no_uncertainty"
